@@ -9,18 +9,10 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { ref } from 'vue'
-
-const localOk=ref(false)
 
 @Options({
   props: {
     ok: Boolean,
-  },
-  methods: {
-    setOk() {
-      localOk.value = true
-    },
   },
 })
 export default class Tips extends Vue {
@@ -38,7 +30,7 @@ export default class Tips extends Vue {
   left: 200px;
   right: 200px;
   border: 2px solid yellow;
-  border-radius: 25px;
+  border-radius: 15px;
   background-color: rgba(255, 177, 140, 0.9);
 }
 
