@@ -1,17 +1,20 @@
 <template>
   <Logo />
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+  <fun-area />
+  <show-area />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import FunArea from "./components/FunArea.vue";
 import Logo from "./components/Logo.vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import ShowArea from "./components/ShowArea.vue";
 
 @Options({
   components: {
     Logo,
-    HelloWorld,
+    ShowArea,
+    FunArea,
   },
 })
 export default class App extends Vue {}
