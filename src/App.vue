@@ -1,12 +1,10 @@
 <template>
   <Logo />
-  <fun-area />
   <show-area />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import FunArea from "./components/FunArea.vue";
 import Logo from "./components/Logo.vue";
 import ShowArea from "./components/ShowArea.vue";
 
@@ -14,7 +12,6 @@ import ShowArea from "./components/ShowArea.vue";
   components: {
     Logo,
     ShowArea,
-    FunArea,
   },
 })
 export default class App extends Vue {}

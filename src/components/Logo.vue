@@ -10,9 +10,8 @@
     />
   </div>
   <Tips :ok="tipsSwitch">
-    Click the <b>Nature Icon</b> or double click <b>Data Item</b> can open
-    <b>Function Panel</b>.</Tips
-  >
+    Double click <b>Data Item</b> can open <b>Function Panel</b>.
+  </Tips>
 </template>
 
 <script lang="ts">
@@ -32,9 +31,9 @@ import Tips from "./Tips.vue";
     showTips() {
       this.tipsSwitch = true;
     },
-    closeTips(){
+    closeTips() {
       this.tipsSwitch = false;
-    }
+    },
   },
 })
 export default class Logo extends Vue {}
@@ -44,6 +43,7 @@ export default class Logo extends Vue {}
 <style scoped lang="stylus">
 #logo {
   position: fixed;
+  z-index: 1000;
   top: 10px;
   right: 10px;
 }

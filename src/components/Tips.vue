@@ -24,12 +24,13 @@ export default class Tips extends Vue {
 <style scoped lang="stylus">
 #tip-block {
   position: fixed;
+  z-index: 100;
   background-attachment: fixed;
   margin: auto;
   top: 10px;
   left: 200px;
   right: 200px;
-  border: 2px solid yellow;
+  border: 2px solid #fefe90;
   border-radius: 15px;
   background-color: rgba(255, 177, 140, 0.9);
 }

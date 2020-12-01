@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div id="showArea">
   Show Area
   </div>
 </template>
@@ -19,5 +19,12 @@ export default class ShowArea extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
-
+#showArea
+  position: fixed;
+  z-index: 1;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  border: 2px solid yellow;
 </style>

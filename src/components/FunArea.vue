@@ -21,11 +21,12 @@ export default class FunArea extends Vue {
 <style scoped lang="stylus">
 #fun-css
   position: fixed;
+  z-index: 2;
   top: 42px;
   right 0px;
   width 200px;
-  border: 2px solid #0019ff;
+  border: 2px solid yellow;
   border-radius: 15px;
-  background-color: rgba(92, 236, 255, 0.9);
+  background-color: rgba(254, 224, 210, 0.9);
 
 </style>
