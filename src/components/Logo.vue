@@ -1,22 +1,19 @@
 <template>
   <div id="logo">
     <img
-      @mouseover="showTips"
-      @mouseleave="closeTips"
+      @click="showTips"
       alt="Nature logo"
       width="32"
       height="32"
       src="../assets/logo.png"
     />
   </div>
-  <Tips :ok="tipsSwitch">
-    Double click <b>Data Item</b> can open <b>Function Panel</b>.
-  </Tips>
+  <MetaList :ok="tipsSwitch" />
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import Tips from "./Tips.vue";
+import MetaList from "./MetaList.vue";
 
 @Options({
   data() {
@@ -25,14 +22,11 @@ import Tips from "./Tips.vue";
     };
   },
   components: {
-    Tips,
+    MetaList,
   },
   methods: {
     showTips() {
-      this.tipsSwitch = true;
-    },
-    closeTips() {
-      this.tipsSwitch = false;
+      this.tipsSwitch = !this.tipsSwitch;
     },
   },
 })
@@ -45,6 +39,6 @@ export default class Logo extends Vue {}
   position: fixed;
   z-index: 1000;
   top: 10px;
-  right: 10px;
+  left: 10px;
 }
 </style>

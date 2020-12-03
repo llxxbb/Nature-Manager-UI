@@ -1,6 +1,5 @@
 <template>
   <div id="showArea">
-  Show Area
   </div>
 </template>
 
@@ -26,5 +25,4 @@ export default class ShowArea extends Vue {
   bottom: 0px;
   left: 0px;
   right: 0px;
-  border: 2px solid yellow;
 </style>
