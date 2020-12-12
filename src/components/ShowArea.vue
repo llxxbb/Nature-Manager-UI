@@ -3,18 +3,24 @@
     id="showArea"
     ref="showArea"
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 100% 100%"
+    viewBox="0 0 800 700"
+    preserveAspectRatio="none"
   />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import * as d3 from "d3";
-import { drag, DragBehavior } from "d3";
+import { HierarchyNode } from "d3";
 
 class Position {
   x: number = 0;
   y: number = 0;
+}
+
+class Node{
+  name: String = ""
+  children: Node[] = []
 }
 
 @Options({
@@ -33,36 +39,72 @@ class Position {
   },
   methods: {},
   mounted() {
-    var data = [
-      { x: 200, y: 200 },
-      { x: 300, y: 300 },
-    ];
-    this.svg = d3.select("#showArea");
-
-    const g = this.svg.append("g").attr("cursor", "grab");
-
-    g
-      .selectAll("nodes")
-      .data(data)
-      .join("circle")
-      .attr("cx", (d: Position) => d.x)
-      .attr("cy", (d: Position) => d.y)
-      .attr("r", 100)
-      .attr("fill", (d: any, i: number) => d3.interpolateRainbow(i / 360)).call;
-
-    this.svg.call(
-      d3
-        .zoom()
-        .extent([
-          [0, 0],
-          [100, 100],
-        ])
-        .on("zoom", zoomed)
-    );
-
-    function zoomed(x: SVGGElement) {
-      g.attr("transform", x.transform);
+    let data = {
+      name:"parent",
+      children:[
+        {
+          name: "c1",
+        },
+        {
+          name: "c2"
+        }
+      ]
     }
+    let x0 = Infinity;
+    let x1 = -x0;
+    let hierarchy = d3.hierarchy(data)
+    let root = d3.tree()(hierarchy)
+    root.x = 300
+    root.y = 500
+    // const root = tree(data);
+
+    this.svg = d3.select("#showArea");
+    const g = this.svg
+      .append("g")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", 10)
+      .attr("transform", `translate(${10 / 3},${100 - x0})`);
+
+    const link = g
+      .append("g")
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-opacity", 0.4)
+      .attr("stroke-width", 1.5)
+      .selectAll("path")
+      .data(root.links())
+      .join("path")
+      .attr(
+        "d",
+        d3
+          .linkHorizontal()
+          // .x((d) => d.y)
+          // .y((d) => d.x)
+      );
+
+    const node = g
+      .append("g")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-width", 3)
+      .selectAll("g")
+      .data(root.descendants())
+      .join("g")
+      .attr("transform", (d:Position) => `translate(${d.y},${d.x})`);
+
+    node
+      .append("circle")
+      .attr("fill", (d:Node) => (d.children ? "#555" : "#999"))
+      .attr("r", 2.5);
+
+    node
+      .append("text")
+      .attr("dy", "0.31em")
+      .attr("x", (d:Node) => (d.children ? -6 : 6))
+      .attr("text-anchor", (d:Node) => (d.children ? "end" : "start"))
+      .text((d:{data:Node}) => d.data.name)
+      .clone(true)
+      .lower()
+      .attr("stroke", "white");
   },
 })
 export default class ShowArea extends Vue {}
