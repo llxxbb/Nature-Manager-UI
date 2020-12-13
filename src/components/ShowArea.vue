@@ -24,11 +24,15 @@ import { D3Tree, TreePara, Node } from "./d3tree";
       name: "L1",
       children: [
         {
-          name: "L2-1",
-          children: [{ name: "L3", children: [] }],
+          name: "L2-2",
+          children: [],
         },
         {
-          name: "L2-2",
+          name: "L2-1",
+          children: [{ name: "L3-1", children: [] },{ name: "L3-2", children: [] }],
+        },
+        {
+          name: "L2-3",
           children: [],
         },
       ],

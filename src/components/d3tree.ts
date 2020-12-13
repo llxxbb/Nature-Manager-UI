@@ -32,14 +32,13 @@ export class D3Tree {
         // draw line first! otherwise you will see the line goes into the circle
         drawLinks(svg, nodes);
         drawNodes(svg, nodes);
-
     }
 }
-
 
 function appendProperty(para: TreePara) {
     // append depth, height, children, parent properties to datum
     let hierarchy = d3.hierarchy(para.data);
+    hierarchy.sort((a, b) => a.data.name < b.data.name ? -1 : 1)
     // append x, y properties to datum
     let nodes = d3.tree()(hierarchy);
     // get max depth
@@ -90,6 +89,5 @@ function drawNodes(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, no
         .clone(true)
         .lower()
         .attr("stroke", "white");
-
 }
 
