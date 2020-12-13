@@ -1,21 +1,10 @@
 <template>
-  <svg
-    id="showArea"
-    ref="showArea"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 100% 100%"
-  />
+  <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import * as d3 from "d3";
-import { drag, DragBehavior } from "d3";
-
-class Position {
-  x: number = 0;
-  y: number = 0;
-}
+import { D3Tree, TreePara, Node } from "./d3tree";
 
 @Options({
   data() {
@@ -24,45 +13,39 @@ class Position {
     };
   },
   computed: {
-    center: function () {
+    center() {
       let area = this.$refs.showArea!;
-      let x = area.clientWidth / 2;
-      let y = area.clientHeight / 2;
-      return [x, y];
+      return [area.clientWidth, area.clientHeight];
     },
   },
   methods: {},
   mounted() {
-    var data = [
-      { x: 200, y: 200 },
-      { x: 300, y: 300 },
-    ];
-    this.svg = d3.select("#showArea");
-
-    const g = this.svg.append("g").attr("cursor", "grab");
-
-    g
-      .selectAll("nodes")
-      .data(data)
-      .join("circle")
-      .attr("cx", (d: Position) => d.x)
-      .attr("cy", (d: Position) => d.y)
-      .attr("r", 100)
-      .attr("fill", (d: any, i: number) => d3.interpolateRainbow(i / 360)).call;
-
-    this.svg.call(
-      d3
-        .zoom()
-        .extent([
-          [0, 0],
-          [100, 100],
-        ])
-        .on("zoom", zoomed)
-    );
-
-    function zoomed(x: SVGGElement) {
-      g.attr("transform", x.transform);
-    }
+    let data: Node = {
+      name: "L1",
+      children: [
+        {
+          name: "L2-2",
+          children: [],
+        },
+        {
+          name: "L2-1",
+          children: [{ name: "L3-1", children: [] },{ name: "L3-2", children: [] }],
+        },
+        {
+          name: "L2-3",
+          children: [],
+        },
+      ],
+    };
+    let para: TreePara = {
+      target: "#showArea",
+      size: {
+        width: this.center[0],
+        height: this.center[1],
+      },
+      data: data,
+    };
+    new D3Tree().show(para);
   },
 })
 export default class ShowArea extends Vue {}
