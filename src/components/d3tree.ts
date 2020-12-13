@@ -13,10 +13,15 @@ export class SvgSize {
     width: number = 0;
     height: number = 0;
 }
+
+export class TreeEvent{
+    // click: (d)=>null | null = null,
+}
 export class TreePara {
     target: string = ""
     size: SvgSize = {} as any
     data: Node = {} as any
+    event: TreeEvent = {} as any
 }
 export class D3Tree {
     show(para: TreePara) {
@@ -95,10 +100,12 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
 
     node.append("text")
         .attr("y", "0.38em")
+        // distance from text to circle
         .attr("x", (d) => (d.children ? "-0.04" : "0.04"))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
         .text((d) => ((d.data) as Node).name)
         .clone(true)
+        // stroke no text inner
         .lower()
         .attr("stroke", "white");
 }
