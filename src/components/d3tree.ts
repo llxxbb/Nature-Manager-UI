@@ -1,6 +1,4 @@
 import * as d3 from "d3";
-import { HierarchyPointNode } from "d3";
-
 export class Position {
     x: number = 0;
     y: number = 0;
@@ -26,12 +24,26 @@ export class D3Tree {
         let svg = d3.select(para.target);
         // add viewBox for pan and zoom
         svg.attr("viewBox", `0, 0, 1, 1`);
+        let g = svg.append("g");
 
         let nodes = appendProperty(para);
 
         // draw line first! otherwise you will see the line goes into the circle
-        drawLinks(svg, nodes);
-        drawNodes(svg, nodes);
+        drawLinks(g, nodes);
+        drawNodes(g, nodes);
+
+        applyZoom(svg, para, g);
+    }
+}
+
+function applyZoom(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: TreePara, g: d3.Selection<SVGGElement, unknown, HTMLElement, any>) {
+    svg.call(d3.zoom<any, any>()
+        .extent([[0, 0], [para.size.width, para.size.height]])
+        .scaleExtent([0.1, 10])
+        .on("zoom", zoomed));
+
+    function zoomed(item: { transform: null; }) {
+        g.attr("transform", item.transform);
     }
 }
 
@@ -48,12 +60,12 @@ function appendProperty(para: TreePara) {
     // .attr("transform", `translate(${root.y},${root.x})`);
 }
 
-function drawLinks(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, nodes: d3.HierarchyPointNode<unknown>) {
+function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, nodes: d3.HierarchyPointNode<unknown>) {
     let linkFn = d3.linkHorizontal<any, any>()
         .x(d => d.y)
         .y(d => d.x);
 
-    const link = svg
+    const link = g
         .append("g")
         .attr("fill", "none")
         .attr("stroke", "#555")
@@ -64,9 +76,9 @@ function drawLinks(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, no
         .join("path")
         .attr("d", linkFn);
 }
-function drawNodes(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, nodes: d3.HierarchyPointNode<unknown>) {
+function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>, nodes: d3.HierarchyPointNode<unknown>) {
     // set font property to node
-    let g = svg.append("g")
+    let g = upperG.append("g")
         .attr("font-family", "sans-serif")
         .attr("font-size", 0.04)
         .attr("stroke-linejoin", "round")
