@@ -4,12 +4,32 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { D3Tree, TreePara, Node } from "./d3tree";
+import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
 
 @Options({
   data() {
     return {
       svg: null,
+      data: {
+        name: "L1",
+        children: [
+          {
+            name: "L2-2",
+            children: [],
+          },
+          {
+            name: "L2-1",
+            children: [
+              { name: "L3-1", children: [] },
+              { name: "L3-2", children: [] },
+            ],
+          },
+          {
+            name: "L2-3",
+            children: [],
+          },
+        ],
+      },
     };
   },
   computed: {
@@ -18,32 +38,23 @@ import { D3Tree, TreePara, Node } from "./d3tree";
       return [area.clientWidth, area.clientHeight];
     },
   },
-  methods: {},
+  methods: {
+    nodeClick(e: MouseEvent, d: Node) {
+      console.log(e);
+      console.log(d);
+    },
+  },
   mounted() {
-    let data: Node = {
-      name: "L1",
-      children: [
-        {
-          name: "L2-2",
-          children: [],
-        },
-        {
-          name: "L2-1",
-          children: [{ name: "L3-1", children: [] },{ name: "L3-2", children: [] }],
-        },
-        {
-          name: "L2-3",
-          children: [],
-        },
-      ],
-    };
     let para: TreePara = {
       target: "#showArea",
       size: {
         width: this.center[0],
         height: this.center[1],
       },
-      data: data,
+      data: this.data,
+      event: {
+        nodeClick: this.nodeClick,
+      },
     };
     new D3Tree().show(para);
   },

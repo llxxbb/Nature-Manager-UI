@@ -7,6 +7,7 @@ export class Position {
 export class Node {
     name: string = "";
     children: Node[] = [];
+    _children: Node[] = [];
 }
 
 export class SvgSize {
@@ -14,18 +15,17 @@ export class SvgSize {
     height: number = 0;
 }
 
-export class TreeEvent{
-    // click: (d)=>null | null = null,
+export class TreeEvent {
+    nodeClick: any = {};
 }
 export class TreePara {
-    target: string = ""
-    size: SvgSize = {} as any
-    data: Node = {} as any
-    event: TreeEvent = {} as any
+    target: string = "";
+    size: SvgSize = {} as any;
+    data: Node = {} as any;
+    event: TreeEvent | null = {} as any;
 }
 export class D3Tree {
     show(para: TreePara) {
-
         let svg = d3.select(para.target);
         // add viewBox for pan and zoom
         svg.attr("viewBox", `0, 0, 1, 1`);
@@ -35,7 +35,7 @@ export class D3Tree {
 
         // draw line first! otherwise you will see the line goes into the circle
         drawLinks(g, nodes);
-        drawNodes(g, nodes);
+        drawNodes(g, nodes, para.event);
 
         applyZoom(svg, para, g);
     }
@@ -55,23 +55,24 @@ function applyZoom(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, pa
 function appendProperty(para: TreePara) {
     // append depth, height, children, parent properties to datum
     let hierarchy = d3.hierarchy(para.data);
-    hierarchy.sort((a, b) => a.data.name < b.data.name ? -1 : 1)
+    hierarchy.sort((a, b) => (a.data.name < b.data.name ? -1 : 1));
     // append x, y properties to datum
     let nodes = d3.tree()(hierarchy);
     // get max depth
     let maxDepth = 0;
-    nodes.each(d => { if (d.depth > maxDepth) maxDepth = d.depth })
-    return nodes
+    nodes.each((d) => {
+        if (d.depth > maxDepth) maxDepth = d.depth;
+    });
+    return nodes;
     // .attr("transform", `translate(${root.y},${root.x})`);
 }
 
 function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, nodes: d3.HierarchyPointNode<unknown>) {
     let linkFn = d3.linkHorizontal<any, any>()
-        .x(d => d.y)
-        .y(d => d.x);
+        .x((d) => d.y)
+        .y((d) => d.x);
 
-    const link = g
-        .append("g")
+    const link = g.append("g")
         .attr("fill", "none")
         .attr("stroke", "#555")
         .attr("stroke-opacity", 0.4)
@@ -81,7 +82,10 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
         .join("path")
         .attr("d", linkFn);
 }
-function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>, nodes: d3.HierarchyPointNode<unknown>) {
+function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
+    nodes: d3.HierarchyPointNode<unknown>,
+    event: TreeEvent | null
+) {
     // set font property to node
     let g = upperG.append("g")
         .attr("font-family", "sans-serif")
@@ -96,17 +100,17 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
 
     node.append("circle")
         .attr("fill", (d) => (d.children ? "#048000" : "#07cc00"))
-        .attr("r", 0.03);
+        .attr("r", 0.03)
+        .on("click", event ? event.nodeClick : null);
 
     node.append("text")
         .attr("y", "0.38em")
         // distance from text to circle
         .attr("x", (d) => (d.children ? "-0.04" : "0.04"))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
-        .text((d) => ((d.data) as Node).name)
+        .text((d) => (d.data as Node).name)
         .clone(true)
         // stroke no text inner
         .lower()
         .attr("stroke", "white");
 }
-
