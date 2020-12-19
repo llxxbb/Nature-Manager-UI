@@ -105,7 +105,7 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
         .attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
     node.append("circle")
-        .attr("fill", (d) => (d.children ? "#048000" : "#07cc00"))
+        .attr("fill", "#07cc00")
         .attr("r", 0.03 * scale)
         .on("click", event ? event.nodeClick : null);
 
@@ -120,11 +120,17 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
         .lower()
         .attr("stroke", "white")
 
+    // add folder icon
     node.append("foreignObject")
         .attr("x", `${-0.025 * scale}`)
         .attr("y", `${-0.025 * scale}`)
         .attr("width", `${0.05 * scale}`)
         .attr("height", `${0.05 * scale}`)
-        .html('<i class="fas fa-folder"></i>')
+        .html(d => {
+            if (d.children) return '<i class="fas fa-folder-open"></i>'
+            else if((d.data as Node)._children) return '<i class="fas fa-folder"></i>'
+            return null
+        })
+    // .html('<i class="fas fa-folder"></i>')
 
 }

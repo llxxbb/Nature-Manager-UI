@@ -24,7 +24,7 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
           },
           {
             name: "L2-1",
-            children: [
+            _children: [
               { name: "L3-1", children: [] },
               { name: "L3-2", children: [] },
             ],
