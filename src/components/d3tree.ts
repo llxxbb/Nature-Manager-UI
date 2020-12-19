@@ -60,8 +60,9 @@ function appendProperty(para: TreePara) {
     // append depth, height, children, parent properties to datum
     let hierarchy = d3.hierarchy(para.data);
     hierarchy.sort((a, b) => (a.data.name < b.data.name ? -1 : 1));
+    let tree = d3.tree();
     // append x, y properties to datum
-    let nodes = d3.tree()(hierarchy);
+    let nodes = tree(hierarchy);
     nodes.each(n => {
         n.x = n.x * scale
         n.y = n.y * scale
@@ -133,11 +134,25 @@ function addFolderIcon(node: d3.Selection<SVGGElement | Element | d3.EnterElemen
         .attr("height", `${0.05 * scale}`)
         .html(d => {
             if (d.children)
-                return '<i class="fas fa-folder-open"></i>';
+                return '<i class="fas fa-folder-open folder-open"></i>';
             else if ((d.data as Node)._children)
-                return '<i class="fas fa-folder"></i>';
+                return '<i class="fas fa-folder folder"></i>';
             return null;
         })
         .on("click", event ? event.folderClick : null);
 }
 
+function update() {
+
+}
+
+// Toggle children.
+function toggle(d: { children: null; _children: null; }) {
+    if (d.children) {
+        d._children = d.children;
+        d.children = null;
+    } else {
+        d.children = d._children;
+        d._children = null;
+    }
+}

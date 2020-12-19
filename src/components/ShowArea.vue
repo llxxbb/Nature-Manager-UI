@@ -44,9 +44,10 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
     },
   },
   methods: {
-    nodeClick(e: MouseEvent, d: Node) {
+    folderClick(e: MouseEvent, d: Node) {
       console.log(e);
       console.log(d);
+    
     },
     showMenu(){
 
@@ -61,7 +62,7 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
       },
       data: this.data,
       event: {
-        folderClick: this.nodeClick,
+        folderClick: this.folderClick,
       },
     };
     new D3Tree().show(para);
@@ -85,7 +86,10 @@ export default class ShowArea extends Vue {}
 }
 </style>
 <style lang="stylus">
-.icon{
-  font-size 0.03%
+.folder{
+  color Blue
+}
+.folder-open{
+  color Chocolate
 }
 </style>
