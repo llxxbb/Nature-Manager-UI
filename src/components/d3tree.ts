@@ -104,10 +104,10 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
         .join("g")
         .attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
+    // bottom circle
     node.append("circle")
         .attr("fill", "#07cc00")
         .attr("r", 0.03 * scale)
-        .on("click", event ? event.nodeClick : null);
 
     node.append("text")
         .attr("y", `${0.015 * scale}`)
@@ -128,9 +128,14 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
         .attr("height", `${0.05 * scale}`)
         .html(d => {
             if (d.children) return '<i class="fas fa-folder-open"></i>'
-            else if((d.data as Node)._children) return '<i class="fas fa-folder"></i>'
+            else if ((d.data as Node)._children) return '<i class="fas fa-folder"></i>'
             return null
         })
-    // .html('<i class="fas fa-folder"></i>')
+
+    // top circle
+    node.append("circle")
+        .attr("r", 0.03 * scale)
+        .attr("opacity", 0)
+        .on("click", event ? event.nodeClick : null);
 
 }
