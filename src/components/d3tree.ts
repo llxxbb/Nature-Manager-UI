@@ -16,7 +16,7 @@ export class SvgSize {
 }
 
 export class TreeEvent {
-    nodeClick: any = {};
+    folderClick: any = {};
 }
 export class TreePara {
     target: string = "";
@@ -37,7 +37,9 @@ export class D3Tree {
 
         // draw line first! otherwise you will see the line goes into the circle
         drawLinks(g, nodes);
-        drawNodes(g, nodes, para.event);
+        var circle = drawCircleAndText(g, nodes, para.event);
+        // add folder icon
+        addFolderIcon(circle, para.event);
 
         applyZoom(svg, para, g);
     }
@@ -88,7 +90,7 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
         .join("path")
         .attr("d", linkFn);
 }
-function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
+function drawCircleAndText(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
     nodes: d3.HierarchyPointNode<unknown>,
     event: TreeEvent | null
 ) {
@@ -119,23 +121,23 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
         // stroke no text inner
         .lower()
         .attr("stroke", "white")
+    return node
+}
 
-    // add folder icon
-    node.append("foreignObject")
+function addFolderIcon(node: d3.Selection<SVGGElement | Element | d3.EnterElement | Document | Window | null, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>, event: TreeEvent | null) {
+    let folder = node.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false)
+    folder.append("foreignObject")
         .attr("x", `${-0.025 * scale}`)
         .attr("y", `${-0.025 * scale}`)
         .attr("width", `${0.05 * scale}`)
         .attr("height", `${0.05 * scale}`)
         .html(d => {
-            if (d.children) return '<i class="fas fa-folder-open"></i>'
-            else if ((d.data as Node)._children) return '<i class="fas fa-folder"></i>'
-            return null
+            if (d.children)
+                return '<i class="fas fa-folder-open"></i>';
+            else if ((d.data as Node)._children)
+                return '<i class="fas fa-folder"></i>';
+            return null;
         })
-
-    // top circle
-    node.append("circle")
-        .attr("r", 0.03 * scale)
-        .attr("opacity", 0)
-        .on("click", event ? event.nodeClick : null);
-
+        .on("click", event ? event.folderClick : null);
 }
+

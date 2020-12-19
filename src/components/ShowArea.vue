@@ -61,7 +61,7 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
       },
       data: this.data,
       event: {
-        nodeClick: this.nodeClick,
+        folderClick: this.nodeClick,
       },
     };
     new D3Tree().show(para);
