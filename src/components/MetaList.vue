@@ -2,9 +2,9 @@
   <div id="meta-list-border" v-if="ok">
     <div>
       Meta List
-      <button>+</button>
-      <button>E</button>
-      <button>X</button>
+      <i class="fas fa-plus"></i>
+      <i class="fas fa-minus"></i>
+      <i class="fas fa-marker"></i>
     </div>
     <div id="meta-list"></div>
   </div>

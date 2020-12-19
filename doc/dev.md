@@ -2,46 +2,25 @@
 
 TypeScript
 
+d3
+
 vue
+
+vue-plugin: [vue-contextmenu](https://github.com/chiic/vue-contextmenu)
+
+font-awesome
+## 视图
+
+使用 ViewBox 属性，可固化坐标使布局变得容易。
+
+高度和宽度都设置为1，这样d3计算的坐标可以直接用，不需要转换，但font-awesome 最小的字体尺寸不能低于1，所以视图放大1000倍。
 
 ## Tree
 
-[vued3tree](https://github.com/David-Desmaisons/Vue.D3.tree#Methods) 
+[参考](https://observablehq.com/@d3/tidy-tree)
 
-不是Typescript
+## 其它问题
 
-[解决方法](https://stackoverflow.com/questions/12687779/how-do-you-produce-a-d-ts-typings-definition-file-from-an-existing-javascript)
+[第三方组件无 ts 文件](https://www.jianshu.com/p/1e262b487f26)
 
-在 tsconfig.json 文件中加入下面的内容：
-
-```
-"allowJs": true,
-"declaration": true,
-```
-
-采用下面的方法：but got: ReferenceError: window is not defined
-
-```js
-npm install -g dts-gen
-dts-gen -m vued3tree
-```
-
-用下面的方法：也会报错
-
-```
-npx tsc node_modules\vued3tree\dist\index.js --allowJs
-```
-
-```
-npx tsc node_modules\vued3tree\dist\index.js --declaration --allowJs --outFile node_modules\vued3tree\dist\index.d.ts.a
-```
-
-使用下面的方式，找到一个错误的包
-
-https://www.typescriptlang.org/dt/search?search=
-
-npm i --save-dev vue-w-tree
-
-
-
-https://www.jianshu.com/p/1e262b487f26
+[使用plugin的方式](https://v3.vuejs.org/guide/plugins.html#using-a-plugin)

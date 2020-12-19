@@ -1,5 +1,10 @@
 <template>
-  <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
+  <svg
+    @contextmenu="showMenu"
+    id="showArea"
+    ref="showArea"
+    xmlns="http://www.w3.org/2000/svg"
+  />
 </template>
 
 <script lang="ts">
@@ -43,6 +48,9 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
       console.log(e);
       console.log(d);
     },
+    showMenu(){
+
+    },
   },
   mounted() {
     let para: TreePara = {
@@ -74,5 +82,10 @@ export default class ShowArea extends Vue {}
   right: 0px;
   width: 100%;
   height: 100%;
+}
+</style>
+<style lang="stylus">
+.icon{
+  font-size 0.03%
 }
 </style>

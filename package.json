@@ -8,12 +8,13 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@vue/server-renderer": "^3.0.2",
-    "core-js": "^3.6.5",
+    "@vue/server-renderer": "^3.0.4",
+    "core-js": "^3.8.1",
     "d3": "^6.3.1",
     "d3-drag": "^2.0.0",
-    "vue": "^3.0.3",
-    "vue-class-component": "^8.0.0-0"
+    "vue": "^3.0.4",
+    "vue-class-component": "^8.0.0-0",
+    "vue-contextmenu": "^1.5.10"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -23,8 +24,8 @@
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
-    "@vue/test-utils": "^2.0.0-0",
+    "@vue/compiler-sfc": "^3.0.4",
+    "@vue/test-utils": "^2.0.0-beta.12",
     "chai": "^4.1.2",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",

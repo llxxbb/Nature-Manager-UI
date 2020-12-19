@@ -24,11 +24,13 @@ export class TreePara {
     data: Node = {} as any;
     event: TreeEvent | null = {} as any;
 }
+
+var scale = 1000
 export class D3Tree {
     show(para: TreePara) {
         let svg = d3.select(para.target);
         // add viewBox for pan and zoom
-        svg.attr("viewBox", `0, 0, 1, 1`);
+        svg.attr("viewBox", `0, 0, ${scale}, ${scale}`);
         let g = svg.append("g");
 
         let nodes = appendProperty(para);
@@ -58,6 +60,10 @@ function appendProperty(para: TreePara) {
     hierarchy.sort((a, b) => (a.data.name < b.data.name ? -1 : 1));
     // append x, y properties to datum
     let nodes = d3.tree()(hierarchy);
+    nodes.each(n => {
+        n.x = n.x * scale
+        n.y = n.y * scale
+    })
     // get max depth
     let maxDepth = 0;
     nodes.each((d) => {
@@ -76,7 +82,7 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
         .attr("fill", "none")
         .attr("stroke", "#555")
         .attr("stroke-opacity", 0.4)
-        .attr("stroke-width", 0.005)
+        .attr("stroke-width", 0.005 * scale)
         .selectAll("path")
         .data(nodes.links())
         .join("path")
@@ -89,9 +95,9 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
     // set font property to node
     let g = upperG.append("g")
         .attr("font-family", "sans-serif")
-        .attr("font-size", 0.04)
+        .attr("font-size", 0.04 * scale)
         .attr("stroke-linejoin", "round")
-        .attr("stroke-width", 0.006);
+        .attr("stroke-width", 0.006 * scale);
 
     const node = g.selectAll("g")
         .data(nodes.descendants())
@@ -100,17 +106,25 @@ function drawNodes(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
 
     node.append("circle")
         .attr("fill", (d) => (d.children ? "#048000" : "#07cc00"))
-        .attr("r", 0.03)
+        .attr("r", 0.03 * scale)
         .on("click", event ? event.nodeClick : null);
 
     node.append("text")
-        .attr("y", "0.38em")
+        .attr("y", `${0.015 * scale}`)
         // distance from text to circle
-        .attr("x", (d) => (d.children ? "-0.04" : "0.04"))
+        .attr("x", (d) => (d.children ? `${-0.04 * scale}` : `${0.04 * scale}`))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
         .text((d) => (d.data as Node).name)
         .clone(true)
         // stroke no text inner
         .lower()
-        .attr("stroke", "white");
+        .attr("stroke", "white")
+
+    node.append("foreignObject")
+        .attr("x", `${-0.025 * scale}`)
+        .attr("y", `${-0.025 * scale}`)
+        .attr("width", `${0.05 * scale}`)
+        .attr("height", `${0.05 * scale}`)
+        .html('<i class="fas fa-folder"></i>')
+
 }
