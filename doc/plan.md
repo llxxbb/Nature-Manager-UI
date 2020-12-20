@@ -1,3 +1,4 @@
 # dev plan
 
-- open folder close folder
+- double click problem
+- show different for selected node

@@ -37,6 +37,7 @@ export class D3Tree {
         // add viewBox for pan and zoom
         svg.attr("viewBox", `0, 0, ${scale}, ${scale}`);
         let g = svg.append("g");
+        g.attr("transform", `translate(0,${0.5*scale})`);
         let nodes = appendProperty(para);
 
         // draw line first! otherwise you will see the line goes into the circle
@@ -65,9 +66,10 @@ function applyZoom(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, pa
         .scaleExtent([0.1, 10])
         .on("zoom", zoomed));
 
-    function zoomed(item: { transform: null; }) {
-        g.attr("transform", item.transform);
-    }
+        function zoomed(item: { transform: null; }) {
+            g.attr("transform", item.transform);
+        }
+    
 }
 
 function appendProperty(para: TreePara) {
@@ -75,17 +77,14 @@ function appendProperty(para: TreePara) {
     let hierarchy = d3.hierarchy(para.data);
     hierarchy.sort((a, b) => (a.data.name < b.data.name ? -1 : 1));
     let tree = d3.tree();
+    tree.nodeSize([0.00007*scale, 0.0003*scale])
     // append x, y properties to datum
     let nodes = tree(hierarchy);
     nodes.each(n => {
         n.x = n.x * scale
         n.y = n.y * scale
     })
-    // get max depth
-    let maxDepth = 0;
-    nodes.each((d) => {
-        if (d.depth > maxDepth) maxDepth = d.depth;
-    });
+    console.log(nodes)
     return nodes;
     // .attr("transform", `translate(${root.y},${root.x})`);
 }
