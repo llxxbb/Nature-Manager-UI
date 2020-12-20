@@ -30,6 +30,7 @@ var scale = 1000
 var paraData: TreePara
 var gForNode: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
 var gForLink: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
+var currentNode: HierarchyPointNode<unknown>;
 export class D3Tree {
     show(para: TreePara) {
         paraData = para
@@ -117,7 +118,9 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("stroke", "#079702")
         .attr("stroke-width", `${0.005 * scale}`)
         .attr("fill", "#f1d5d5")
-        .attr("r", 0.03 * scale);
+        .attr("id", d => `${(d.data as Node).name}_c`)
+        .attr("r", 0.03 * scale)
+        .on("click", changeCurrentNode);
 
     enter.append("text")
         .attr("y", `${0.015 * scale}`)
@@ -140,7 +143,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("width", `${0.05 * scale}`)
         .attr("height", `${0.05 * scale}`)
         .html(d => {
-            let id = (d.data as Node).name
+            let id = (d.data as Node).name + "_i"
             if (d.children)
                 return `<i class="fas fa-folder-open folder-open" id="${id}"></i>`;
             else if ((d.data as Node)._children)
@@ -161,10 +164,22 @@ function update(para: TreePara) {
     var circle = drawNode(gForNode, nodes);
 }
 
+function changeCurrentNode(e: MouseEvent, d: HierarchyPointNode<unknown>) {
+    if (currentNode) {
+        let old = d3.select("#" + (currentNode.data as Node).name + "_c")
+        old.attr("stroke", "#079702");
+    }
+    currentNode = d
+    const nCircle = "#" + (currentNode.data as Node).name + "_c";
+    let n = d3.select(nCircle)
+    n.attr("stroke", "#8f3200");
+}
+
 // Toggle folder.
 function toggle(e: MouseEvent, d: HierarchyPointNode<unknown>) {
+    changeCurrentNode(e, d)
     let data: Node = d.data as Node
-    let one = d3.select(`#${data.name}`)
+    let one = d3.select(`#${data.name}_i`)
     if (data.children) {
         data._children = data.children;
         data.children = undefined;
