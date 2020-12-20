@@ -26,3 +26,5 @@ font-awesome
 [使用plugin的方式](https://v3.vuejs.org/guide/plugins.html#using-a-plugin)
 
 [点击folder](http://mbostock.github.io/d3/talk/20111018/tree.html)
+
+[d3:变动和更新可以用 join 来简化](https://www.codementor.io/@milesbryony/d3-js-join-14gqdz3hfj)

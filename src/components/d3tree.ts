@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { HierarchyPointNode } from "d3";
 export class Position {
     x: number = 0;
     y: number = 0;
@@ -6,8 +7,8 @@ export class Position {
 
 export class Node {
     name: string = "";
-    children: Node[] = [];
-    _children: Node[] = [];
+    children?: Node[] = [];
+    _children?: Node[] = [];
 }
 
 export class SvgSize {
@@ -16,30 +17,33 @@ export class SvgSize {
 }
 
 export class TreeEvent {
-    folderClick: any = {};
+    // folderClick: any = {};
 }
 export class TreePara {
     target: string = "";
     size: SvgSize = {} as any;
     data: Node = {} as any;
-    event: TreeEvent | null = {} as any;
+    event?: TreeEvent;
 }
 
 var scale = 1000
+var drawArea: d3.Selection<SVGGElement, unknown, HTMLElement, any>
+var paraData: TreePara
 export class D3Tree {
     show(para: TreePara) {
+        paraData = para
         let svg = d3.select(para.target);
         // add viewBox for pan and zoom
         svg.attr("viewBox", `0, 0, ${scale}, ${scale}`);
         let g = svg.append("g");
-
+        drawArea = g
         let nodes = appendProperty(para);
 
         // draw line first! otherwise you will see the line goes into the circle
         drawLinks(g, nodes);
-        var circle = drawCircleAndText(g, nodes, para.event);
+        var circle = drawCircleAndText(g, nodes);
         // add folder icon
-        addFolderIcon(circle, para.event);
+        addFolderIcon(circle);
 
         applyZoom(svg, para, g);
     }
@@ -91,9 +95,10 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
         .join("path")
         .attr("d", linkFn);
 }
-function drawCircleAndText(upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
+
+function drawCircleAndText(
+    upperG: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
     nodes: d3.HierarchyPointNode<unknown>,
-    event: TreeEvent | null
 ) {
     // set font property to node
     let g = upperG.append("g")
@@ -104,8 +109,13 @@ function drawCircleAndText(upperG: d3.Selection<SVGGElement, unknown, HTMLElemen
 
     const node = g.selectAll("g")
         .data(nodes.descendants())
+        // .data(nodes.descendants(), d => {
+        //     let node = d as { data: Node }
+        //     console.log(node.data.name)
+        //     return node.data.name
+        // })
         .join("g")
-        .attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
+    .attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
     // bottom circle
     node.append("circle")
@@ -125,7 +135,7 @@ function drawCircleAndText(upperG: d3.Selection<SVGGElement, unknown, HTMLElemen
     return node
 }
 
-function addFolderIcon(node: d3.Selection<SVGGElement | Element | d3.EnterElement | Document | Window | null, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>, event: TreeEvent | null) {
+function addFolderIcon(node: d3.Selection<SVGGElement | Element | d3.EnterElement | Document | Window | null, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     let folder = node.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false)
     folder.append("foreignObject")
         .attr("x", `${-0.025 * scale}`)
@@ -139,20 +149,28 @@ function addFolderIcon(node: d3.Selection<SVGGElement | Element | d3.EnterElemen
                 return '<i class="fas fa-folder folder"></i>';
             return null;
         })
-        .on("click", event ? event.folderClick : null);
+        .on("click", toggle);
 }
 
-function update() {
+function update(para: TreePara) {
+    let nodes = appendProperty(para);
 
+    // draw line first! otherwise you will see the line goes into the circle
+    drawLinks(drawArea, nodes);
+    var circle = drawCircleAndText(drawArea, nodes);
+    // add folder icon
+    addFolderIcon(circle);
 }
 
-// Toggle children.
-function toggle(d: { children: null; _children: null; }) {
-    if (d.children) {
-        d._children = d.children;
-        d.children = null;
+// Toggle folder.
+function toggle(e: MouseEvent, d: HierarchyPointNode<unknown>) {
+    let data: Node = d.data as Node
+    if (data.children) {
+        data._children = data.children;
+        data.children = undefined;
     } else {
-        d.children = d._children;
-        d._children = null;
+        data.children = data._children;
+        data._children = undefined;
     }
+    update(paraData)
 }

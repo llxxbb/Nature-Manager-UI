@@ -44,11 +44,6 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
     },
   },
   methods: {
-    folderClick(e: MouseEvent, d: Node) {
-      console.log(e);
-      console.log(d);
-    
-    },
     showMenu(){
 
     },
@@ -61,9 +56,6 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
         height: this.center[1],
       },
       data: this.data,
-      event: {
-        folderClick: this.folderClick,
-      },
     };
     new D3Tree().show(para);
   },
