@@ -13,8 +13,7 @@
     "d3": "^6.3.1",
     "d3-drag": "^2.0.0",
     "vue": "^3.0.4",
-    "vue-class-component": "^8.0.0-0",
-    "vue-contextmenu": "^1.5.10"
+    "vue-class-component": "^8.0.0-0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
