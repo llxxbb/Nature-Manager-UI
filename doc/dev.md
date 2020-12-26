@@ -8,7 +8,8 @@ vue
 
 vue-plugin: [vue-contextmenu](https://github.com/chiic/vue-contextmenu)
 
-font-awesome : used to show icons
+[bootstrap icons](https://icons.getbootstrap.com/#install) : used to show icons
+
 ## 视图
 
 使用 ViewBox 属性，可固化坐标使布局变得容易。

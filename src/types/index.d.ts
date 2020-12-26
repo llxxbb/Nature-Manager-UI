@@ -1,1 +1,1 @@
-declare module 'vue-contextmenu';
+// declare module 'vue-contextmenu';

@@ -8,14 +8,12 @@
 </template>
 
 <script lang="ts">
-import VueContextMenu from "vue-contextmenu";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
 import { data as nodes } from "../testData/node";
 
 @Options({
   components:{
-    VueContextMenu
   },
   data() {
     return {
@@ -62,14 +60,5 @@ export default class ShowArea extends Vue {}
   right: 0px;
   width: 100%;
   height: 100%;
-}
-</style>
-<style lang="stylus">
-.folder {
-  color: Blue;
-}
-
-.folder-open {
-  color: Chocolate;
 }
 </style>

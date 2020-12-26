@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@vue/server-renderer": "^3.0.4",
+    "bootstrap": "^5.0.0-beta1",
     "core-js": "^3.8.1",
     "d3": "^6.3.1",
     "d3-drag": "^2.0.0",
@@ -24,7 +25,7 @@
     "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.4",
-    "@vue/test-utils": "^2.0.0-beta.12",
+    "@vue/test-utils": "^2.0.0-beta.13",
     "chai": "^4.1.2",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",

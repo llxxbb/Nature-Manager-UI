@@ -137,23 +137,27 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
 
     // add folder icon
     let folder = enter.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false);
-    folder.append("foreignObject")
-        .attr("x", `${-0.025 * scale}`)
-        .attr("y", `${-0.025 * scale}`)
-        .attr("width", `${0.05 * scale}`)
-        .attr("height", `${0.05 * scale}`)
-        .html(d => {
-            let id = (d.data as Node).name + "_i"
-            if (d.children)
-                return `<i class="fas fa-folder-open folder-open" id="${id}"></i>`;
-            else if ((d.data as Node)._children)
-                return `<i class="fas fa-folder folder" id="${id}"></i>`;
-            return null;
-        })
+    addIcon(folder)
         .on("click", toggle);
     // add tooltip
     enter.append("title").text(d => (d.data as Node).name)
     return enter;
+}
+
+function addIcon(folder: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
+    return folder.append("image")
+        .attr("x", `${-0.025 * scale}`)
+        .attr("y", `${-0.025 * scale}`)
+        .attr("width", `${0.05 * scale}`)
+        .attr("height", `${0.05 * scale}`)
+        .attr("href", d => {
+            if (d.children)
+                return "https://icons.getbootstrap.com/icons/caret-right-fill.svg";
+            else if ((d.data as Node)._children)
+                return "https://icons.getbootstrap.com/icons/caret-down-fill.svg";
+            return null;
+        })
+        .attr("id", d => (d.data as Node).name + "_i")
 }
 
 function update(para: TreePara) {
@@ -183,13 +187,11 @@ function toggle(e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (data.children) {
         data._children = data.children;
         data.children = undefined;
-        one.attr("class", "fas fa-folder folder")
-        // one.classed("fas fa-folder folder")
+        one.attr("href","https://icons.getbootstrap.com/icons/caret-down-fill.svg")
     } else {
         data.children = data._children;
         data._children = undefined;
-        one.attr("class", "fas fa-folder-open folder-open")
-        // one.classed("fas fa-folder-open folder-open")
+        one.attr("href", "https://icons.getbootstrap.com/icons/caret-right-fill.svg")
     }
     update(paraData)
 }
