@@ -152,9 +152,9 @@ function addIcon(folder: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown
         .attr("height", `${0.05 * scale}`)
         .attr("href", d => {
             if (d.children)
-                return "https://icons.getbootstrap.com/icons/caret-right-fill.svg";
+                return `${require("../assets/caret-right-fill.svg")}`;
             else if ((d.data as Node)._children)
-                return "https://icons.getbootstrap.com/icons/caret-down-fill.svg";
+                return `${require("../assets/caret-down-fill.svg")}`;
             return null;
         })
         .attr("id", d => (d.data as Node).name + "_i")
@@ -187,11 +187,11 @@ function toggle(e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (data.children) {
         data._children = data.children;
         data.children = undefined;
-        one.attr("href","https://icons.getbootstrap.com/icons/caret-down-fill.svg")
+        one.attr("href", `${require("../assets/caret-down-fill.svg")}`)
     } else {
         data.children = data._children;
         data._children = undefined;
-        one.attr("href", "https://icons.getbootstrap.com/icons/caret-right-fill.svg")
+        one.attr("href", `${require("../assets/caret-right-fill.svg")}`)
     }
     update(paraData)
 }
