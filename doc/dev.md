@@ -29,3 +29,6 @@ vue-plugin: [vue-contextmenu](https://github.com/chiic/vue-contextmenu)
 [点击folder](http://mbostock.github.io/d3/talk/20111018/tree.html)
 
 [d3:变动和更新可以用 join 来简化](https://www.codementor.io/@milesbryony/d3-js-join-14gqdz3hfj)
+
+[显式 SVG icon](https://cli.vuejs.org/guide/html-and-static-assets.html#static-assets-handling)
+

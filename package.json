@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@vue/server-renderer": "^3.0.4",
-    "bootstrap": "^5.0.0-beta1",
+    "bootstrap": "^4.5",
     "core-js": "^3.8.1",
     "d3": "^6.3.1",
     "d3-drag": "^2.0.0",

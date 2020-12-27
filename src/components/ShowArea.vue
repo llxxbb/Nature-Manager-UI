@@ -1,6 +1,5 @@
 <template>
   <svg
-    @contextmenu="showMenu"
     id="showArea"
     ref="showArea"
     xmlns="http://www.w3.org/2000/svg"

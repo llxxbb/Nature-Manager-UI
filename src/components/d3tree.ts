@@ -120,7 +120,11 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("fill", "#f1d5d5")
         .attr("id", d => `${(d.data as Node).name}_c`)
         .attr("r", 0.03 * scale)
-        .on("click", changeCurrentNode);
+        .on("click", changeCurrentNode)
+        .on("contextmenu", (e, d) => {
+            changeCurrentNode(e, d);
+            e.preventDefault();
+        });
 
     enter.append("text")
         .attr("y", `${0.015 * scale}`)
@@ -138,7 +142,11 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     // add folder icon
     let folder = enter.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false);
     addIcon(folder)
-        .on("click", toggle);
+        .on("click", toggle)
+        .on("contextmenu", (e, d) => {
+            e.preventDefault()
+            toggle(e, d)
+        })
     // add tooltip
     enter.append("title").text(d => (d.data as Node).name)
     return enter;
