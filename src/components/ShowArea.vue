@@ -1,4 +1,7 @@
 <template>
+  <context-menu
+    ref="contextMenu"
+  ></context-menu>
   <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
 
@@ -6,9 +9,10 @@
 import { Options, Vue } from "vue-class-component";
 import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
 import { data as nodes } from "../testData/node";
+import ContextMenu from "./ContextMenu.vue";
 
 @Options({
-  components: {},
+  components: { ContextMenu },
   data() {
     return {
       svg: null,
@@ -23,7 +27,13 @@ import { data as nodes } from "../testData/node";
   },
   methods: {
     showMenu(e: MouseEvent, d: Node) {
-      console.log("newdata!");
+      var cm = this.$refs.contextMenu;
+      cm.para = {
+        top: e.clientY,
+        left: e.clientX,
+        node: d,
+      };
+      console.log(e);
     },
   },
   mounted() {

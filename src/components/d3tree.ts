@@ -121,12 +121,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("id", d => `${(d.data as Node).name}_c`)
         .attr("r", 0.03 * scale)
         .on("click", changeCurrentNode)
-        .on("contextmenu", (e, d) => {
-            changeCurrentNode(e, d);
-            if (paraData.event && paraData.event.showMenu)
-                paraData.event.showMenu(e, d.data as Node)
-            e.preventDefault();
-        });
+        .on("contextmenu", showContextMenu);
 
     enter.append("text")
         .attr("y", `${0.015 * scale}`)
@@ -147,11 +142,18 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .on("click", toggle)
         .on("contextmenu", (e, d) => {
             e.preventDefault()
-            toggle(e, d)
+            showContextMenu(e, d)
         })
     // add tooltip
     enter.append("title").text(d => (d.data as Node).name)
     return enter;
+}
+
+function showContextMenu(e: any, d: d3.HierarchyPointNode<unknown>) {
+    changeCurrentNode(e, d);
+    if (paraData.event && paraData.event.showMenu)
+        paraData.event.showMenu(e, d.data as Node);
+    e.preventDefault();
 }
 
 function addIcon(folder: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
