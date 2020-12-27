@@ -3,7 +3,7 @@
     class="my-menu"
     :style="{ top: para.top + 'px', left: para.left + 'px' }"
   >
-    hello
+    <h1>Hello</h1>
   </div>
 </template>
 
@@ -29,7 +29,5 @@ export default class ContextMenu extends Vue {
 .my-menu {
   z-index: 900;
   position: absolute;
-  top: 100px;
-  left: 300px;
 }
 </style>

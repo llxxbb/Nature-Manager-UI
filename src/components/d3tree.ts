@@ -18,6 +18,7 @@ export class SvgSize {
 
 export class TreeEvent {
     showMenu?: (e: MouseEvent, d: Node) => void;
+    hideMenu?: () => void
 }
 export class TreePara {
     target: string = "";
@@ -36,7 +37,12 @@ export class D3Tree {
         paraData = para
         let svg = d3.select(para.target);
         // add viewBox for pan and zoom
-        svg.attr("viewBox", `0, 0, ${scale}, ${scale}`);
+        svg.attr("viewBox", `0, 0, ${scale}, ${scale}`)
+            .on("click", () => {
+                if (paraData.event && paraData.event.hideMenu)
+                    paraData.event.hideMenu()
+            })
+
         let g = svg.append("g");
         g.attr("transform", `translate(0,${0.5 * scale})`);
         let nodes = appendProperty(para);
@@ -68,6 +74,8 @@ function applyZoom(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, pa
         .on("zoom", zoomed));
 
     function zoomed(item: { transform: null; }) {
+        if (paraData.event && paraData.event.hideMenu)
+            paraData.event.hideMenu()
         g.attr("transform", item.transform);
     }
 

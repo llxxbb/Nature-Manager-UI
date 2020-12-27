@@ -8,7 +8,7 @@ vue
 
 vue-plugin: [vue-contextmenu](https://github.com/chiic/vue-contextmenu)
 
-[bootstrap icons](https://icons.getbootstrap.com/#install) : used to show icons
+[bootstrap icons](https://icons.getbootstrap.com) : used to show icons
 
 ## 视图
 

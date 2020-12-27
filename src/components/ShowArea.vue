@@ -1,7 +1,5 @@
 <template>
-  <context-menu
-    ref="contextMenu"
-  ></context-menu>
+  <context-menu ref="contextMenu" v-show="cmShow"></context-menu>
   <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
 
@@ -15,8 +13,8 @@ import ContextMenu from "./ContextMenu.vue";
   components: { ContextMenu },
   data() {
     return {
-      svg: null,
       data: nodes,
+      cmShow: false,
     };
   },
   computed: {
@@ -33,7 +31,10 @@ import ContextMenu from "./ContextMenu.vue";
         left: e.clientX,
         node: d,
       };
-      console.log(e);
+      this.cmShow = true;
+    },
+    hideMenu() {
+      this.cmShow = false;
     },
   },
   mounted() {
@@ -46,6 +47,7 @@ import ContextMenu from "./ContextMenu.vue";
       data: this.data,
       event: {
         showMenu: this.showMenu,
+        hideMenu: this.hideMenu,
       },
     };
     new D3Tree().show(para);
