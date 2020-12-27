@@ -1,9 +1,5 @@
 <template>
-  <svg
-    id="showArea"
-    ref="showArea"
-    xmlns="http://www.w3.org/2000/svg"
-  />
+  <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
 
 <script lang="ts">
@@ -12,13 +8,11 @@ import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
 import { data as nodes } from "../testData/node";
 
 @Options({
-  components:{
-  },
+  components: {},
   data() {
     return {
       svg: null,
       data: nodes,
-
     };
   },
   computed: {
@@ -28,7 +22,7 @@ import { data as nodes } from "../testData/node";
     },
   },
   methods: {
-    showMenu(event: MouseEvent) {
+    showMenu(e: MouseEvent, d: Node) {
       console.log("newdata!");
     },
   },
@@ -40,6 +34,9 @@ import { data as nodes } from "../testData/node";
         height: this.center[1],
       },
       data: this.data,
+      event: {
+        showMenu: this.showMenu,
+      },
     };
     new D3Tree().show(para);
   },

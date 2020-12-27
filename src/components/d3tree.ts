@@ -17,7 +17,7 @@ export class SvgSize {
 }
 
 export class TreeEvent {
-    // folderClick: any = {};
+    showMenu?: (e: MouseEvent, d: Node) => void;
 }
 export class TreePara {
     target: string = "";
@@ -123,6 +123,8 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .on("click", changeCurrentNode)
         .on("contextmenu", (e, d) => {
             changeCurrentNode(e, d);
+            if (paraData.event && paraData.event.showMenu)
+                paraData.event.showMenu(e, d.data as Node)
             e.preventDefault();
         });
 
