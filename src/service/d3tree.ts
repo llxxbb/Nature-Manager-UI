@@ -78,7 +78,6 @@ function applyZoom(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, pa
             paraData.event.hideMenu()
         g.attr("transform", item.transform);
     }
-
 }
 
 function appendProperty(para: TreePara) {

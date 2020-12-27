@@ -3,7 +3,29 @@
     class="my-menu"
     :style="{ top: para.top + 'px', left: para.left + 'px' }"
   >
-    <h1>Hello</h1>
+    <ul class="list-group">
+      <li class="list-group-item item">
+        <img src="../assets/query-instance.svg" />
+        query instance
+        <input />
+      </li>
+      <li class="list-group-item item">
+        <img src="../assets/query-instance.svg" />
+        query recent instances
+      </li>
+      <li class="list-group-item item">
+        <img src="../assets/node-edit.svg" />
+        edit node
+      </li>
+      <li class="list-group-item item">
+        <img src="../assets/node-plus.svg" />
+        add child node
+      </li>
+      <li class="list-group-item item">
+        <img src="../assets/node-minus.svg" />
+        delete node
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -29,5 +51,8 @@ export default class ContextMenu extends Vue {
 .my-menu {
   z-index: 900;
   position: absolute;
+}
+
+.item {
 }
 </style>

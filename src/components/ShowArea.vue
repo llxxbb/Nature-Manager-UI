@@ -5,7 +5,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import { D3Tree, TreePara, Node, TreeEvent } from "./d3tree";
+import { D3Tree, TreePara, Node, TreeEvent } from "../service/d3tree";
 import { data as nodes } from "../testData/node";
 import ContextMenu from "./ContextMenu.vue";
 
