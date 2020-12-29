@@ -4,24 +4,24 @@
     :style="{ top: para.top + 'px', left: para.left + 'px' }"
   >
     <ul class="list-group">
-      <li class="list-group-item item">
-        <img src="../assets/query-instance.svg" />
+      <li class="list-group-item item list-group-item-action">
+        <img src="../assets/locate.svg" />
         query instance
-        <input />
+        <input @keyup.enter="query" />
       </li>
-      <li class="list-group-item item">
-        <img src="../assets/query-instance.svg" />
+      <li class="list-group-item item list-group-item-action">
+        <img src="../assets/list.svg" />
         query recent instances
       </li>
-      <li class="list-group-item item">
+      <li class="list-group-item item list-group-item-action">
         <img src="../assets/node-edit.svg" />
         edit node
       </li>
-      <li class="list-group-item item">
+      <li class="list-group-item item list-group-item-action" @click="add">
         <img src="../assets/node-plus.svg" />
         add child node
       </li>
-      <li class="list-group-item item">
+      <li class="list-group-item item list-group-item-action">
         <img src="../assets/node-minus.svg" />
         delete node
       </li>
@@ -41,6 +41,12 @@ export class CMPara {
 @Options({
   props: {
     para: CMPara,
+  },
+  methods: {
+    add() {},
+    query(e: KeyboardEvent) {
+      console.log();
+    },
   },
 })
 export default class ContextMenu extends Vue {
