@@ -8,12 +8,12 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@vue/server-renderer": "^3.0.4",
+    "@vue/server-renderer": "^3.0.5",
     "bootstrap": "^4.5",
     "core-js": "^3.8.1",
     "d3": "^6.3.1",
     "d3-drag": "^2.0.0",
-    "vue": "^3.0.4",
+    "vue": "^3.0.5",
     "vue-class-component": "^8.0.0-0"
   },
   "devDependencies": {
@@ -24,7 +24,7 @@
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-mocha": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.4",
+    "@vue/compiler-sfc": "^3.0.5",
     "@vue/test-utils": "^2.0.0-beta.13",
     "chai": "^4.1.2",
     "stylus": "^0.54.7",

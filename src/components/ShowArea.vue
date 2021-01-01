@@ -1,5 +1,14 @@
 <template>
-  <context-menu ref="contextMenu" v-show="cmShow"></context-menu>
+  <meta-context-menu
+    ref="contextMenu"
+    :show="cmShow"
+    @hide="hideMenu"
+    @instance="locateInstance"
+    @list="recentInstances"
+    @addNode="addNode"
+    @editNode="editNode"
+    @deleteNode="deleteNode"
+  ></meta-context-menu>
   <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
 
@@ -7,10 +16,10 @@
 import { Options, Vue } from "vue-class-component";
 import { D3Tree, TreePara, Node, TreeEvent } from "../service/d3tree";
 import { data as nodes } from "../testData/node";
-import ContextMenu from "./ContextMenu.vue";
+import MetaContextMenu from "./MetaContextMenu.vue";
 
 @Options({
-  components: { ContextMenu },
+  components: { MetaContextMenu },
   data() {
     return {
       data: nodes,
@@ -35,6 +44,21 @@ import ContextMenu from "./ContextMenu.vue";
     },
     hideMenu() {
       this.cmShow = false;
+    },
+    locateInstance(e: { id: string; meta: Node }) {
+      console.log(e);
+    },
+    recentInstances(e: Node) {
+      console.log(e);
+    },
+    addNode(e: Node) {
+      console.log("addNode");
+    },
+    editNode(e: Node) {
+      console.log("editNode");
+    },
+    deleteNode(e: Node) {
+      console.log("deleteNode");
     },
   },
   mounted() {
