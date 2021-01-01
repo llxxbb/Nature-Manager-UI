@@ -55,7 +55,6 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     },
     addNode(e: { name: string; parent: Node }) {
       let newNode: Node = { name: e.name };
-      console.log(e.parent);
       if (e.parent.children) e.parent.children.push(newNode);
       else if (e.parent._children) e.parent._children.push(newNode);
       else e.parent.children = [newNode];

@@ -6,7 +6,7 @@
       width="32"
       height="32"
       src="../assets/logo.png"
-    />
+    /><span class="h3 align-bottom"> Nature</span>
   </div>
   <MetaList :ok="tipsSwitch" />
 </template>
