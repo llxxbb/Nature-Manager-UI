@@ -6,8 +6,6 @@ d3
 
 vue
 
-vue-plugin: [vue-contextmenu](https://github.com/chiic/vue-contextmenu)
-
 [bootstrap icons](https://icons.getbootstrap.com) : used to show icons
 
 ## 视图
@@ -32,3 +30,6 @@ vue-plugin: [vue-contextmenu](https://github.com/chiic/vue-contextmenu)
 
 [显式 SVG icon](https://cli.vuejs.org/guide/html-and-static-assets.html#static-assets-handling)
 
+[Vue 的 props 是 one-way 的](https://v3.vuejs.org/guide/component-props.html#one-way-data-flow)
+
+不能在上游直接修改子组件的props值，props可使用data中的属性进行赋值来解决这个问题。

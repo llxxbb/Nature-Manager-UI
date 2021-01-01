@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { HierarchyPointNode } from "d3";
+import { BaseType, HierarchyPointNode } from "d3";
 export class Position {
     x: number = 0;
     y: number = 0;
@@ -65,6 +65,9 @@ export class D3Tree {
 
         applyZoom(svg, para, g);
     }
+    update(para: TreePara) {
+        update(para)
+    }
 }
 
 function applyZoom(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: TreePara, g: d3.Selection<SVGGElement, unknown, HTMLElement, any>) {
@@ -114,23 +117,34 @@ function drawNode(
     let merged = upperG.selectAll("g")
         .data(nodes.descendants())
         .join(
-            enterData => newNodes(enterData),
-            updateData => updateData.attr("transform", (d: Position) => `translate(${d.y},${d.x})`)
+            newNodes,
+            nodeChanged
         );
 }
 
-function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
-    var enter = enterData.append("g");
-    enter.append("circle")
-        .attr("stroke", "#079702")
-        .attr("stroke-width", `${0.005 * scale}`)
-        .attr("fill", "#f1d5d5")
-        .attr("id", d => `${(d.data as Node).name}_c`)
-        .attr("r", 0.03 * scale)
-        .on("click", changeCurrentNode)
-        .on("contextmenu", showContextMenu);
+function nodeChanged(updateData: d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>): d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown> | undefined {
+    // fix text
+    updateData.selectAll("text").remove()
+    appendText(updateData)
 
-    enter.append("text")
+    updateData.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
+
+    // add folder icon
+    updateData.select("image").remove()
+    let folder = updateData.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false);
+    addIcon(folder)
+        .on("click", toggle)
+        .on("contextmenu", (e, d) => {
+            e.preventDefault()
+            showContextMenu(e, d)
+        })
+
+    return updateData
+}
+
+
+function appendText<T extends BaseType>(updateData: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
+    updateData.append("text")
         .attr("y", `${0.015 * scale}`)
         // distance from text to circle
         .attr("x", (d) => (d.children ? `${-0.04 * scale}` : `${0.04 * scale}`))
@@ -140,6 +154,21 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         // stroke no text inner
         .lower()
         .attr("stroke", "white");
+}
+
+function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
+    var enter = enterData.append("g")
+        .attr("id", d => `${(d.data as Node).name}_g`);
+    enter.append("circle")
+        .attr("stroke", "#079702")
+        .attr("stroke-width", `${0.005 * scale}`)
+        .attr("fill", "#f1d5d5")
+        .attr("id", d => `${(d.data as Node).name}_c`)
+        .attr("r", 0.03 * scale)
+        .on("click", changeCurrentNode)
+        .on("contextmenu", showContextMenu);
+
+    appendText(enter)
 
     enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
@@ -163,7 +192,7 @@ function showContextMenu(e: any, d: d3.HierarchyPointNode<unknown>) {
     e.preventDefault();
 }
 
-function addIcon(folder: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
+function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     return folder.append("image")
         .attr("x", `${-0.025 * scale}`)
         .attr("y", `${-0.025 * scale}`)

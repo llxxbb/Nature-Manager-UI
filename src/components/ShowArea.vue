@@ -24,6 +24,8 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     return {
       data: nodes,
       cmShow: false,
+      tree: null,
+      treePara: null,
     };
   },
   computed: {
@@ -51,8 +53,13 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     recentInstances(e: Node) {
       console.log(e);
     },
-    addNode(e: Node) {
-      console.log("addNode");
+    addNode(e: { name: string; parent: Node }) {
+      let newNode: Node = { name: e.name };
+      console.log(e.parent);
+      if (e.parent.children) e.parent.children.push(newNode);
+      else if (e.parent._children) e.parent._children.push(newNode);
+      else e.parent.children = [newNode];
+      this.tree.update(this.treePara);
     },
     editNode(e: Node) {
       console.log("editNode");
@@ -62,7 +69,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     },
   },
   mounted() {
-    let para: TreePara = {
+    this.treePara = {
       target: "#showArea",
       size: {
         width: this.center[0],
@@ -74,7 +81,8 @@ import MetaContextMenu from "./MetaContextMenu.vue";
         hideMenu: this.hideMenu,
       },
     };
-    new D3Tree().show(para);
+    this.tree = new D3Tree();
+    this.tree.show(this.treePara);
   },
 })
 export default class ShowArea extends Vue {}

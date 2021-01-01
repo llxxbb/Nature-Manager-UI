@@ -18,9 +18,10 @@
         <img src="../assets/node-edit.svg" />
         edit node
       </li>
-      <li class="list-group-item item list-group-item-action" @click="addNode">
+      <li class="list-group-item item list-group-item-action">
         <img src="../assets/node-plus.svg" />
         add child node
+        <input v-model="metaName" @keyup.enter="addNode" />
       </li>
       <li class="list-group-item item list-group-item-action" @click="deleteNode">
         <img src="../assets/node-minus.svg" />
@@ -43,6 +44,7 @@ export class CMPara {
   data() {
     return {
       instanceId: "",
+      metaName:""
     };
   },
   props: {
@@ -71,7 +73,7 @@ export class CMPara {
     },
     addNode() {
       this.$emit("hide");
-      this.$emit("addNode", this.para.node);
+      this.$emit("addNode", { name: this.metaName, parent: this.para.node });
     },
   },
 })
