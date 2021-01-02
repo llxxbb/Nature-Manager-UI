@@ -183,8 +183,13 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
 
 function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var drag = d3.drag()
+        .on("start", (_e, d) => {
+            const one = (d as unknown as HierarchyPointNode<Node>);
+            // the root node can't be moved
+            if (one.parent) DragStart = true
+        })
         .on("drag", (e, d) => {
-            DragStart = true
+            if (!DragStart) return
             const one = (d as unknown as HierarchyPointNode<Node>);
             const selected = d3.select(`#${(one).data.name}_g`);
             selected.attr("transform", () => {
