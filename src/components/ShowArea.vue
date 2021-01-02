@@ -76,7 +76,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
         width: this.center[0],
         height: this.center[1],
       },
-      data: this.data3,
+      data: this.data,
       event: {
         showMenu: this.showMenu,
         hideMenu: this.hideMenu,

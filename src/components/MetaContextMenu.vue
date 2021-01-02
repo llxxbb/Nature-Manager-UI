@@ -23,6 +23,27 @@
         add child node
         <input v-model="metaName" @keyup.enter="addNode" />
       </li>
+      <li class="list-group-item item list-group-item-action">
+        <div class="dropdown">
+          <img src="../assets/node-move.svg" />
+          move to
+          <input v-model="targetMeta" @keyup.enter="moveNode" />
+          <button
+            type="button"
+            class="btn btn-info dropdown-toggle dropdown-toggle-split"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          ></button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Separated link</a>
+          </div>
+        </div>
+      </li>
       <li
         class="list-group-item item list-group-item-action"
         @click="deleteNode"
@@ -48,6 +69,7 @@ export class CMPara {
     return {
       instanceId: "",
       metaName: "",
+      targetMeta: "",
     };
   },
   props: {

@@ -65,6 +65,17 @@ export class D3Tree {
     }
 }
 
+function initSvg(para: TreePara) {
+    let svg = d3.select(para.target);
+    // add viewBox for pan and zoom
+    svg.attr("viewBox", `0, 0, ${Scale}, ${Scale}`)
+        .on("click", () => {
+            if (para.event && para.event.hideMenu)
+                para.event.hideMenu();
+        });
+    return svg;
+}
+
 function initG(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: TreePara) {
     let g = svg.append("g");
     g.attr("transform", `translate(0,${0.5 * Scale})`);
@@ -82,18 +93,6 @@ function initG(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: 
 
     return g;
 }
-
-function initSvg(para: TreePara) {
-    let svg = d3.select(para.target);
-    // add viewBox for pan and zoom
-    svg.attr("viewBox", `0, 0, ${Scale}, ${Scale}`)
-        .on("click", () => {
-            if (para.event && para.event.hideMenu)
-                para.event.hideMenu();
-        });
-    return svg;
-}
-
 
 function appendProperty(para: TreePara) {
     // append depth, height, children, parent properties to datum
@@ -133,7 +132,66 @@ function drawNode(
         .join(
             newNodes,
             nodeChanged
-        );
+        )
+}
+
+function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
+    var enter = enterData.append("g")
+        .attr("id", d => {
+            const data = (d as unknown as HierarchyPointNode<Node>);
+            return data.data.name + "_g"
+        })
+
+    var drag = d3.drag()
+        .on("drag", (e, d) => {
+            const one = (d as unknown as HierarchyPointNode<Node>);
+            const selected = d3.select(`#${(one).data.name}_g`);
+            selected.attr("transform", () => {
+                // let x = e.x - one.x
+                // let y = e.y - one.y
+                // return `translate(${x},${y})`;
+                return `translate(${e.x},${e.y})`;
+            });
+        })
+
+    drag(enter as unknown as d3.Selection<Element, unknown, any, any>)
+
+    // draw circle
+    let circle = enter.append("circle");
+    circle.attr("stroke", "#079702")
+        .attr("stroke-width", `${0.005 * Scale}`)
+        .attr("fill", "#f1d5d5")
+        .attr("r", 0.03 * Scale)
+        .attr("id", d => `${(d.data as Node).name}_c`)
+
+    appendText(enter)
+
+    enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
+
+    // add folder icon
+    let folder = enter.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false);
+    addIcon(folder);
+
+    // add tooltip
+    enter.append("title").text(d => (d.data as Node).name)
+
+    // event and id
+    enter.append("circle")
+        .attr("opacity", "0")
+        .attr("r", 0.03 * Scale)
+        .on("click", (e, d) => {
+            let { hasChild } = hasChildCheck(d)
+            if (hasChild) toggle(e, d)
+            else changeCircleStyle(e, d)
+        })
+        .on("contextmenu", showContextMenu)
+        .on("mouseover", (e, d) => {
+            // console.log("mouseover", e, d)
+        })
+        .on("mouseout", (e, d) => {
+            // console.log("mouseout", e, d)
+        })
+    return enter;
 }
 
 function nodeChanged(updateData: d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>): d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown> | undefined {
@@ -143,29 +201,6 @@ function nodeChanged(updateData: d3.Selection<d3.BaseType, d3.HierarchyPointNode
     updateData.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
     return updateData
-}
-
-function setTextPosition(text: d3.Selection<d3.BaseType, unknown, d3.BaseType, d3.HierarchyPointNode<unknown>>) {
-    text.attr("x", d => {
-        var { hasChild } = childCheck(d);
-        return hasChild ? -0.04 * Scale : 0.04 * Scale;
-    })
-        .attr("text-anchor", d => {
-            var { hasChild } = childCheck(d);
-            return hasChild ? "end" : "start";
-        });
-}
-
-function childCheck(d: unknown) {
-    const node = d as unknown as HierarchyPointNode<Node>;
-    var child = node.data.children;
-    var hasChild;
-    if (child) {
-        hasChild = child.length == 0 ? false : true;
-    } else {
-        hasChild = false;
-    }
-    return { hasChild, node };
 }
 
 function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
@@ -184,40 +219,15 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         .attr("stroke", "white");
 }
 
-function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
-    var enter = enterData.append("g")
-    appendCircle(enter);
-
-    appendText(enter)
-
-    enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
-
-    // add folder icon
-    let folder = enter.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false);
-    addIcon(folder)
-        .on("click", toggle)
-        .on("contextmenu", showContextMenu)
-    // add tooltip
-    enter.append("title").text(d => (d.data as Node).name)
-    return enter;
-}
-
-function appendCircle<T extends BaseType>(enter: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
-    enter.append("circle")
-        .attr("stroke", "#079702")
-        .attr("stroke-width", `${0.005 * Scale}`)
-        .attr("fill", "#f1d5d5")
-        .attr("id", d => `${(d.data as Node).name}_c`)
-        .attr("r", 0.03 * Scale)
-        .on("click", changeCircleStyle)
-        .on("contextmenu", showContextMenu);
-}
-
-function showContextMenu(e: any, d: d3.HierarchyPointNode<unknown>) {
-    changeCircleStyle(e, d);
-    if (ParaData.event && ParaData.event.showMenu)
-        ParaData.event.showMenu(e, d.data as Node);
-    e.preventDefault();
+function setTextPosition(text: d3.Selection<d3.BaseType, unknown, d3.BaseType, d3.HierarchyPointNode<unknown>>) {
+    text.attr("x", d => {
+        var { opened } = openedCheck(d);
+        return opened ? -0.04 * Scale : 0.04 * Scale;
+    })
+        .attr("text-anchor", d => {
+            var { opened } = openedCheck(d);
+            return opened ? "end" : "start";
+        });
 }
 
 function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
@@ -236,14 +246,6 @@ function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNo
         .attr("id", d => (d.data as Node).name + "_i")
 }
 
-function update(para: TreePara) {
-    let nodes = appendProperty(para);
-
-    // draw line first! otherwise you will see the line goes into the circle
-    drawLinks(GForLink, nodes);
-    drawNode(GForNode, nodes);
-}
-
 function changeCircleStyle(e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (CurrentNode) {
         let old = d3.select("#" + (CurrentNode.data as Node).name + "_c")
@@ -255,10 +257,51 @@ function changeCircleStyle(e: MouseEvent, d: HierarchyPointNode<unknown>) {
     n.attr("stroke", "#8f3200");
 }
 
+function openedCheck(d: unknown) {
+    const node = d as unknown as HierarchyPointNode<Node>;
+    var child = node.data.children;
+    var opened;
+    if (child) {
+        opened = child.length == 0 ? false : true;
+    } else {
+        opened = false;
+    }
+    return { opened, node };
+}
+
+function hasChildCheck(d: unknown) {
+    const node = d as unknown as HierarchyPointNode<Node>;
+    var child = node.data.children;
+    var hasChild;
+    if (child && child.length > 0)
+        return { hasChild: true, node };
+    child = node.data._children;
+    if (child && child.length > 0)
+        return { hasChild: true, node };
+    return { hasChild: false, node };
+}
+
+function showContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
+    let d = node as HierarchyPointNode<Node>
+    changeCircleStyle(e, d);
+    if (ParaData.event && ParaData.event.showMenu)
+        ParaData.event.showMenu(e, d.data);
+    e.preventDefault();
+}
+
+function update(para: TreePara) {
+    let nodes = appendProperty(para);
+
+    // draw line first! otherwise you will see the line goes into the circle
+    drawLinks(GForLink, nodes);
+    drawNode(GForNode, nodes);
+}
+
 // Toggle folder.
-function toggle(e: MouseEvent, d: HierarchyPointNode<unknown>) {
+function toggle(e: MouseEvent, node: HierarchyPointNode<unknown> | unknown) {
+    let d = node as HierarchyPointNode<Node>
     changeCircleStyle(e, d)
-    let data: Node = d.data as Node
+    let data: Node = d.data
     let one = d3.select(`#${data.name}_i`)
     if (data.children) {
         data._children = data.children;
