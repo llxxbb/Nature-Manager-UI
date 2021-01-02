@@ -15,17 +15,19 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { D3Tree, TreePara, Node, TreeEvent } from "../service/d3tree";
-import { data as nodes } from "../testData/node";
+import { data, data2, data3 } from "../testData/node";
 import MetaContextMenu from "./MetaContextMenu.vue";
 
 @Options({
   components: { MetaContextMenu },
   data() {
     return {
-      data: nodes,
+      data: data,
+      data2: data2,
+      data3: data3,
       cmShow: false,
       tree: null,
-      treePara: null,
+      treePara: null as unknown as TreePara,
     };
   },
   computed: {
@@ -74,7 +76,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
         width: this.center[0],
         height: this.center[1],
       },
-      data: this.data,
+      data: this.data3,
       event: {
         showMenu: this.showMenu,
         hideMenu: this.hideMenu,

@@ -8,6 +8,49 @@ export var data: any = {
         {
             name: "L2-1",
             _children: [
+                { name: "L3-1", children: [] },
+                { name: "L3-2", children: [] },
+            ],
+        },
+        {
+            name: "L2-3",
+            children: [],
+        },
+    ],
+}
+export var data2: any = {
+    name: "L1",
+    children: [
+        {
+            name: "L2-2",
+            children: [
+                { name: "a", children: [] },
+            ],
+        },
+        {
+            name: "L2-1",
+            _children: [
+                { name: "L3-1", children: [] },
+                { name: "L3-2", children: [] },
+            ],
+        },
+        {
+            name: "L2-3",
+            children: [],
+        },
+    ],
+}
+
+export var data3: any = {
+    name: "L1",
+    children: [
+        {
+            name: "L2-2",
+            children: [],
+        },
+        {
+            name: "L2-1",
+            _children: [
                 {
                     name: "L3-1",
                     children: [
