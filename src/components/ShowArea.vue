@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts">
+import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree, TreePara, Node, TreeEvent } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
@@ -68,6 +69,18 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     deleteNode(e: Node) {
       console.log("deleteNode");
     },
+    nodeMoved(source: HierarchyPointNode<Node>, target: HierarchyPointNode<Node>){
+      console.log(source, target)
+      // remove from parent
+      let index = source.parent?.data.children?.indexOf(source.data)
+      if (index && index > -1) source.parent?.data.children?.splice(index,1) 
+      else return
+      // add to target
+      if (target.data.children) target.data.children.push(source.data)
+      else target.data._children?.push(source.data)
+      // refresh 
+      this.tree.update(this.treePara);
+    },
   },
   mounted() {
     this.treePara = {
@@ -80,6 +93,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
       event: {
         showMenu: this.showMenu,
         hideMenu: this.hideMenu,
+        nodeMoved: this.nodeMoved
       },
     };
     this.tree = new D3Tree();
