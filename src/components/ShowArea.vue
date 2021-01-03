@@ -79,7 +79,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
       else return;
       // add to target
       if (target.data.children) target.data.children.push(source.data);
-      else target.data._children?.push(source.data);
+      else if (target.data._children) target.data._children.push(source.data);
       // refresh
       this.tree.update(this.treePara);
     },

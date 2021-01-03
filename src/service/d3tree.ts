@@ -176,8 +176,14 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
             else changeCircleStyle(e, d)
         })
         .on("contextmenu", showContextMenu)
-        .on("mouseover", (_e, d) => { if (DragStart) TargetToDrop = d })
-        .on("mouseout", (_e, _d) => TargetToDrop = null)
+        .on("mouseover", (_e, d) => {
+            if (DragStart && d != CurrentNode) {
+                TargetToDrop = d
+            }
+        })
+        .on("mouseout", (_e, _d) => {
+            TargetToDrop = null
+        })
     return enter;
 }
 
