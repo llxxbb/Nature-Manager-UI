@@ -36,6 +36,8 @@ var CurrentNode: HierarchyPointNode<unknown>;
 var SVG: d3.Selection<d3.BaseType, unknown, HTMLElement, any>;
 var TargetToDrop: d3.HierarchyPointNode<unknown> | null;
 var DragStart: boolean = false;
+// make the pointer of mouser out fo the circle when drag
+var Offset = 40;
 export class D3Tree {
     show(para: TreePara) {
         ParaData = para
@@ -148,8 +150,8 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     dragEvent(enter);
 
     // draw circle
-    let circle = enter.append("circle");
-    circle.attr("stroke", "#079702")
+    enter.append("circle")
+        .attr("stroke", "#079702")
         .attr("stroke-width", `${0.005 * Scale}`)
         .attr("fill", "#f1d5d5")
         .attr("r", 0.03 * Scale)
@@ -200,8 +202,8 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
             const one = (d as unknown as HierarchyPointNode<Node>);
             const selected = d3.select(`#${(one).data.name}_g`);
             selected.attr("transform", () => {
-                let x = e.x - one.x + one.y;
-                let y = e.y - one.y + one.x;
+                let x = e.x - one.x + one.y + Offset;
+                let y = e.y - one.y + one.x + Offset;
                 return `translate(${x},${y})`;
             });
         })
