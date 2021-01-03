@@ -183,8 +183,9 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
 
 function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var drag = d3.drag()
-        .on("start", (_e, d) => {
-            const one = (d as unknown as HierarchyPointNode<Node>);
+        .on("start", (e, d) => {
+            changeCircleStyle(e, d as HierarchyPointNode<Node>)
+            const one = (d as HierarchyPointNode<Node>);
             // the root node can't be moved
             if (one.parent) DragStart = true
         })
