@@ -193,10 +193,9 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
             const one = (d as unknown as HierarchyPointNode<Node>);
             const selected = d3.select(`#${(one).data.name}_g`);
             selected.attr("transform", () => {
-                let x = e.x - one.x;
-                let y = e.y - one.y;
+                let x = e.x - one.x + one.y;
+                let y = e.y - one.y + one.x;
                 return `translate(${x},${y})`;
-                // return `translate(${e.x},${e.y})`;
             });
         })
         .on("end", (_e, d) => {
