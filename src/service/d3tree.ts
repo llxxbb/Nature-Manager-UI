@@ -1,3 +1,4 @@
+import { Meta } from "@/domain";
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
 export class Position {
@@ -5,11 +6,6 @@ export class Position {
     y: number = 0;
 }
 
-export class Node {
-    name: string = "";
-    children?: Node[];
-    _children?: Node[];
-}
 
 export class SvgSize {
     width: number = 0;
@@ -17,14 +13,14 @@ export class SvgSize {
 }
 
 export class TreeEvent {
-    showMenu?: (e: MouseEvent, d: Node) => void;
+    showMenu?: (e: MouseEvent, d: Meta) => void;
     hideMenu?: () => void
-    nodeMoved?: (source: HierarchyPointNode<Node>, target: HierarchyPointNode<Node>) => void
+    nodeMoved?: (source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) => void
 }
 export class TreePara {
     target: string = "";
     size: SvgSize = {} as any;
-    data: Node = {} as any;
+    data: Meta = {} as any;
     event?: TreeEvent;
 }
 
@@ -131,7 +127,7 @@ function drawNode(
 ) {
     upperG.selectAll("g")
         .data(nodes.descendants(), d => {
-            let item = d as HierarchyPointNode<Node>
+            let item = d as HierarchyPointNode<Meta>
             return item.data.name
         })
         .join(
@@ -143,7 +139,7 @@ function drawNode(
 function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var enter = enterData.append("g")
         .attr("id", d => {
-            const data = (d as unknown as HierarchyPointNode<Node>);
+            const data = (d as unknown as HierarchyPointNode<Meta>);
             return data.data.name + "_g"
         })
 
@@ -155,18 +151,18 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("stroke-width", `${0.005 * Scale}`)
         .attr("fill", "#f1d5d5")
         .attr("r", 0.03 * Scale)
-        .attr("id", d => `${(d.data as Node).name}_c`)
+        .attr("id", d => `${(d.data as Meta).name}_c`)
 
     appendText(enter)
 
     enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
     // add folder icon
-    let folder = enter.filter(d => d.children ? true : false || (d.data as Node)._children ? true : false);
+    let folder = enter.filter(d => d.children ? true : false || (d.data as Meta)._children ? true : false);
     addIcon(folder);
 
     // add tooltip
-    enter.append("title").text(d => (d.data as Node).name)
+    enter.append("title").text(d => (d.data as Meta).name)
 
     // circle event
     enter.append("circle")
@@ -192,14 +188,14 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
 function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var drag = d3.drag()
         .on("start", (e, d) => {
-            changeCircleStyle(e, d as HierarchyPointNode<Node>)
-            const one = (d as HierarchyPointNode<Node>);
+            changeCircleStyle(e, d as HierarchyPointNode<Meta>)
+            const one = (d as HierarchyPointNode<Meta>);
             // the root node can't be moved
             if (one.parent) DragStart = true
         })
         .on("drag", (e, d) => {
             if (!DragStart) return
-            const one = (d as unknown as HierarchyPointNode<Node>);
+            const one = (d as unknown as HierarchyPointNode<Meta>);
             const selected = d3.select(`#${(one).data.name}_g`);
             selected.attr("transform", () => {
                 let x = e.x - one.x + one.y + Offset;
@@ -212,11 +208,11 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
             if (!TargetToDrop)
                 return;
             console
-            let dragged = d as HierarchyPointNode<Node>;
+            let dragged = d as HierarchyPointNode<Meta>;
             let target = TargetToDrop
             TargetToDrop = null
             if (ParaData.event && ParaData.event.nodeMoved)
-                ParaData.event?.nodeMoved(dragged, target as HierarchyPointNode<Node>);
+                ParaData.event?.nodeMoved(dragged, target as HierarchyPointNode<Meta>);
         });
 
     drag(enter as unknown as d3.Selection<Element, unknown, any, any>);
@@ -238,7 +234,7 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         .attr("x", (d) => (d.children ? `${-0.04 * Scale}` : `${0.04 * Scale}`))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
         .text((d) => {
-            const name = (d.data as Node).name;
+            const name = (d.data as Meta).name;
             return name
         })
         .clone(true)
@@ -267,26 +263,26 @@ function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNo
         .attr("href", d => {
             if (d.children)
                 return `${require("../assets/caret-right-fill.svg")}`;
-            else if ((d.data as Node)._children)
+            else if ((d.data as Meta)._children)
                 return `${require("../assets/caret-down-fill.svg")}`;
             return null;
         })
-        .attr("id", d => (d.data as Node).name + "_i")
+        .attr("id", d => (d.data as Meta).name + "_i")
 }
 
 function changeCircleStyle(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (CurrentNode) {
-        let old = d3.select("#" + (CurrentNode.data as Node).name + "_c")
+        let old = d3.select("#" + (CurrentNode.data as Meta).name + "_c")
         old.attr("stroke", "#079702");
     }
     CurrentNode = d
-    let nCircle = "#" + (CurrentNode.data as Node).name + "_c";
+    let nCircle = "#" + (CurrentNode.data as Meta).name + "_c";
     let n = d3.select(nCircle)
     n.attr("stroke", "#8f3200");
 }
 
 function openedCheck(d: unknown) {
-    const node = d as unknown as HierarchyPointNode<Node>;
+    const node = d as unknown as HierarchyPointNode<Meta>;
     var child = node.data.children;
     var opened;
     if (child) {
@@ -298,7 +294,7 @@ function openedCheck(d: unknown) {
 }
 
 function hasChildCheck(d: unknown) {
-    const node = d as unknown as HierarchyPointNode<Node>;
+    const node = d as unknown as HierarchyPointNode<Meta>;
     var child = node.data.children;
     var hasChild;
     if (child && child.length > 0)
@@ -310,7 +306,7 @@ function hasChildCheck(d: unknown) {
 }
 
 function showContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
-    let d = node as HierarchyPointNode<Node>
+    let d = node as HierarchyPointNode<Meta>
     changeCircleStyle(e, d);
     if (ParaData.event && ParaData.event.showMenu)
         ParaData.event.showMenu(e, d.data);
@@ -327,9 +323,9 @@ function update(para: TreePara) {
 
 // Toggle folder.
 function toggle(e: MouseEvent, node: HierarchyPointNode<unknown> | unknown) {
-    let d = node as HierarchyPointNode<Node>
+    let d = node as HierarchyPointNode<Meta>
     changeCircleStyle(e, d)
-    let data: Node = d.data
+    let data: Meta = d.data
     let one = d3.select(`#${data.name}_i`)
     if (data.children) {
         data._children = data.children;

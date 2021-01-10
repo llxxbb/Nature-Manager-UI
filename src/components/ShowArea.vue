@@ -13,9 +13,11 @@
 </template>
 
 <script lang="ts">
+import { Meta } from "@/domain";
+import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
-import { D3Tree, TreePara, Node, TreeEvent } from "../service/d3tree";
+import { D3Tree, TreePara, TreeEvent } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import MetaContextMenu from "./MetaContextMenu.vue";
 
@@ -29,6 +31,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
       cmShow: false,
       tree: null,
       treePara: (null as unknown) as TreePara,
+      nature: (null as unknown) as Nature,
     };
   },
   computed: {
@@ -38,7 +41,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     },
   },
   methods: {
-    showMenu(e: MouseEvent, d: Node) {
+    showMenu(e: MouseEvent, d: Meta) {
       var cm = this.$refs.contextMenu;
       cm.para = {
         top: e.clientY,
@@ -50,28 +53,29 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     hideMenu() {
       this.cmShow = false;
     },
-    locateInstance(e: { id: string; meta: Node }) {
+    locateInstance(e: { id: string; meta: Meta }) {
       console.log(e);
     },
-    recentInstances(e: Node) {
+    recentInstances(e: Meta) {
       console.log(e);
     },
-    addNode(e: { name: string; parent: Node }) {
-      let newNode: Node = { name: e.name };
+    addNode(e: { name: string; parent: Meta }) {
+      let newNode = new Meta();
+      newNode.name = e.name;
       if (e.parent.children) e.parent.children.push(newNode);
       else if (e.parent._children) e.parent._children.push(newNode);
       else e.parent.children = [newNode];
       this.tree.update(this.treePara);
     },
-    editNode(e: Node) {
+    editNode(e: Meta) {
       console.log("editNode");
     },
-    deleteNode(e: Node) {
+    deleteNode(e: Meta) {
       console.log("deleteNode");
     },
     nodeMoved(
-      source: HierarchyPointNode<Node>,
-      target: HierarchyPointNode<Node>
+      source: HierarchyPointNode<Meta>,
+      target: HierarchyPointNode<Meta>
     ) {
       // remove from parent
       let index = source.parent?.data.children?.indexOf(source.data) as number;
@@ -86,13 +90,15 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     },
   },
   mounted() {
+    this.nature = new Nature();
+    this.nature.getAll();
     this.treePara = {
       target: "#showArea",
       size: {
         width: this.center[0],
         height: this.center[1],
       },
-      data: this.data,
+      data: this.data2,
       event: {
         showMenu: this.showMenu,
         hideMenu: this.hideMenu,

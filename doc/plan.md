@@ -1,6 +1,6 @@
 # dev plan
 
-give first data
+make shadow meta for repeated
 
 增加真实数据
 

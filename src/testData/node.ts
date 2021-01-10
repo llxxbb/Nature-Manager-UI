@@ -36,7 +36,7 @@ export var data2: any = {
         },
         {
             name: "L2-3",
-            children: [],
+            children: [{ name: "a", children: [] },],
         },
     ],
 }
