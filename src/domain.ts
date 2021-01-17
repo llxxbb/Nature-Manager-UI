@@ -2,6 +2,7 @@
 export class Meta {
     id = 0;
     name: string = "";
+    levels: string[] = []
     isFake = false;
     realId = 0;
     children?: Meta[];
@@ -18,6 +19,7 @@ export class Meta {
 
     init() {
         this.name = this.meta_type + ":" + this.meta_key + ":" + this.version
+        this.levels = this.meta_key.split("/");
         this.realId = this.id
     }
 

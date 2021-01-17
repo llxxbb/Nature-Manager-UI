@@ -101,7 +101,7 @@ function appendProperty(para: TreePara) {
     let hierarchy = d3.hierarchy(para.data);
     hierarchy.sort((a, b) => (a.data.name < b.data.name ? -1 : 1));
     let tree = d3.tree();
-    tree.nodeSize([0.00007 * Scale, 0.0003 * Scale])
+    tree.nodeSize([0.00007 * Scale, 0.0004 * Scale])
     // append x, y properties to datum
     let nodes = tree(hierarchy);
     nodes.each(n => {
@@ -198,8 +198,8 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
             const same = d3.selectAll(".id" + (d.data as any as Meta).realId);
             console.log("move", same)
             same.attr("class", d => {
-                    return "same " + "id" + (d as HierarchyPointNode<Meta>).data.realId
-                })
+                return "same " + "id" + (d as HierarchyPointNode<Meta>).data.realId
+            })
         })
         .on("mouseout", (_e, _d) => {
             TargetToDrop = null
@@ -262,7 +262,10 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
         .attr("class", "side")
         .attr("opacity", (d) => ((d.data as any as Meta).isFake ? 0.4 : 1))
-        .text((d) => (d.data as Meta).meta_key)
+        .text(d => {
+            const m = (d.data as Meta);
+            return m.levels[m.levels.length - 1]
+        })
         .clone(true)
         // stroke no text inner
         .lower()
