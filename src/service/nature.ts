@@ -18,9 +18,9 @@ export class Nature {
         // let relationList = await getAllRelation();
 
         // assembly relation tree-------------------
+        // find max id
+        let idMax = 0
         relationList.forEach(r => {
-            // find max id
-            let idMax = 0
             metaList.forEach(one => { if (one.id > idMax) idMax = one.id })
             // find relation meta
             let from = findMeta(metaList, r, (m, r) => m.name == r.from_meta);
@@ -28,7 +28,7 @@ export class Nature {
             // check
             if (!from.meta || !to.meta) return;
             if (to.index == from.index) to.index = -1;
-            if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, idMax++)
+            if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idMax)
             // add relation
             if (from.meta.children) from.meta.children.push(to.meta)
             else from.meta.children = [to.meta]
@@ -46,6 +46,7 @@ export class Nature {
 }
 
 function fakeMeta(m: Meta, id: number, metaId: number) {
+    console.log("fake id" + metaId)
     var rtn = Object.assign(new Meta, m);
     rtn.realName = rtn.name;
     rtn.children = undefined;
