@@ -140,7 +140,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     var enter = enterData.append("g")
         .attr("id", d => {
             const data = (d as unknown as HierarchyPointNode<Meta>);
-            return data.data.name + "_g"
+            return "g" + data.data.id
         })
 
     dragEvent(enter);
@@ -151,7 +151,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("stroke-width", `${0.005 * Scale}`)
         .attr("fill", "#f1d5d5")
         .attr("r", 0.03 * Scale)
-        .attr("id", d => `${(d.data as Meta).name}_c`)
+        .attr("id", d => `c${(d.data as Meta).id}`)
 
     appendText(enter)
 
@@ -196,7 +196,7 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
         .on("drag", (e, d) => {
             if (!DragStart) return
             const one = (d as unknown as HierarchyPointNode<Meta>);
-            const selected = d3.select(`#${(one).data.name}_g`);
+            const selected = d3.select(`#g${(one).data.id}`);
             selected.attr("transform", () => {
                 let x = e.x - one.x + one.y + Offset;
                 let y = e.y - one.y + one.x + Offset;
@@ -267,16 +267,16 @@ function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNo
                 return `${require("../assets/caret-down-fill.svg")}`;
             return null;
         })
-        .attr("id", d => (d.data as Meta).name + "_i")
+        .attr("id", d => "i" + (d.data as Meta).id)
 }
 
 function changeCircleStyle(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (CurrentNode) {
-        let old = d3.select("#" + (CurrentNode.data as Meta).name + "_c")
+        let old = d3.select("#c" + (CurrentNode.data as Meta).id)
         old.attr("stroke", "#079702");
     }
     CurrentNode = d
-    let nCircle = "#" + (CurrentNode.data as Meta).name + "_c";
+    let nCircle = "#c" + (CurrentNode.data as Meta).id;
     let n = d3.select(nCircle)
     n.attr("stroke", "#8f3200");
 }
@@ -326,7 +326,7 @@ function toggle(e: MouseEvent, node: HierarchyPointNode<unknown> | unknown) {
     let d = node as HierarchyPointNode<Meta>
     changeCircleStyle(e, d)
     let data: Meta = d.data
-    let one = d3.select(`#${data.name}_i`)
+    let one = d3.select(`#i${data.id}`)
     if (data.children) {
         data._children = data.children;
         data.children = undefined;

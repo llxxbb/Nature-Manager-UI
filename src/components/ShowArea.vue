@@ -89,16 +89,16 @@ import MetaContextMenu from "./MetaContextMenu.vue";
       this.tree.update(this.treePara);
     },
   },
-  mounted() {
+  async mounted() {
     this.nature = new Nature();
-    this.nature.getAll();
+    this.data = await this.nature.getAll();
     this.treePara = {
       target: "#showArea",
       size: {
         width: this.center[0],
         height: this.center[1],
       },
-      data: this.data2,
+      data: this.data,
       event: {
         showMenu: this.showMenu,
         hideMenu: this.hideMenu,

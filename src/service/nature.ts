@@ -1,61 +1,94 @@
 import { NATURE_MANAGER_URL } from "@/config";
 import { Meta, Relation } from "@/domain";
+import { metaDefined, relationDefined } from "@/testData/natureData";
 
 const axios = require('axios').default;
 export class Nature {
     async getAll() {
+        // mock data for test-----------------------
         // get meta list
-        let metaList = await getAllMeta();
+        let metaList = await getAllMetaMock();
         // get relation list
-        let relationList = await getAllRelation();
-        // make tree
-        let mySet = new Set;
+        let relationList = await getAllRelationMock();
+
+        // real data-----------------------
+        // // get meta list
+        // let metaList = await getAllMeta();
+        // // get relation list
+        // let relationList = await getAllRelation();
+
+        // assembly relation tree-------------------
         relationList.forEach(r => {
+            // find max id
+            let idMax = 0
+            metaList.forEach(one => { if (one.id > idMax) idMax = one.id })
+            // find relation meta
             let from = findMeta(metaList, r, (m, r) => m.name == r.from_meta);
-            let to = findMeta(metaList, r, (m, r) => m.name == r.to_meta);
+            let to = findMeta(metaList, r, (m, r) => m.name == r.to_meta, true);
             // check
             if (!from.meta || !to.meta) return;
-            mySet.add(from.meta);
-            if (mySet.has(to.meta)) to.meta = metaShadow(to.meta, r.id)
-            mySet.add(to.meta);
-            console.log("from: " + from.meta.name, "to: " + to.meta.name, r)
+            if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, idMax++)
             // add relation
             if (from.meta.children) from.meta.children.push(to.meta)
             else from.meta.children = [to.meta]
             // remove "to" from metaList
             if (to.index > -1) metaList.splice(to.index, 1)
         })
-        console.log(metaList)
-        console.log(relationList)
+        // make tree
+        let root = new Meta;
+        root.children = metaList;
+        root.name = "root";
+        root.id = 0;
+        console.log(root)
+        return root;
     }
 }
 
-function metaShadow(m: Meta, id: number) {
+function fakeMeta(m: Meta, id: number, metaId: number) {
     var rtn = Object.assign(new Meta, m);
+    rtn.realName = rtn.name;
+    rtn.isFake = true;
     rtn.name = rtn.name + "|" + id;
-    return m;
+    rtn.id = metaId;
+    return rtn;
 }
 
-function findMeta(metaList: Meta[], r: Relation, predicate: (m: Meta, r: Relation) => boolean) {
-    let index = -1;
-    let meta = null as any as Meta;
-    metaList.find((m, idx) => {
+function findMeta(metaList: Meta[], r: Relation, predicate: (m: Meta, r: Relation) => boolean, isTo = false) {
+    // check for meta type: Null
+    if (isTo) {
+        let toM = Meta.fromName(r.to_meta);
+        if (toM.meta_type == "N") return { meta: toM, index: -1 };
+    };
+    // normal check
+    return findOneLayer(metaList, predicate, r);
+}
+
+function findOneLayer(metaList: Meta[], predicate: (m: Meta, r: Relation) => boolean, r: Relation) {
+    let index = -1; // -1 not found in top level
+    let found = metaList.find((m, idx) => {
         if (predicate(m, r)) {
             index = idx;
-            meta = m;
+            found = m;
             return true;
-        } else {
-            if (m.children) {
-                let child = findMeta(m.children, r, predicate);
-                if (child.meta) {
-                    meta = child.meta;
-                    return true;
-                } else return false;
-            }
-            else return false;
         }
-    });
-    return { meta, index };
+    })
+    if (found) return { meta: found, index };
+    for (let idx = 0; idx < metaList.length; idx++) {
+        let m = metaList[idx];
+        if (!m.children) continue;
+        let fOne: { meta: Meta | null, index: number } = findOneLayer(m.children, predicate, r)
+        if (fOne.meta) return { meta: fOne.meta, index: -1 }
+    }
+    return { meta: null, index: -1 };
+}
+
+async function getAllRelationMock() {
+    let rtn: Relation[] = [];
+    relationDefined.forEach(one => {
+        let m = Object.assign(new Relation, one);
+        rtn.push(m);
+    })
+    return rtn;
 }
 
 async function getAllRelation() {
@@ -66,6 +99,16 @@ async function getAllRelation() {
         }, items => {
             return items[items.length - 1].id;
         });
+}
+
+async function getAllMetaMock() {
+    let meta: Meta[] = [];
+    metaDefined.forEach(one => {
+        let m = Object.assign(new Meta, one);
+        m.fixName()
+        meta.push(m);
+    })
+    return meta;
 }
 
 async function getAllMeta() {
