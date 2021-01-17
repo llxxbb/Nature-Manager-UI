@@ -149,6 +149,11 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     enter.append("circle")
         .attr("stroke", "#079702")
         .attr("stroke-width", `${0.005 * Scale}`)
+        .attr("stroke-dasharray", d=>{
+            if ((d.data as Meta).isFake)
+            return `${0.005 * Scale}, ${0.01 * Scale}`
+            else return `100,0`
+        })
         .attr("fill", "#f1d5d5")
         .attr("r", 0.03 * Scale)
         .attr("id", d => `c${(d.data as Meta).id}`)
