@@ -2,7 +2,6 @@
 
 add nick-name
 
-add letter for each MetaType
+按业务领域进行布局
 
-增加真实数据
 

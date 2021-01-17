@@ -149,9 +149,9 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     enter.append("circle")
         .attr("stroke", "#079702")
         .attr("stroke-width", `${0.005 * Scale}`)
-        .attr("stroke-dasharray", d=>{
+        .attr("stroke-dasharray", d => {
             if ((d.data as Meta).isFake)
-            return `${0.005 * Scale}, ${0.01 * Scale}`
+                return `${0.005 * Scale}, ${0.01 * Scale}`
             else return `100,0`
         })
         .attr("fill", "#f1d5d5")
@@ -160,11 +160,20 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
 
     appendText(enter)
 
-    enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
-
     // add folder icon
     let folder = enter.filter(d => d.children ? true : false || (d.data as Meta)._children ? true : false);
     addIcon(folder);
+
+    // add Type
+    enter.append("text")
+        .text((d) => (d.data as Meta).meta_type)
+        .attr("y", `${0.015 * Scale}`)
+        // distance from text to circle
+        .attr("x", `${-0.012 * Scale}`)
+        .attr("font-weight", `${1 * Scale}`)
+        .attr("opacity", 0.4)
+
+    enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
     // add tooltip
     enter.append("title").text(d => (d.data as Meta).name)
@@ -224,7 +233,7 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
 }
 
 function nodeChanged(updateData: d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>): d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown> | undefined {
-    const text = updateData.selectAll("text");
+    const text = updateData.selectAll(".side");
     setTextPosition(text);
 
     updateData.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
@@ -238,6 +247,7 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         // distance from text to circle
         .attr("x", (d) => (d.children ? `${-0.04 * Scale}` : `${0.04 * Scale}`))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
+        .attr("class", "side")
         .text((d) => (d.data as Meta).meta_key)
         .clone(true)
         // stroke no text inner

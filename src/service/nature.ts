@@ -5,7 +5,7 @@ import { metaDefined, relationDefined } from "@/testData/natureData";
 const axios = require('axios').default;
 export class Nature {
     async getAll() {
-        // mock data for test-----------------------
+        // // mock data for test-----------------------
         // get meta list
         let metaList = await getAllMetaMock();
         // get relation list
@@ -46,7 +46,6 @@ export class Nature {
 }
 
 function fakeMeta(m: Meta, id: number, metaId: number) {
-    console.log("fake id" + metaId)
     var rtn = Object.assign(new Meta, m);
     rtn.realName = rtn.name;
     rtn.children = undefined;
