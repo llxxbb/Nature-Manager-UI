@@ -27,6 +27,7 @@ export class Nature {
             let to = findMeta(metaList, r, (m, r) => m.name == r.to_meta, true);
             // check
             if (!from.meta || !to.meta) return;
+            if (to.index == from.index) to.index = -1;
             if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, idMax++)
             // add relation
             if (from.meta.children) from.meta.children.push(to.meta)
@@ -39,7 +40,7 @@ export class Nature {
         root.children = metaList;
         root.name = "root";
         root.id = 0;
-        console.log(root)
+        root.meta_key = "root";
         return root;
     }
 }
@@ -47,6 +48,7 @@ export class Nature {
 function fakeMeta(m: Meta, id: number, metaId: number) {
     var rtn = Object.assign(new Meta, m);
     rtn.realName = rtn.name;
+    rtn.children = undefined;
     rtn.isFake = true;
     rtn.name = rtn.name + "|" + id;
     rtn.id = metaId;
