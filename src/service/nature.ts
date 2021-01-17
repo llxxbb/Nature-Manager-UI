@@ -47,7 +47,7 @@ export class Nature {
 
 function fakeMeta(m: Meta, id: number, metaId: number) {
     var rtn = Object.assign(new Meta, m);
-    rtn.realId = m.id;
+    rtn.realId = m.meta_type == "N" ? metaId : m.id;
     rtn.children = undefined;
     rtn.isFake = true;
     rtn.name = rtn.name + "|" + id;
