@@ -248,6 +248,7 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         .attr("x", (d) => (d.children ? `${-0.04 * Scale}` : `${0.04 * Scale}`))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
         .attr("class", "side")
+        .attr("opacity", (d) => ((d.data as any as Meta).isFake ? 0.4 : 1))
         .text((d) => (d.data as Meta).meta_key)
         .clone(true)
         // stroke no text inner
