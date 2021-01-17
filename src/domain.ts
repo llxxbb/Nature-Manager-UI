@@ -14,6 +14,7 @@ export class Meta {
     states = "";
     fields = "";
     config = "";
+    relation?: Relation;
     flag = 0;
     create_time = new Date;
 

@@ -30,6 +30,7 @@ export class Nature {
             if (to.index == from.index) to.index = -1;
             if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idMax)
             // add relation
+            to.meta.relation = r;
             if (from.meta.children) from.meta.children.push(to.meta)
             else from.meta.children = [to.meta]
             // remove "to" from metaList

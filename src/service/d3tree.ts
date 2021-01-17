@@ -6,13 +6,10 @@ export class Position {
     x: number = 0;
     y: number = 0;
 }
-
-
 export class SvgSize {
     width: number = 0;
     height: number = 0;
 }
-
 export class TreeEvent {
     showMenu?: (e: MouseEvent, d: Meta) => void;
     hideMenu?: () => void
@@ -119,7 +116,12 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
     g.selectAll("path")
         .data(nodes.links())
         .join("path")
-        .attr("d", linkFn);
+        .attr("d", linkFn)
+        .append("title").text(d => {
+            const toMeta = (d.target.data as any as Meta);
+            if (toMeta.relation) return toMeta.relation.settings;
+            return "";
+        })
 }
 
 function drawNode(
