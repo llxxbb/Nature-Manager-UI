@@ -1,3 +1,4 @@
+import { data } from './../testData/node';
 import { Meta } from "@/domain";
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
@@ -157,6 +158,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("fill", "#f1d5d5")
         .attr("r", 0.03 * Scale)
         .attr("id", d => `c${(d.data as Meta).id}`)
+        .attr("class", d => { return "id" + ((d.data) as any as Meta).realId })
 
     appendText(enter)
 
@@ -169,8 +171,8 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .text((d) => (d.data as Meta).meta_type)
         .attr("y", `${0.015 * Scale}`)
         // distance from text to circle
-        .attr("x", `${-0.012 * Scale}`)
-        .attr("font-weight", `${1 * Scale}`)
+        .attr("x", `${-0.014 * Scale}`)
+        .attr("font-weight", `${0.6 * Scale}`)
         .attr("opacity", 0.4)
 
     enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
@@ -192,9 +194,20 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
             if (DragStart && d != CurrentNode) {
                 TargetToDrop = d
             }
+            // show same
+            const same = d3.selectAll(".id" + (d.data as any as Meta).realId);
+            console.log("move", same)
+            same.attr("class", d => {
+                    return "same " + "id" + (d as HierarchyPointNode<Meta>).data.realId
+                })
         })
         .on("mouseout", (_e, _d) => {
             TargetToDrop = null
+            // remove same
+            d3.selectAll(".same")
+                .attr("class", d => {
+                    return "id" + (d as HierarchyPointNode<Meta>).data.realId
+                })
         })
     return enter;
 }

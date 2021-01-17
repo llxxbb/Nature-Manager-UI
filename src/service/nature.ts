@@ -47,7 +47,7 @@ export class Nature {
 
 function fakeMeta(m: Meta, id: number, metaId: number) {
     var rtn = Object.assign(new Meta, m);
-    rtn.realName = rtn.name;
+    rtn.realId = m.id;
     rtn.children = undefined;
     rtn.isFake = true;
     rtn.name = rtn.name + "|" + id;
@@ -107,7 +107,7 @@ async function getAllMetaMock() {
     let meta: Meta[] = [];
     metaDefined.forEach(one => {
         let m = Object.assign(new Meta, one);
-        m.fixName()
+        m.init()
         meta.push(m);
     })
     return meta;
@@ -117,7 +117,7 @@ async function getAllMeta() {
     return await getItems<Meta>("metaIdGreatThan",
         item => {
             let rtn = Object.assign(new Meta, item);
-            rtn.fixName();
+            rtn.init();
             return rtn;
         }, items => {
             return items[items.length - 1].id;

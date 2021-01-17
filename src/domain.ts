@@ -3,7 +3,7 @@ export class Meta {
     id = 0;
     name: string = "";
     isFake = false;
-    realName = "";
+    realId = 0;
     children?: Meta[];
     _children?: Meta[];
     meta_type = "";
@@ -16,8 +16,9 @@ export class Meta {
     flag = 0;
     create_time = new Date;
 
-    fixName() {
+    init() {
         this.name = this.meta_type + ":" + this.meta_key + ":" + this.version
+        this.realId = this.id
     }
 
     static fromName(name: string) {
