@@ -1,14 +1,24 @@
 <template>
   <meta-context-menu
-    ref="contextMenu"
+    ref="metaMenu"
     :show="metaContextShow"
-    @hide="hideMenu"
+    @hide="hideMetaMenu"
     @instance="locateInstance"
     @list="recentInstances"
     @addNode="addNode"
     @editNode="editNode"
     @deleteNode="deleteNode"
   ></meta-context-menu>
+  <layer-context-menu
+    ref="layerMenu"
+    :show="layerContextShow"
+    @hide="hideMetaMenu"
+    @instance="locateInstance"
+    @list="recentInstances"
+    @addNode="addNode"
+    @editNode="editNode"
+    @deleteNode="deleteNode"
+  ></layer-context-menu>
   <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
 
@@ -20,15 +30,17 @@ import { Options, Vue } from "vue-class-component";
 import { D3Tree, TreePara, TreeEvent } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import MetaContextMenu from "./MetaContextMenu.vue";
+import LayerContextMenu from "./LayerContextMenu.vue";
 
 @Options({
-  components: { MetaContextMenu },
+  components: { MetaContextMenu, LayerContextMenu },
   data() {
     return {
       data: data,
       data2: data2,
       data3: data3,
       metaContextShow: false,
+      layerContextShow: false,
       tree: null,
       treePara: (null as unknown) as TreePara,
       nature: (null as unknown) as Nature,
@@ -41,8 +53,8 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     },
   },
   methods: {
-    showMenu(e: MouseEvent, d: Meta) {
-      var cm = this.$refs.contextMenu;
+    showMetaMenu(e: MouseEvent, d: Meta) {
+      var cm = this.$refs.metaMenu;
       cm.para = {
         top: e.clientY,
         left: e.clientX,
@@ -50,8 +62,19 @@ import MetaContextMenu from "./MetaContextMenu.vue";
       };
       this.metaContextShow = true;
     },
-    hideMenu() {
+    hideMetaMenu() {
       this.metaContextShow = false;
+    },
+    showLayerMenu(e: MouseEvent) {
+      var cm = this.$refs.layerMenu;
+      cm.para = {
+        top: e.clientY,
+        left: e.clientX,
+      };
+      this.layerContextShow = true;
+    },
+    hideLayerMenu() {
+      this.layerContextShow = false;
     },
     locateInstance(e: { id: string; meta: Meta }) {
       console.log(e);
@@ -73,7 +96,10 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     deleteNode(e: Meta) {
       console.log("deleteNode");
     },
-    nodeMoved(source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) {
+    nodeMoved(
+      source: HierarchyPointNode<Meta>,
+      target: HierarchyPointNode<Meta>
+    ) {
       // remove from parent
       let index = source.parent?.data.children?.indexOf(source.data) as number;
       if (index > -1) source.parent?.data.children?.splice(index, 1);
@@ -97,8 +123,10 @@ import MetaContextMenu from "./MetaContextMenu.vue";
       },
       data: this.data,
       event: {
-        showMenu: this.showMenu,
-        hideMenu: this.hideMenu,
+        showMetaMenu: this.showMetaMenu,
+        hideMetaMenu: this.hideMetaMenu,
+        showLayerMenu: this.showLayerMenu,
+        hideLayerMenu: this.hideLayerMenu,
         nodeMoved: this.nodeMoved,
       },
     };

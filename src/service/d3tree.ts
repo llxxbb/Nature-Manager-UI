@@ -11,8 +11,10 @@ export class SvgSize {
     height: number = 0;
 }
 export class TreeEvent {
-    showMenu?: (e: MouseEvent, d: Meta) => void;
-    hideMenu?: () => void
+    showMetaMenu?: (e: MouseEvent, d: Meta) => void;
+    hideMetaMenu?: () => void;
+    showLayerMenu?: (e: MouseEvent) => void;
+    hideLayerMenu?: () => void;
     nodeMoved?: (source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) => void
 }
 export class TreePara {
@@ -69,9 +71,12 @@ function initSvg(para: TreePara) {
     // add viewBox for pan and zoom
     svg.attr("viewBox", `0, 0, ${Scale}, ${Scale}`)
         .on("click", () => {
-            if (para.event && para.event.hideMenu)
-                para.event.hideMenu();
-        });
+            if (para.event && para.event.hideMetaMenu)
+                para.event.hideMetaMenu();
+            if (para.event && para.event.hideLayerMenu)
+                para.event.hideLayerMenu();
+        })
+        .on("contextmenu", showLayerContextMenu)
     return svg;
 }
 
@@ -85,8 +90,8 @@ function initG(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: 
             .extent([[0, 0], [para.size.width, para.size.height]])
             .scaleExtent([0.1, 10])
             .on("zoom", item => {
-                if (para.event && para.event.hideMenu)
-                    para.event.hideMenu()
+                if (para.event && para.event.hideMetaMenu)
+                    para.event.hideMetaMenu()
                 g.attr("transform", item.transform);
             }));
 
@@ -191,7 +196,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
             if (hasChild) toggle(e, d)
             else changeCircleStyle(e, d)
         })
-        .on("contextmenu", showContextMenu)
+        .on("contextmenu", showNodeContextMenu)
         .on("mouseover", (_e, d) => {
             if (DragStart && d != CurrentNode) {
                 TargetToDrop = d
@@ -335,11 +340,17 @@ function hasChildCheck(d: unknown) {
     return { hasChild: false, node };
 }
 
-function showContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
+function showNodeContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
     let d = node as HierarchyPointNode<Meta>
     changeCircleStyle(e, d);
-    if (ParaData.event && ParaData.event.showMenu)
-        ParaData.event.showMenu(e, d.data);
+    if (ParaData.event && ParaData.event.showMetaMenu)
+        ParaData.event.showMetaMenu(e, d.data);
+    e.preventDefault();
+}
+
+function showLayerContextMenu(e: MouseEvent) {
+    if (ParaData.event && ParaData.event.showLayerMenu)
+        ParaData.event.showLayerMenu(e);
     e.preventDefault();
 }
 

@@ -90,7 +90,4 @@ export default class MetaContextMenu extends Vue {
   z-index: 900;
   position: absolute;
 }
-
-.item {
-}
 </style>
