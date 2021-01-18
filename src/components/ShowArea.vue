@@ -1,7 +1,7 @@
 <template>
   <meta-context-menu
     ref="contextMenu"
-    :show="cmShow"
+    :show="metaContextShow"
     @hide="hideMenu"
     @instance="locateInstance"
     @list="recentInstances"
@@ -28,7 +28,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
       data: data,
       data2: data2,
       data3: data3,
-      cmShow: false,
+      metaContextShow: false,
       tree: null,
       treePara: (null as unknown) as TreePara,
       nature: (null as unknown) as Nature,
@@ -48,10 +48,10 @@ import MetaContextMenu from "./MetaContextMenu.vue";
         left: e.clientX,
         node: d,
       };
-      this.cmShow = true;
+      this.metaContextShow = true;
     },
     hideMenu() {
-      this.cmShow = false;
+      this.metaContextShow = false;
     },
     locateInstance(e: { id: string; meta: Meta }) {
       console.log(e);
@@ -73,10 +73,7 @@ import MetaContextMenu from "./MetaContextMenu.vue";
     deleteNode(e: Meta) {
       console.log("deleteNode");
     },
-    nodeMoved(
-      source: HierarchyPointNode<Meta>,
-      target: HierarchyPointNode<Meta>
-    ) {
+    nodeMoved(source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) {
       // remove from parent
       let index = source.parent?.data.children?.indexOf(source.data) as number;
       if (index > -1) source.parent?.data.children?.splice(index, 1);

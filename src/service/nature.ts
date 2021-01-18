@@ -40,8 +40,8 @@ export class Nature {
         let root = new Meta;
         root.children = metaList;
         root.name = "root";
-        root.id = 0;
         root.meta_key = "root";
+        root.levels = ["root"];
         return root;
     }
 }

@@ -198,7 +198,6 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
             }
             // show same
             const same = d3.selectAll(".id" + (d.data as any as Meta).realId);
-            console.log("move", same)
             same.attr("class", d => {
                 return "same " + "id" + (d as HierarchyPointNode<Meta>).data.realId
             })

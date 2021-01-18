@@ -30,6 +30,7 @@ export class Meta {
         rtn.meta_type = parts[0];
         rtn.meta_key = parts[1];
         rtn.version = Number.parseInt(parts[2]);
+        rtn.levels = rtn.meta_key.split("/");
         rtn.name = name;
         return rtn;
     }
