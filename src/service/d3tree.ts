@@ -70,14 +70,16 @@ function initSvg(para: TreePara) {
     let svg = d3.select(para.target);
     // add viewBox for pan and zoom
     svg.attr("viewBox", `0, 0, ${Scale}, ${Scale}`)
-        .on("click", () => {
-            if (para.event && para.event.hideMetaMenu)
-                para.event.hideMetaMenu();
-            if (para.event && para.event.hideLayerMenu)
-                para.event.hideLayerMenu();
-        })
+        .on("click", () => hideContextMenu(para))
         .on("contextmenu", showLayerContextMenu)
     return svg;
+}
+
+function hideContextMenu(para: TreePara) {
+    if (para.event && para.event.hideMetaMenu)
+        para.event.hideMetaMenu();
+    if (para.event && para.event.hideLayerMenu)
+        para.event.hideLayerMenu();
 }
 
 function initG(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: TreePara) {
@@ -90,8 +92,7 @@ function initG(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: 
             .extent([[0, 0], [para.size.width, para.size.height]])
             .scaleExtent([0.1, 10])
             .on("zoom", item => {
-                if (para.event && para.event.hideMetaMenu)
-                    para.event.hideMetaMenu()
+                hideContextMenu(para)
                 g.attr("transform", item.transform);
             }));
 
