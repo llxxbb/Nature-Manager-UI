@@ -1,5 +1,9 @@
 # nature-manager-ui
 
+You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature) 
+
+![main](doc/main.png?raw=true)
+
 ## Project setup
 ```
 npm install
