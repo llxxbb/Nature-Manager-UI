@@ -2,7 +2,13 @@
 
 You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature) 
 
-![main](doc/main.png?raw=true)
+![main](doc/main.png)
+
+## Change Logs
+
+**v0.1.0** 2021-01-19
+
+- can show `Meta` and `Relation`, but can't add, edit etcetera.
 
 ## Project setup
 ```
