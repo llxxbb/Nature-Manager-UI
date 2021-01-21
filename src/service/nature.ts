@@ -6,16 +6,16 @@ const axios = require('axios').default;
 export class Nature {
     async getAll() {
         // // mock data for test-----------------------
-        // get meta list
-        let metaList = await getAllMetaMock();
-        // get relation list
-        let relationList = await getAllRelationMock();
+        // // get meta list
+        // let metaList = await getAllMetaMock();
+        // // get relation list
+        // let relationList = await getAllRelationMock();
 
         // real data-----------------------
-        // // get meta list
-        // let metaList = await getAllMeta();
-        // // get relation list
-        // let relationList = await getAllRelation();
+        // get meta list
+        let metaList = await getAllMeta();
+        // get relation list
+        let relationList = await getAllRelation();
 
         // assembly relation tree-------------------
         // find max id
