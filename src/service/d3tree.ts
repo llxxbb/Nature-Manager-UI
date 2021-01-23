@@ -17,11 +17,17 @@ export class TreeEvent {
     hideLayerMenu?: () => void;
     nodeMoved?: (source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) => void
 }
+
+export enum Shape {
+    circle, rect
+}
+
 export class TreePara {
     target: string = "";
     size: SvgSize = {} as any;
     data: Meta = {} as any;
     event?: TreeEvent;
+    shape: Shape = Shape.circle;
 }
 
 var Scale = 1000
@@ -32,7 +38,7 @@ var CurrentNode: HierarchyPointNode<unknown>;
 var SVG: d3.Selection<d3.BaseType, unknown, HTMLElement, any>;
 var TargetToDrop: d3.HierarchyPointNode<unknown> | null;
 var DragStart: boolean = false;
-// make the pointer of mouser out fo the circle when drag
+// make the pointer of mouser out fo the node when drag
 var Offset = 40;
 export class D3Tree {
     show(para: TreePara) {
@@ -43,7 +49,7 @@ export class D3Tree {
 
         let nodes = appendProperty(para);
 
-        // draw line first! otherwise you will see the line goes into the circle
+        // draw line first! otherwise you will see the line goes into the node
         GForLink = g.append("g")
             .attr("fill", "none")
             .attr("stroke", "#555")
@@ -156,9 +162,10 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
 
     dragEvent(enter);
 
-    // draw circle
-    enter.append("circle")
-        .attr("stroke", "#079702")
+    // draw node
+    const nodeItem = enter.append(Shape[ParaData.shape]);
+    shapePropertySet(nodeItem)
+    nodeItem.attr("stroke", "#079702")
         .attr("stroke-width", `${0.005 * Scale}`)
         .attr("stroke-dasharray", d => {
             if ((d.data as Meta).isFake)
@@ -166,7 +173,6 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
             else return `100,0`
         })
         .attr("fill", "#f1d5d5")
-        .attr("r", 0.03 * Scale)
         .attr("id", d => `c${(d.data as Meta).id}`)
         .attr("class", d => { return "id" + ((d.data) as any as Meta).realId })
 
@@ -180,7 +186,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     enter.append("text")
         .text((d) => (d.data as Meta).meta_type)
         .attr("y", `${0.015 * Scale}`)
-        // distance from text to circle
+        // distance from text to node
         .attr("x", `${-0.014 * Scale}`)
         .attr("font-weight", `${0.6 * Scale}`)
         .attr("opacity", 0.4)
@@ -190,14 +196,14 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     // add tooltip
     enter.append("title").text(d => (d.data as Meta).name)
 
-    // circle event
-    enter.append("circle")
-        .attr("opacity", "0")
-        .attr("r", 0.03 * Scale)
+    const nodeEvent = enter.append(Shape[ParaData.shape]);
+    // node event
+    shapePropertySet(nodeEvent)
+    nodeEvent.attr("opacity", "0")
         .on("click", (e, d) => {
             let { hasChild } = hasChildCheck(d)
             if (hasChild) toggle(e, d)
-            else changeCircleStyle(e, d)
+            else changeNodeStyle(e, d)
         })
         .on("contextmenu", showNodeContextMenu)
         .on("mouseover", (_e, d) => {
@@ -221,10 +227,21 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     return enter;
 }
 
+function shapePropertySet(nodeEvent: d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
+    if (ParaData.shape == Shape.circle) {
+        nodeEvent.attr("r", 0.03 * Scale);
+    } else {
+        nodeEvent.attr("width", 0.06 * Scale);
+        nodeEvent.attr("height", 0.06 * Scale);
+        nodeEvent.attr("x", -0.03 * Scale);
+        nodeEvent.attr("y", -0.03 * Scale);
+    }
+}
+
 function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var drag = d3.drag()
         .on("start", (e, d) => {
-            changeCircleStyle(e, d as HierarchyPointNode<Meta>)
+            changeNodeStyle(e, d as HierarchyPointNode<Meta>)
             const one = (d as HierarchyPointNode<Meta>);
             // the root node can't be moved
             if (one.parent) DragStart = true
@@ -266,7 +283,7 @@ function nodeChanged(updateData: d3.Selection<d3.BaseType, d3.HierarchyPointNode
 function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     selected.append("text")
         .attr("y", `${0.015 * Scale}`)
-        // distance from text to circle
+        // distance from text to node
         .attr("x", (d) => (d.children ? `${-0.04 * Scale}` : `${0.04 * Scale}`))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
         .attr("class", "side")
@@ -308,14 +325,14 @@ function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNo
         .attr("id", d => "i" + (d.data as Meta).id)
 }
 
-function changeCircleStyle(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
+function changeNodeStyle(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (CurrentNode) {
         let old = d3.select("#c" + (CurrentNode.data as Meta).id)
         old.attr("stroke", "#079702");
     }
     CurrentNode = d
-    let nCircle = "#c" + (CurrentNode.data as Meta).id;
-    let n = d3.select(nCircle)
+    let nNode = "#c" + (CurrentNode.data as Meta).id;
+    let n = d3.select(nNode)
     n.attr("stroke", "#8f3200");
 }
 
@@ -344,7 +361,7 @@ function hasChildCheck(d: unknown) {
 
 function showNodeContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
     let d = node as HierarchyPointNode<Meta>
-    changeCircleStyle(e, d);
+    changeNodeStyle(e, d);
     if (ParaData.event && ParaData.event.showMetaMenu)
         ParaData.event.showMetaMenu(e, d.data);
     e.preventDefault();
@@ -359,7 +376,7 @@ function showLayerContextMenu(e: MouseEvent) {
 function update(para: TreePara) {
     let nodes = appendProperty(para);
 
-    // draw line first! otherwise you will see the line goes into the circle
+    // draw line first! otherwise you will see the line goes into the node
     drawLinks(GForLink, nodes);
     drawNode(GForNode, nodes);
 }
@@ -367,7 +384,7 @@ function update(para: TreePara) {
 // Toggle folder.
 function toggle(e: MouseEvent, node: HierarchyPointNode<unknown> | unknown) {
     let d = node as HierarchyPointNode<Meta>
-    changeCircleStyle(e, d)
+    changeNodeStyle(e, d)
     let data: Meta = d.data
     let one = d3.select(`#i${data.id}`)
     if (data.children) {

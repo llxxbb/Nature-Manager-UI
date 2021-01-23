@@ -4,11 +4,14 @@
 
 bug fix: layer context should not be shown when Meta Context is showing.
 can show Business Domain layer.
-
-## other version
-
 use square to show Domain-Node
 
+## doing
+
+use square to show Domain-Node
+## other version
+
+settings: add slide for node-size
 
 how to quick find a node?
 

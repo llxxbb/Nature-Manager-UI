@@ -22,7 +22,7 @@ import { Meta } from "@/domain";
 import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
-import { D3Tree, TreePara, TreeEvent } from "../service/d3tree";
+import { D3Tree, TreePara, TreeEvent, Shape } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import MetaContextMenu from "./MetaContextMenu.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
@@ -78,13 +78,14 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
     },
     modeChanged() {
       this.layerContextShow = false;
-      var lm = this.$refs.layerMenu;
       if (this.currentMode == LayoutMode.relation) {
         this.currentMode = LayoutMode.domain;
         this.treePara.data = this.domainData;
+        this.treePara.shape = Shape.rect;
       } else {
         this.currentMode = LayoutMode.relation;
         this.treePara.data = this.relationData;
+        this.treePara.shape = Shape.circle;
       }
       this.tree.show(this.treePara);
     },
@@ -146,6 +147,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
         hideLayerMenu: this.hideLayerMenu,
         nodeMoved: this.nodeMoved,
       },
+      shape: Shape.circle
     };
     this.tree = new D3Tree();
     this.tree.show(this.treePara);
