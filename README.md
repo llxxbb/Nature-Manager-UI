@@ -2,9 +2,15 @@
 
 You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature) 
 
+Please user version 0.20.1 or above of Nature.
+
 ![main](doc/main.png)
 
 ## Change Logs
+
+**v0.1.1** 2021-01-23
+
+- bug fix: change mock data to real data, now you see every thing which defined in tables, 
 
 **v0.1.0** 2021-01-19
 
