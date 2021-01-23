@@ -30,7 +30,7 @@ import { Options, Vue } from "vue-class-component";
 import { D3Tree, TreePara, TreeEvent } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import MetaContextMenu from "./MetaContextMenu.vue";
-import LayerContextMenu from "./LayerContextMenu.vue";
+import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
 
 @Options({
   components: { MetaContextMenu, LayerContextMenu },
@@ -66,10 +66,16 @@ import LayerContextMenu from "./LayerContextMenu.vue";
       this.metaContextShow = false;
     },
     showLayerMenu(e: MouseEvent) {
-      var cm = this.$refs.layerMenu;
-      cm.para = {
+      if (this.metaContextShow) return;
+      var lm = this.$refs.layerMenu;
+      var mode =
+        lm.para.mode == LayoutMode.relation
+          ? LayoutMode.domain
+          : LayoutMode.relation;
+      lm.para = {
         top: e.clientY,
         left: e.clientX,
+        mode,
       };
       this.layerContextShow = true;
     },
