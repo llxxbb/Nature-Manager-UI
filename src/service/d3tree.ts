@@ -19,7 +19,7 @@ export class TreeEvent {
 }
 
 export enum Shape {
-    circle, rect
+    circle, rect, rectR
 }
 
 export class TreePara {
@@ -163,7 +163,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     dragEvent(enter);
 
     // draw node
-    const nodeItem = enter.append(Shape[ParaData.shape]);
+    const nodeItem = enter.append(getShape());
     shapePropertySet(nodeItem)
     nodeItem.attr("stroke", "#079702")
         .attr("stroke-width", `${0.005 * Scale}`)
@@ -196,7 +196,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     // add tooltip
     enter.append("title").text(d => (d.data as Meta).name)
 
-    const nodeEvent = enter.append(Shape[ParaData.shape]);
+    const nodeEvent = enter.append(getShape());
     // node event
     shapePropertySet(nodeEvent)
     nodeEvent.attr("opacity", "0")
@@ -227,14 +227,27 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     return enter;
 }
 
+function getShape(): string {
+    if (ParaData.shape == Shape.circle) return "circle";
+    else if (ParaData.shape == Shape.rect) return "rect";
+    else return "rect";
+}
+
 function shapePropertySet(nodeEvent: d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     if (ParaData.shape == Shape.circle) {
         nodeEvent.attr("r", 0.03 * Scale);
+    } else if (ParaData.shape == Shape.rect){
+        nodeEvent.attr("width", 0.06 * Scale);
+        nodeEvent.attr("height", 0.06 * Scale);
+        nodeEvent.attr("x", -0.03 * Scale);
+        nodeEvent.attr("y", -0.03 * Scale);
     } else {
         nodeEvent.attr("width", 0.06 * Scale);
         nodeEvent.attr("height", 0.06 * Scale);
         nodeEvent.attr("x", -0.03 * Scale);
         nodeEvent.attr("y", -0.03 * Scale);
+        nodeEvent.attr("rx", 0.015 * Scale);
+        nodeEvent.attr("ry", 0.015 * Scale);
     }
 }
 
