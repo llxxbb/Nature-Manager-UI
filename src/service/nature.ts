@@ -3,47 +3,103 @@ import { Meta, Relation } from "@/domain";
 import { metaDefined, relationDefined } from "@/testData/natureData";
 
 const axios = require('axios').default;
+
+let allMeta: Meta[];
+let metaIdMax = 0;
 export class Nature {
-    async getAll() {
+    async getRelation() {
         // // mock data for test-----------------------
         // // get meta list
-        // let metaList = await getAllMetaMock();
+        // allMeta = await getAllMetaMock();
         // // get relation list
         // let relationList = await getAllRelationMock();
 
         // real data-----------------------
         // get meta list
-        let metaList = await getAllMeta();
+        allMeta = await getAllMeta();
         // get relation list
         let relationList = await getAllRelation();
 
+        let metaList = allMeta.slice();
         // assembly relation tree-------------------
         // find max id
-        let idMax = 0
+        metaList.forEach(one => { if (one.id > metaIdMax) metaIdMax = one.id })
+        let idIncrease = metaIdMax;
+        // process each relation
         relationList.forEach(r => {
-            metaList.forEach(one => { if (one.id > idMax) idMax = one.id })
             // find relation meta
             let from = findMeta(metaList, r, (m, r) => m.name == r.from_meta);
             let to = findMeta(metaList, r, (m, r) => m.name == r.to_meta, true);
             // check
             if (!from.meta || !to.meta) return;
             if (to.index == from.index) to.index = -1;
-            if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idMax)
+            if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idIncrease)
             // add relation
             to.meta.relation = r;
-            if (from.meta.children) from.meta.children.push(to.meta)
-            else from.meta.children = [to.meta]
+            addChild(from.meta, to.meta);
             // remove "to" from metaList
             if (to.index > -1) metaList.splice(to.index, 1)
         })
         // make tree
-        let root = new Meta;
-        root.children = metaList;
-        root.name = "root";
-        root.meta_key = "root";
-        root.levels = ["root"];
+        let root = makeRootMeta(metaList);
         return root;
     }
+
+    getDomain() {
+        let unique = new Map<String, Meta>();
+        let root = makeRootMeta([]);
+        let idSeq = metaIdMax;
+        allMeta.forEach(one => {
+            let path = "/";
+            for (let index = 0; index < one.levels.length; index++) {
+                // find parent
+                let parent = unique.get(path);
+                if (!parent) {
+                    // only root has no parent
+                    parent = root;
+                    unique.set(path, parent);
+                }
+                const level = one.levels[index];
+                path = path + level + "/";
+                let child = unique.get(path);
+                if (child) continue;
+                if (index < one.levels.length - 1)
+                    child = makeFakeMeta(one.levels, index, ++idSeq)
+                else {
+                    child = Object.assign(new Meta, one);
+                    child.children = undefined;
+                }
+                addChild(parent, child)
+                unique.set(path, child);
+            }
+        })
+        return root;
+    }
+}
+
+function makeFakeMeta(levels: string[], end: number, id: number) {
+    let rtn = new Meta
+    rtn.id = id;
+    rtn.isFake = true;
+    rtn.meta_key = levels.slice(0, end + 1).join("/")
+    rtn.init()
+    return rtn
+}
+
+function addChild(parent: Meta, child: Meta) {
+    if (parent.children)
+        parent.children.push(child);
+    else
+        parent.children = [child];
+}
+
+function makeRootMeta(children: Meta[]) {
+    let root = new Meta;
+    root.children = children;
+    root.name = "root";
+    root.meta_key = "root";
+    root.levels = ["root"];
+    return root;
 }
 
 function fakeMeta(m: Meta, id: number, metaId: number) {

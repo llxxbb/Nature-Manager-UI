@@ -72,6 +72,8 @@ function initSvg(para: TreePara) {
     svg.attr("viewBox", `0, 0, ${Scale}, ${Scale}`)
         .on("click", () => hideContextMenu(para))
         .on("contextmenu", showLayerContextMenu)
+    // clear exists node
+    svg.select("g").remove();
     return svg;
 }
 
@@ -332,7 +334,6 @@ function openedCheck(d: unknown) {
 function hasChildCheck(d: unknown) {
     const node = d as unknown as HierarchyPointNode<Meta>;
     var child = node.data.children;
-    var hasChild;
     if (child && child.length > 0)
         return { hasChild: true, node };
     child = node.data._children;

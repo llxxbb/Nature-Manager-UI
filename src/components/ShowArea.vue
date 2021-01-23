@@ -12,12 +12,7 @@
   <layer-context-menu
     ref="layerMenu"
     :show="layerContextShow"
-    @hide="hideMetaMenu"
-    @instance="locateInstance"
-    @list="recentInstances"
-    @addNode="addNode"
-    @editNode="editNode"
-    @deleteNode="deleteNode"
+    @changed="modeChanged"
   ></layer-context-menu>
   <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
@@ -36,7 +31,8 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
   components: { MetaContextMenu, LayerContextMenu },
   data() {
     return {
-      data: data,
+      relationData: null,
+      domainData: null,
       data2: data2,
       data3: data3,
       metaContextShow: false,
@@ -44,6 +40,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       tree: null,
       treePara: (null as unknown) as TreePara,
       nature: (null as unknown) as Nature,
+      currentMode: LayoutMode.relation,
     };
   },
   computed: {
@@ -69,7 +66,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       if (this.metaContextShow) return;
       var lm = this.$refs.layerMenu;
       var mode =
-        lm.para.mode == LayoutMode.relation
+        this.currentMode == LayoutMode.relation
           ? LayoutMode.domain
           : LayoutMode.relation;
       lm.para = {
@@ -78,6 +75,18 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
         mode,
       };
       this.layerContextShow = true;
+    },
+    modeChanged() {
+      this.layerContextShow = false;
+      var lm = this.$refs.layerMenu;
+      if (this.currentMode == LayoutMode.relation) {
+        this.currentMode = LayoutMode.domain;
+        this.treePara.data = this.domainData;
+      } else {
+        this.currentMode = LayoutMode.relation;
+        this.treePara.data = this.relationData;
+      }
+      this.tree.show(this.treePara);
     },
     hideLayerMenu() {
       this.layerContextShow = false;
@@ -120,14 +129,16 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
   },
   async mounted() {
     this.nature = new Nature();
-    this.data = await this.nature.getAll();
+    this.relationData = await this.nature.getRelation();
+    this.domainData = this.nature.getDomain();
+
     this.treePara = {
       target: "#showArea",
       size: {
         width: this.center[0],
         height: this.center[1],
       },
-      data: this.data,
+      data: this.relationData,
       event: {
         showMetaMenu: this.showMetaMenu,
         hideMetaMenu: this.hideMetaMenu,

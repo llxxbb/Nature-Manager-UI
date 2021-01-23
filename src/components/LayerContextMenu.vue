@@ -8,6 +8,7 @@
       <li
         v-show="modeDomain()"
         class="list-group-item item list-group-item-action"
+        @click="click"
       >
         <img src="../assets/domain.svg" />
         Domain Mode
@@ -15,7 +16,7 @@
       <li
         v-show="modeRelation()"
         class="list-group-item item list-group-item-action"
-        @click="list"
+        @click="click"
       >
         <img src="../assets/relation.svg" />
         Relation Mode
@@ -46,10 +47,10 @@ export class LMPara {
   emits: ["changed"],
   methods: {
     modeDomain() {
-      return this.para.mode == LayoutMode.relation;
+      return this.para.mode == LayoutMode.domain;
     },
     modeRelation() {
-      return this.para.mode == LayoutMode.domain;
+      return this.para.mode == LayoutMode.relation;
     },
     click() {
       this.$emit("changed");
