@@ -3,6 +3,7 @@
 ## version 0.3.0
 
 Don't show instance query when node is not a real meta.
+bug fix: meta-context-menu and layout-context-menu conflict
 
 ## doing
 

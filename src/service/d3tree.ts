@@ -13,8 +13,8 @@ export class SvgSize {
 export class TreeEvent {
     showMetaMenu?: (e: MouseEvent, d: Meta) => void;
     hideMetaMenu?: () => void;
-    showLayerMenu?: (e: MouseEvent) => void;
-    hideLayerMenu?: () => void;
+    showLayoutMenu?: (e: MouseEvent) => void;
+    hideLayoutMenu?: () => void;
     nodeMoved?: (source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) => void
 }
 
@@ -66,10 +66,6 @@ export class D3Tree {
         drawNode(GForNode, nodes);
 
     }
-    update(para: TreePara) {
-        d3.select("#All-G").remove()
-        this.show(para)
-    }
 }
 
 function initSvg(para: TreePara) {
@@ -86,8 +82,8 @@ function initSvg(para: TreePara) {
 function hideContextMenu(para: TreePara) {
     if (para.event && para.event.hideMetaMenu)
         para.event.hideMetaMenu();
-    if (para.event && para.event.hideLayerMenu)
-        para.event.hideLayerMenu();
+    if (para.event && para.event.hideLayoutMenu)
+        para.event.hideLayoutMenu();
 }
 
 function initG(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: TreePara) {
@@ -236,7 +232,7 @@ function getShape(): string {
 function shapePropertySet(nodeEvent: d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     if (ParaData.shape == Shape.circle) {
         nodeEvent.attr("r", 0.03 * Scale);
-    } else if (ParaData.shape == Shape.rect){
+    } else if (ParaData.shape == Shape.rect) {
         nodeEvent.attr("width", 0.06 * Scale);
         nodeEvent.attr("height", 0.06 * Scale);
         nodeEvent.attr("x", -0.03 * Scale);
@@ -381,8 +377,8 @@ function showNodeContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unkn
 }
 
 function showLayerContextMenu(e: MouseEvent) {
-    if (ParaData.event && ParaData.event.showLayerMenu)
-        ParaData.event.showLayerMenu(e);
+    if (ParaData.event && ParaData.event.showLayoutMenu)
+        ParaData.event.showLayoutMenu(e);
     e.preventDefault();
 }
 

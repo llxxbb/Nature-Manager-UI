@@ -51,6 +51,8 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
   },
   methods: {
     showMetaMenu(e: MouseEvent, d: Meta) {
+      e.stopPropagation();
+      if (this.layerContextShow) this.layerContextShow = false;
       var cm = this.$refs.metaMenu;
       cm.para = {
         top: e.clientY,
@@ -62,8 +64,8 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
     hideMetaMenu() {
       this.metaContextShow = false;
     },
-    showLayerMenu(e: MouseEvent) {
-      if (this.metaContextShow) return;
+    showLayoutMenu(e: MouseEvent) {
+      if (this.metaContextShow) this.metaContextShow = false;
       var lm = this.$refs.layerMenu;
       var mode =
         this.currentMode == LayoutMode.relation ? LayoutMode.domain : LayoutMode.relation;
@@ -73,6 +75,9 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
         mode,
       };
       this.layerContextShow = true;
+    },
+    hideLayoutMenu() {
+      this.layerContextShow = false;
     },
     modeChanged() {
       this.layerContextShow = false;
@@ -87,9 +92,6 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       }
       this.tree.show(this.treePara);
     },
-    hideLayerMenu() {
-      this.layerContextShow = false;
-    },
     locateInstance(e: { id: string; meta: Meta }) {
       console.log(e);
     },
@@ -102,7 +104,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       if (e.parent.children) e.parent.children.push(newNode);
       else if (e.parent._children) e.parent._children.push(newNode);
       else e.parent.children = [newNode];
-      this.tree.update(this.treePara);
+      this.tree.show(this.treePara);
     },
     editNode(e: Meta) {
       console.log("editNode");
@@ -120,7 +122,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       else if (target.data._children) target.data._children.push(source.data);
       else target.data.children = [source.data];
       // refresh
-      this.tree.update(this.treePara);
+      this.tree.show(this.treePara);
     },
   },
   async mounted() {
@@ -138,8 +140,8 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       event: {
         showMetaMenu: this.showMetaMenu,
         hideMetaMenu: this.hideMetaMenu,
-        showLayerMenu: this.showLayerMenu,
-        hideLayerMenu: this.hideLayerMenu,
+        showLayoutMenu: this.showLayoutMenu,
+        hideLayoutMenu: this.hideLayoutMenu,
         nodeMoved: this.nodeMoved,
       },
       shape: Shape.circle,

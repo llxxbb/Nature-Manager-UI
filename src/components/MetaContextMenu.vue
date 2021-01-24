@@ -29,7 +29,7 @@
         <img src="../assets/node-edit.svg" />
         edit node
       </li>
-      <li v-show="false" class="list-group-item item list-group-item-action">
+      <li class="list-group-item item list-group-item-action">
         <img src="../assets/node-plus.svg" />
         add child node
         <input v-model="metaName" @keyup.enter="addNode" />
