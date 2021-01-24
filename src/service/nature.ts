@@ -48,7 +48,7 @@ export class Nature {
     getDomain() {
         let unique = new Map<String, Meta>();
         let root = makeRootMeta([]);
-        let idSeq = metaIdMax;
+        let idSeq = -1;
         allMeta.forEach(one => {
             let path = "/";
             for (let index = 0; index < one.levels.length; index++) {
@@ -64,7 +64,7 @@ export class Nature {
                 let child = unique.get(path);
                 if (child) continue;
                 if (index < one.levels.length - 1)
-                    child = makeFakeMeta(one.levels, index, ++idSeq)
+                    child = makeFakeMeta(one.levels, index, --idSeq)
                 else {
                     child = Object.assign(new Meta, one);
                     child.children = undefined;
@@ -104,7 +104,7 @@ function makeRootMeta(children: Meta[]) {
 
 function fakeMeta(m: Meta, id: number, metaId: number) {
     var rtn = Object.assign(new Meta, m);
-    rtn.realId = m.meta_type == "N" ? metaId : m.id;
+    rtn.realId = m.meta_type == "N" ? -1 : m.id;
     rtn.children = undefined;
     rtn.isFake = true;
     rtn.name = rtn.name + "|" + id;

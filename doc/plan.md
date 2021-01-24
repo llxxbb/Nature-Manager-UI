@@ -1,14 +1,13 @@
 # dev plan
 
-## version 0.2.0
-
-bug fix: layer context should not be shown when Meta Context is showing.
-can show Business Domain layer.
-use square to show Domain-Node
+## version 0.3.0
 
 ## doing
 
-use square to show Domain-Node
+Don't show instance query when node is not a real meta.
+support Instance-Layout mode
+add `instance` query function.
+
 ## other version
 
 settings: add slide for node-size

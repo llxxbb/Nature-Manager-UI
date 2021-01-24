@@ -66,9 +66,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       if (this.metaContextShow) return;
       var lm = this.$refs.layerMenu;
       var mode =
-        this.currentMode == LayoutMode.relation
-          ? LayoutMode.domain
-          : LayoutMode.relation;
+        this.currentMode == LayoutMode.relation ? LayoutMode.domain : LayoutMode.relation;
       lm.para = {
         top: e.clientY,
         left: e.clientX,
@@ -112,10 +110,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
     deleteNode(e: Meta) {
       console.log("deleteNode");
     },
-    nodeMoved(
-      source: HierarchyPointNode<Meta>,
-      target: HierarchyPointNode<Meta>
-    ) {
+    nodeMoved(source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) {
       // remove from parent
       let index = source.parent?.data.children?.indexOf(source.data) as number;
       if (index > -1) source.parent?.data.children?.splice(index, 1);
@@ -147,7 +142,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
         hideLayerMenu: this.hideLayerMenu,
         nodeMoved: this.nodeMoved,
       },
-      shape: Shape.circle
+      shape: Shape.circle,
     };
     this.tree = new D3Tree();
     this.tree.show(this.treePara);
