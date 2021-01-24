@@ -2,9 +2,10 @@
 
 ## version 0.3.0
 
+Don't show instance query when node is not a real meta.
+
 ## doing
 
-Don't show instance query when node is not a real meta.
 support Instance-Layout mode
 add `instance` query function.
 

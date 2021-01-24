@@ -55,7 +55,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       cm.para = {
         top: e.clientY,
         left: e.clientX,
-        node: d,
+        meta: d,
       };
       this.metaContextShow = true;
     },
