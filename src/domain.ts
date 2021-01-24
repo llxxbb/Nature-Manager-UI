@@ -4,7 +4,10 @@ export class Meta {
     name: string = "";
     levels: string[] = []
     isFake = false;
-    realId = 0;
+    // id in meta table. used to point out the fake `meta` and the real `meta` are same
+    // MetaType::Null is -1
+    // domain-parent is negative less than -1.
+    realId = 0; 
     children?: Meta[];
     _children?: Meta[];
     meta_type = "";

@@ -5,14 +5,21 @@
     :style="{ top: para.top + 'px', left: para.left + 'px' }"
   >
     <ul class="list-group">
-      <li class="list-group-item item list-group-item-action">
-        <img src="../assets/locate.svg" />
-        query instance
-        <input v-model="instanceId" @keyup.enter="query" />
+      <li
+        v-show="modeDomain()"
+        class="list-group-item item list-group-item-action"
+        @click="click"
+      >
+        <img src="../assets/domain.svg" />
+        Domain Mode
       </li>
-      <li class="list-group-item item list-group-item-action" @click="list">
-        <img src="../assets/list.svg" />
-        query recent instances
+      <li
+        v-show="modeRelation()"
+        class="list-group-item item list-group-item-action"
+        @click="click"
+      >
+        <img src="../assets/relation.svg" />
+        Relation Mode
       </li>
     </ul>
   </div>
@@ -21,61 +28,42 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-export class CMPara {
+export enum LayoutMode {
+  domain,
+  relation,
+}
+
+export class LMPara {
   left = 0;
   top = 0;
-  node?: Node;
+  mode: LayoutMode = LayoutMode.relation;
 }
 
 @Options({
-  data() {
-    return {
-      instanceId: "",
-      metaName: "",
-      targetMeta: "",
-    };
-  },
   props: {
     show: Boolean,
-    para: CMPara,
+    para: LMPara,
   },
-  emits: ["instance", "list", "editNode", "addNode", "deleteNode", "hide"],
+  emits: ["changed"],
   methods: {
-    add() {},
-    query(e: KeyboardEvent) {
-      this.$emit("hide");
-      this.$emit("instance", { id: this.instanceId, meta: this.para.node });
-      this.instanceId = "";
+    modeDomain() {
+      return this.para.mode == LayoutMode.domain;
     },
-    list() {
-      this.$emit("hide");
-      this.$emit("list", this.para.node);
+    modeRelation() {
+      return this.para.mode == LayoutMode.relation;
     },
-    editNode() {
-      this.$emit("hide");
-      this.$emit("editNode", this.para.node);
-    },
-    deleteNode() {
-      this.$emit("hide");
-      this.$emit("deleteNode", this.para.node);
-    },
-    addNode() {
-      this.$emit("hide");
-      this.$emit("addNode", { name: this.metaName, parent: this.para.node });
-      this.metaName = "";
+    click() {
+      this.$emit("changed");
     },
   },
 })
 export default class LayerContextMenu extends Vue {
-  para: CMPara = new CMPara();
+  para = new LMPara();
 }
 </script>
 <style scoped lang="stylus">
 .my-menu {
   z-index: 900;
   position: absolute;
-}
-
-.item {
 }
 </style>

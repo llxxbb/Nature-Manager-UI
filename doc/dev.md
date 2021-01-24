@@ -4,7 +4,11 @@ TypeScript
 
 d3
 
-vue
+vue：
+npm install -g @vue/cli
+npm update -g @vue/cli
+npm install -g @vue/cli @vue/cli-service-global
+npm install // 自动修复缺失的包
 
 [bootstrap icons](https://icons.getbootstrap.com) : used to show icons
 

@@ -4,9 +4,25 @@ You can use this project to manage Meta and Relation of [Nature](https://github.
 
 Please user version 0.20.1 or above of Nature.
 
-![main](doc/main.png)
+## Relation Mode
+
+![main](doc/relation.png?raw=truw)
+
+## Domain Mode
+
+![main](doc/domain.png?raw=truw)
 
 ## Change Logs
+
+**v0.2.0** 2021-01-24
+
+can show business domain in Domain-Mode. you can do that by right click the blank of the layout, and click the corresponding menu item on the context-menu.
+
+details:
+
+- bug fix: layer context should not be shown when Meta Context is showing.
+- can show Business Domain layout.
+- use square to show Domain-Node.
 
 **v0.1.1** 2021-01-23
 

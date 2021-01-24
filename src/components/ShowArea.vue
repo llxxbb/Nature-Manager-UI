@@ -12,12 +12,7 @@
   <layer-context-menu
     ref="layerMenu"
     :show="layerContextShow"
-    @hide="hideMetaMenu"
-    @instance="locateInstance"
-    @list="recentInstances"
-    @addNode="addNode"
-    @editNode="editNode"
-    @deleteNode="deleteNode"
+    @changed="modeChanged"
   ></layer-context-menu>
   <svg id="showArea" ref="showArea" xmlns="http://www.w3.org/2000/svg" />
 </template>
@@ -27,16 +22,17 @@ import { Meta } from "@/domain";
 import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
-import { D3Tree, TreePara, TreeEvent } from "../service/d3tree";
+import { D3Tree, TreePara, TreeEvent, Shape } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import MetaContextMenu from "./MetaContextMenu.vue";
-import LayerContextMenu from "./LayerContextMenu.vue";
+import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
 
 @Options({
   components: { MetaContextMenu, LayerContextMenu },
   data() {
     return {
-      data: data,
+      relationData: null,
+      domainData: null,
       data2: data2,
       data3: data3,
       metaContextShow: false,
@@ -44,6 +40,7 @@ import LayerContextMenu from "./LayerContextMenu.vue";
       tree: null,
       treePara: (null as unknown) as TreePara,
       nature: (null as unknown) as Nature,
+      currentMode: LayoutMode.relation,
     };
   },
   computed: {
@@ -66,12 +63,29 @@ import LayerContextMenu from "./LayerContextMenu.vue";
       this.metaContextShow = false;
     },
     showLayerMenu(e: MouseEvent) {
-      var cm = this.$refs.layerMenu;
-      cm.para = {
+      if (this.metaContextShow) return;
+      var lm = this.$refs.layerMenu;
+      var mode =
+        this.currentMode == LayoutMode.relation ? LayoutMode.domain : LayoutMode.relation;
+      lm.para = {
         top: e.clientY,
         left: e.clientX,
+        mode,
       };
       this.layerContextShow = true;
+    },
+    modeChanged() {
+      this.layerContextShow = false;
+      if (this.currentMode == LayoutMode.relation) {
+        this.currentMode = LayoutMode.domain;
+        this.treePara.data = this.domainData;
+        this.treePara.shape = Shape.rect;
+      } else {
+        this.currentMode = LayoutMode.relation;
+        this.treePara.data = this.relationData;
+        this.treePara.shape = Shape.circle;
+      }
+      this.tree.show(this.treePara);
     },
     hideLayerMenu() {
       this.layerContextShow = false;
@@ -96,10 +110,7 @@ import LayerContextMenu from "./LayerContextMenu.vue";
     deleteNode(e: Meta) {
       console.log("deleteNode");
     },
-    nodeMoved(
-      source: HierarchyPointNode<Meta>,
-      target: HierarchyPointNode<Meta>
-    ) {
+    nodeMoved(source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) {
       // remove from parent
       let index = source.parent?.data.children?.indexOf(source.data) as number;
       if (index > -1) source.parent?.data.children?.splice(index, 1);
@@ -114,14 +125,16 @@ import LayerContextMenu from "./LayerContextMenu.vue";
   },
   async mounted() {
     this.nature = new Nature();
-    this.data = await this.nature.getAll();
+    this.relationData = await this.nature.getRelation();
+    this.domainData = this.nature.getDomain();
+
     this.treePara = {
       target: "#showArea",
       size: {
         width: this.center[0],
         height: this.center[1],
       },
-      data: this.data,
+      data: this.relationData,
       event: {
         showMetaMenu: this.showMetaMenu,
         hideMetaMenu: this.hideMetaMenu,
@@ -129,6 +142,7 @@ import LayerContextMenu from "./LayerContextMenu.vue";
         hideLayerMenu: this.hideLayerMenu,
         nodeMoved: this.nodeMoved,
       },
+      shape: Shape.circle,
     };
     this.tree = new D3Tree();
     this.tree.show(this.treePara);
