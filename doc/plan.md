@@ -8,6 +8,7 @@ show State-Meta text in red
 
 ## doing
 
+update readme with new image
 support Instance-Layout mode
 add `instance` query function.
 
