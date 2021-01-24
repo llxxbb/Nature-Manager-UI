@@ -68,28 +68,22 @@ export class CMPara {
     show: Boolean,
     para: CMPara,
   },
-  emits: ["instance", "list", "editNode", "addNode", "deleteNode", "hide"],
+  emits: ["instance", "list", "editNode", "addNode", "deleteNode"],
   methods: {
-    add() {},
     query(e: KeyboardEvent) {
-      this.$emit("hide");
       this.$emit("instance", { id: this.instanceId, meta: this.para.meta });
       this.instanceId = "";
     },
     list() {
-      this.$emit("hide");
       this.$emit("list", this.para.meta);
     },
     editNode() {
-      this.$emit("hide");
       this.$emit("editNode", this.para.meta);
     },
     deleteNode() {
-      this.$emit("hide");
       this.$emit("deleteNode", this.para.meta);
     },
     addNode() {
-      this.$emit("hide");
       this.$emit("addNode", { name: this.metaName, parent: this.para.meta });
       this.metaName = "";
     },

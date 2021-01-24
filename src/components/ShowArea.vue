@@ -2,7 +2,6 @@
   <meta-context-menu
     ref="metaMenu"
     :show="metaContextShow"
-    @hide="hideMetaMenu"
     @instance="locateInstance"
     @list="recentInstances"
     @addNode="addNode"
@@ -93,12 +92,15 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       this.tree.show(this.treePara);
     },
     locateInstance(e: { id: string; meta: Meta }) {
+      this.metaContextShow = false;
       console.log(e);
     },
     recentInstances(e: Meta) {
+      this.metaContextShow = false;
       console.log(e);
     },
     addNode(e: { name: string; parent: Meta }) {
+      this.metaContextShow = false;
       let newNode = new Meta();
       newNode.name = e.name;
       if (e.parent.children) e.parent.children.push(newNode);
@@ -107,12 +109,15 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       this.tree.show(this.treePara);
     },
     editNode(e: Meta) {
+      this.metaContextShow = false;
       console.log("editNode");
     },
     deleteNode(e: Meta) {
+      this.metaContextShow = false;
       console.log("deleteNode");
     },
     nodeMoved(source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) {
+      this.metaContextShow = false;
       // remove from parent
       let index = source.parent?.data.children?.indexOf(source.data) as number;
       if (index > -1) source.parent?.data.children?.splice(index, 1);
