@@ -295,7 +295,13 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         // distance from text to node
         .attr("x", (d) => (d.children ? `${-0.04 * Scale}` : `${0.04 * Scale}`))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
+        // used to select all text beside node
         .attr("class", "side")
+        // set status meta
+        .attr("fill", d => {
+            const meta = (d.data as any as Meta);
+            return meta.isState() ? "#d02b06" : "black"
+        })
         .attr("opacity", (d) => ((d.data as any as Meta).isFake ? 0.4 : 1))
         .text(d => {
             const m = (d.data as Meta);

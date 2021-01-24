@@ -38,6 +38,10 @@ export class Meta {
         return rtn;
     }
 
+    isState(): boolean {
+        return this.states.trim().length > 0
+    }
+
     canQueryInstance(): boolean {
         return this.realId > 0;
     }

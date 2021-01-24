@@ -4,6 +4,7 @@
 
 Don't show instance query when node is not a real meta.
 bug fix: meta-context-menu and layout-context-menu conflict
+show State-Meta text in red 
 
 ## doing
 
