@@ -54,3 +54,10 @@ export class Relation {
     settings = "";
     flag = 0;
 }
+
+export class InstanceQueryCondition {
+    id: number = 0;
+    meta: Meta = new Meta;
+    para: string = "";
+    staVer: number = 0;
+}

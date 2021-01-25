@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Meta } from "@/domain";
+import { InstanceQueryCondition, Meta } from "@/domain";
 import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
@@ -67,7 +67,9 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       if (this.metaContextShow) this.metaContextShow = false;
       var lm = this.$refs.layerMenu;
       var mode =
-        this.currentMode == LayoutMode.relation ? LayoutMode.domain : LayoutMode.relation;
+        this.currentMode == LayoutMode.relation
+          ? LayoutMode.domain
+          : LayoutMode.relation;
       lm.para = {
         top: e.clientY,
         left: e.clientX,
@@ -91,7 +93,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       }
       this.tree.show(this.treePara);
     },
-    locateInstance(e: { id: string; meta: Meta }) {
+    locateInstance(e: InstanceQueryCondition) {
       this.metaContextShow = false;
       console.log(e);
     },
@@ -116,7 +118,10 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       this.metaContextShow = false;
       console.log("deleteNode");
     },
-    nodeMoved(source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) {
+    nodeMoved(
+      source: HierarchyPointNode<Meta>,
+      target: HierarchyPointNode<Meta>
+    ) {
       this.metaContextShow = false;
       // remove from parent
       let index = source.parent?.data.children?.indexOf(source.data) as number;

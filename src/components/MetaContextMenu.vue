@@ -11,7 +11,31 @@
       >
         <img src="../assets/locate.svg" />
         query instance
-        <input v-model="instanceId" @keyup.enter="query" />
+        <div class="input-group">
+          <input
+            v-model="instanceId"
+            type="text"
+            title="default 0"
+            class="form-control"
+            placeholder="id"
+          />
+          <input
+            v-model="instancePara"
+            type="text"
+            class="form-control"
+            placeholder="para"
+          />
+          <input
+            v-model="instanceStaVer"
+            title="default -1 : for all version"
+            type="text"
+            class="form-control"
+            placeholder="status version"
+          />
+          <button type="button" class="btn btn-success" @click="query">
+            go
+          </button>
+        </div>
       </li>
       <li
         v-show="para.meta.canQueryInstance()"
@@ -32,7 +56,7 @@
       <li class="list-group-item item list-group-item-action">
         <img src="../assets/node-plus.svg" />
         add child node
-        <input v-model="metaName" @keyup.enter="addNode" />
+        <input v-model="metaName" class="form-control" @keyup.enter="addNode" />
       </li>
       <li
         v-show="false"
@@ -60,8 +84,9 @@ export class CMPara {
   data() {
     return {
       instanceId: "",
+      instancePara: "",
+      instanceStaVer: "",
       metaName: "",
-      targetMeta: "",
     };
   },
   props: {
@@ -71,8 +96,18 @@ export class CMPara {
   emits: ["instance", "list", "editNode", "addNode", "deleteNode"],
   methods: {
     query(e: KeyboardEvent) {
-      this.$emit("instance", { id: this.instanceId, meta: this.para.meta });
+      this.$emit("instance", {
+        id: new Number(this.instanceId),
+        meta: this.para.meta,
+        para: this.instancePara,
+        staVer:
+          this.instanceStaVer.length == 0
+            ? -1
+            : new Number(this.instanceStaVer),
+      });
       this.instanceId = "";
+      this.instancePara = "";
+      this.instanceStaVer = "";
     },
     list() {
       this.$emit("list", this.para.meta);
