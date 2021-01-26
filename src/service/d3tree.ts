@@ -2,6 +2,7 @@ import { data } from './../testData/node';
 import { Meta } from "@/domain";
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
+import { NODE_SCALE, NODE_SIZE } from '@/config';
 export class Position {
     x: number = 0;
     y: number = 0;
@@ -30,7 +31,6 @@ export class TreePara {
     shape: Shape = Shape.circle;
 }
 
-var Scale = 1000
 var ParaData: TreePara
 var GForNode: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
 var GForLink: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
@@ -54,15 +54,15 @@ export class D3Tree {
             .attr("fill", "none")
             .attr("stroke", "#555")
             .attr("stroke-opacity", 0.4)
-            .attr("stroke-width", 0.005 * Scale)
+            .attr("stroke-width", 0.005 * NODE_SCALE)
         drawLinks(GForLink, nodes);
 
         // set font property to node
         GForNode = g.append("g")
             .attr("font-family", "sans-serif")
-            .attr("font-size", 0.04 * Scale)
+            .attr("font-size", 0.04 * NODE_SCALE)
             .attr("stroke-linejoin", "round")
-            .attr("stroke-width", 0.006 * Scale);
+            .attr("stroke-width", 0.006 * NODE_SCALE);
         drawNode(GForNode, nodes);
 
     }
@@ -71,7 +71,7 @@ export class D3Tree {
 function initSvg(para: TreePara) {
     let svg = d3.select(para.target);
     // add viewBox for pan and zoom
-    svg.attr("viewBox", `0, 0, ${Scale}, ${Scale}`)
+    svg.attr("viewBox", `0, 0, 1000, 1000`)
         .on("click", () => hideContextMenu(para))
         .on("contextmenu", showLayerContextMenu)
     // clear exists node
@@ -88,7 +88,7 @@ function hideContextMenu(para: TreePara) {
 
 function initG(svg: d3.Selection<d3.BaseType, unknown, HTMLElement, any>, para: TreePara) {
     let g = svg.append("g");
-    g.attr("transform", `translate(0,${0.5 * Scale})`);
+    g.attr("transform", `translate(0,${0.5 * NODE_SCALE})`);
     g.attr("id", "All-G");
 
     svg.call(
@@ -108,12 +108,12 @@ function appendProperty(para: TreePara) {
     let hierarchy = d3.hierarchy(para.data);
     hierarchy.sort((a, b) => (a.data.name < b.data.name ? -1 : 1));
     let tree = d3.tree();
-    tree.nodeSize([0.00007 * Scale, 0.0004 * Scale])
+    tree.nodeSize([0.00007 * NODE_SIZE, 0.0004 * NODE_SIZE])
     // append x, y properties to datum
     let nodes = tree(hierarchy);
     nodes.each(n => {
-        n.x = n.x * Scale
-        n.y = n.y * Scale
+        n.x = n.x * NODE_SCALE
+        n.y = n.y * NODE_SCALE
     })
     return nodes;
 }
@@ -162,10 +162,10 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     const nodeItem = enter.append(getShape());
     shapePropertySet(nodeItem)
     nodeItem.attr("stroke", "#079702")
-        .attr("stroke-width", `${0.005 * Scale}`)
+        .attr("stroke-width", `${0.005 * NODE_SCALE}`)
         .attr("stroke-dasharray", d => {
             if ((d.data as Meta).isFake)
-                return `${0.005 * Scale}, ${0.01 * Scale}`
+                return `${0.005 * NODE_SCALE}, ${0.01 * NODE_SCALE}`
             else return `100,0`
         })
         .attr("fill", "#f1d5d5")
@@ -181,10 +181,10 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     // add Type
     enter.append("text")
         .text((d) => (d.data as Meta).meta_type)
-        .attr("y", `${0.015 * Scale}`)
+        .attr("y", `${0.015 * NODE_SCALE}`)
         // distance from text to node
-        .attr("x", `${-0.014 * Scale}`)
-        .attr("font-weight", `${0.6 * Scale}`)
+        .attr("x", `${-0.014 * NODE_SCALE}`)
+        .attr("font-weight", `${0.6 * NODE_SCALE}`)
         .attr("opacity", 0.4)
 
     enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
@@ -231,19 +231,19 @@ function getShape(): string {
 
 function shapePropertySet(nodeEvent: d3.Selection<d3.BaseType, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     if (ParaData.shape == Shape.circle) {
-        nodeEvent.attr("r", 0.03 * Scale);
+        nodeEvent.attr("r", 0.03 * NODE_SCALE);
     } else if (ParaData.shape == Shape.rect) {
-        nodeEvent.attr("width", 0.06 * Scale);
-        nodeEvent.attr("height", 0.06 * Scale);
-        nodeEvent.attr("x", -0.03 * Scale);
-        nodeEvent.attr("y", -0.03 * Scale);
+        nodeEvent.attr("width", 0.06 * NODE_SCALE);
+        nodeEvent.attr("height", 0.06 * NODE_SCALE);
+        nodeEvent.attr("x", -0.03 * NODE_SCALE);
+        nodeEvent.attr("y", -0.03 * NODE_SCALE);
     } else {
-        nodeEvent.attr("width", 0.06 * Scale);
-        nodeEvent.attr("height", 0.06 * Scale);
-        nodeEvent.attr("x", -0.03 * Scale);
-        nodeEvent.attr("y", -0.03 * Scale);
-        nodeEvent.attr("rx", 0.015 * Scale);
-        nodeEvent.attr("ry", 0.015 * Scale);
+        nodeEvent.attr("width", 0.06 * NODE_SCALE);
+        nodeEvent.attr("height", 0.06 * NODE_SCALE);
+        nodeEvent.attr("x", -0.03 * NODE_SCALE);
+        nodeEvent.attr("y", -0.03 * NODE_SCALE);
+        nodeEvent.attr("rx", 0.015 * NODE_SCALE);
+        nodeEvent.attr("ry", 0.015 * NODE_SCALE);
     }
 }
 
@@ -291,9 +291,9 @@ function nodeChanged(updateData: d3.Selection<d3.BaseType, d3.HierarchyPointNode
 
 function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     selected.append("text")
-        .attr("y", `${0.015 * Scale}`)
+        .attr("y", `${0.015 * NODE_SCALE}`)
         // distance from text to node
-        .attr("x", (d) => (d.children ? `${-0.04 * Scale}` : `${0.04 * Scale}`))
+        .attr("x", (d) => (d.children ? `${-0.04 * NODE_SCALE}` : `${0.04 * NODE_SCALE}`))
         .attr("text-anchor", (d) => (d.children ? "end" : "start"))
         // used to select all text beside node
         .attr("class", "side")
@@ -316,7 +316,7 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
 function setTextPosition(text: d3.Selection<d3.BaseType, unknown, d3.BaseType, d3.HierarchyPointNode<unknown>>) {
     text.attr("x", d => {
         var { opened } = openedCheck(d);
-        return opened ? -0.04 * Scale : 0.04 * Scale;
+        return opened ? -0.04 * NODE_SCALE : 0.04 * NODE_SCALE;
     })
         .attr("text-anchor", d => {
             var { opened } = openedCheck(d);
@@ -326,10 +326,10 @@ function setTextPosition(text: d3.Selection<d3.BaseType, unknown, d3.BaseType, d
 
 function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     return folder.append("image")
-        .attr("x", `${-0.025 * Scale}`)
-        .attr("y", `${-0.025 * Scale}`)
-        .attr("width", `${0.05 * Scale}`)
-        .attr("height", `${0.05 * Scale}`)
+        .attr("x", `${-0.025 * NODE_SCALE}`)
+        .attr("y", `${-0.025 * NODE_SCALE}`)
+        .attr("width", `${0.05 * NODE_SCALE}`)
+        .attr("height", `${0.05 * NODE_SCALE}`)
         .attr("href", d => {
             if (d.children)
                 return `${require("../assets/caret-right-fill.svg")}`;
