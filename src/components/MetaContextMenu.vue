@@ -26,6 +26,7 @@
             placeholder="para"
           />
           <input
+            v-show="para.meta.isState()"
             v-model="instanceStaVer"
             title="default -1 : for all version"
             type="text"
