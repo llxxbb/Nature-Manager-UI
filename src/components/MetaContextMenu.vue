@@ -97,14 +97,15 @@ export class CMPara {
   emits: ["instance", "list", "editNode", "addNode", "deleteNode"],
   methods: {
     query(e: KeyboardEvent) {
+      let staVer: Number = 0;
+      if (this.instanceStaVer.length > 0)
+        staVer = new Number(this.instanceStaVer);
+      else if (this.para.meta.isState()) staVer = -1;
       this.$emit("instance", {
         id: new Number(this.instanceId),
         meta: this.para.meta,
         para: this.instancePara,
-        staVer:
-          this.instanceStaVer.length == 0
-            ? -1
-            : new Number(this.instanceStaVer),
+        staVer,
       });
       this.instanceId = "";
       this.instancePara = "";

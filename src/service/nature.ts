@@ -190,13 +190,33 @@ async function getItems<T>(baseUrl: string, toT: (item: T) => T, idFun: (items: 
     while (go) {
         let rtnR = await axios.get(url + "/" + id + "/" + size);
         let rtn = rtnR as { data: { Ok: T[] } }
-        let meta = rtn.data.Ok;
-        meta.forEach(i => {
+        let dataReturned = rtn.data.Ok;
+        dataReturned.forEach(i => {
             let myMeta = toT(i);
             all.push(myMeta)
         })
-        if (meta.length < size) break;
-        id = idFun(meta);
+        if (dataReturned.length < size) break;
+        id = idFun(dataReturned);
+    }
+    return all;
+};
+
+async function getInstance<T>(baseUrl: string, toT: (item: T) => T, idFun: (items: T[]) => number) {
+    let url = NATURE_MANAGER_URL + "/" + baseUrl;
+    let id = 0;
+    let size = 1000;
+    let go = true;
+    let all: T[] = [];
+    while (go) {
+        let rtnR = await axios.get(url + "/" + id + "/" + size);
+        let rtn = rtnR as { data: { Ok: T[] } }
+        let dataReturned = rtn.data.Ok;
+        dataReturned.forEach(i => {
+            let myMeta = toT(i);
+            all.push(myMeta)
+        })
+        if (dataReturned.length < size) break;
+        id = idFun(dataReturned);
     }
     return all;
 };

@@ -1,3 +1,4 @@
+import { now } from "d3";
 
 export class Meta {
     id = 0;
@@ -60,4 +61,17 @@ export class InstanceQueryCondition {
     meta: Meta = new Meta;
     para: string = "";
     staVer: number = 0;
+}
+
+export class Instance {
+    meta: string = "";
+    ins_id: number = 0;
+    para: string = "";
+    content: string = "";
+    context: string = "";
+    states: string = "";
+    state_version: number = 0;
+    create_time: Date = new Date;
+    sys_context: string = "";
+    from_key: string = "";
 }

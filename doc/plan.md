@@ -10,7 +10,7 @@ don't show status-version input box when it's unnecessary
 
 ## doing
 
-update readme with new image
+fetch data
 support Instance-Layout mode
 add `instance` query function.
 
