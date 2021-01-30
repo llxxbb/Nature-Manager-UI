@@ -102,7 +102,7 @@ export class CMPara {
         staVer = new Number(this.instanceStaVer);
       else if (this.para.meta.isState()) staVer = -1;
       this.$emit("instance", {
-        id: new Number(this.instanceId),
+        id: this.instanceId,
         meta: this.para.meta,
         para: this.instancePara,
         staVer,

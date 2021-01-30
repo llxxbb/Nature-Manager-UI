@@ -10,13 +10,15 @@ don't show status-version input box when it's unnecessary
 
 ## doing
 
-fetch data
+fetch instance data
 support Instance-Layout mode
 add `instance` query function.
 
 ## other version
 
-settings: add slide for node-size
+meta: can show multi version
+
+settings: add slide for node-size, zoom size
 
 how to quick find a node?
 

@@ -1,8 +1,11 @@
 import { NATURE_MANAGER_URL } from "@/config";
-import { Meta, Relation } from "@/domain";
+import { Instance, InstanceQueryCondition, Meta, Relation } from "@/domain";
 import { metaDefined, relationDefined } from "@/testData/natureData";
 
 const axios = require('axios').default;
+// axios.defaults.headers.post['Accept'] = 'application/json';
+// axios.defaults.headers.post['Content-Type'] = 'application/json';
+// axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 let allMeta: Meta[];
 let metaIdMax = 0;
@@ -75,6 +78,39 @@ export class Nature {
         })
         return root;
     }
+    async getInstance(condition: InstanceQueryCondition) {
+        let isSingle = true
+        const meta = condition.meta;
+        if (meta.isState() && condition.staVer == -1) isSingle = false;
+        let rtn: Instance[] = []
+        const data = {
+            id: condition.id,
+            meta: meta.meta_type + ":" + meta.meta_key + ":" + meta.version,
+            para: condition.para,
+            state_version: condition.staVer
+        };
+        if (isSingle) {
+            let url = NATURE_MANAGER_URL + "/instance/byId";
+            let res = await axios.post(url, data);
+            console.log(res.data.Ok)
+            rtn.push(res.data.Ok)
+        }
+
+        // let singleUrl = NATURE_MANAGER_URL + "/instance/";
+        // let size = 1000;
+        // let go = true;
+
+        // let rtnR = await axios.get(singleUrl + "/" + id + "/" + size);
+        //     let rtn = rtnR as { data: { Ok: T[] } }
+        //     let dataReturned = rtn.data.Ok;
+        //     dataReturned.forEach(i => {
+        //         let myMeta = toT(i);
+        //         all.push(myMeta)
+        //     })
+        //     if (dataReturned.length < size) break;
+        //     id = idFun(dataReturned);
+        // return all;
+    };
 }
 
 function makeFakeMeta(levels: string[], end: number, id: number) {
@@ -182,26 +218,6 @@ async function getAllMeta() {
 }
 
 async function getItems<T>(baseUrl: string, toT: (item: T) => T, idFun: (items: T[]) => number) {
-    let url = NATURE_MANAGER_URL + "/" + baseUrl;
-    let id = 0;
-    let size = 1000;
-    let go = true;
-    let all: T[] = [];
-    while (go) {
-        let rtnR = await axios.get(url + "/" + id + "/" + size);
-        let rtn = rtnR as { data: { Ok: T[] } }
-        let dataReturned = rtn.data.Ok;
-        dataReturned.forEach(i => {
-            let myMeta = toT(i);
-            all.push(myMeta)
-        })
-        if (dataReturned.length < size) break;
-        id = idFun(dataReturned);
-    }
-    return all;
-};
-
-async function getInstance<T>(baseUrl: string, toT: (item: T) => T, idFun: (items: T[]) => number) {
     let url = NATURE_MANAGER_URL + "/" + baseUrl;
     let id = 0;
     let size = 1000;

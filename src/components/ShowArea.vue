@@ -93,9 +93,9 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       }
       this.tree.show(this.treePara);
     },
-    locateInstance(e: InstanceQueryCondition) {
+    async locateInstance(e: InstanceQueryCondition) {
       this.metaContextShow = false;
-      console.log(e);
+      await this.nature.getInstance(e);
     },
     recentInstances(e: Meta) {
       this.metaContextShow = false;

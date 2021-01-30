@@ -57,21 +57,33 @@ export class Relation {
 }
 
 export class InstanceQueryCondition {
-    id: number = 0;
+    id: string = "0";
     meta: Meta = new Meta;
     para: string = "";
     staVer: number = 0;
 }
 
 export class Instance {
-    meta: string = "";
-    ins_id: number = 0;
-    para: string = "";
-    content: string = "";
-    context: string = "";
-    states: string = "";
-    state_version: number = 0;
+    id: string = "0";
+    data: BizObject = new BizObject;
     create_time: Date = new Date;
-    sys_context: string = "";
-    from_key: string = "";
+}
+
+export class BizObject {
+    meta: string = "";
+    content: string = "";
+    context: Map<String, String> = new Map;
+    sys_context: Map<String, String> = new Map;
+    states: Set<String> = new Set;
+    state_version: number = 0;
+    from?: FromInstance;
+    para: string = "";
+}
+
+export class FromInstance {
+    id: String = "";
+    meta: String = "";
+    para: String = "";
+    state_version = 0;
+
 }
