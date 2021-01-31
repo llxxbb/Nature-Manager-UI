@@ -1,12 +1,7 @@
 <template>
-  <div id="meta-list-border" v-if="ok">
-    <div>
-      Meta List
-      <i class="fas fa-plus"></i>
-      <i class="fas fa-minus"></i>
-      <i class="fas fa-marker"></i>
-    </div>
-    <div id="meta-list"></div>
+  <div id="settings-border" v-if="ok">
+    <div>Settings</div>
+    <div id="setting-items"></div>
   </div>
 </template>
 <script lang="ts">
@@ -17,14 +12,14 @@ import { Vue, Options } from "vue-class-component";
     ok: Boolean,
   },
 })
-export default class MetaList extends Vue {
+export default class Settings extends Vue {
   ok!: Boolean;
 }
 </script> 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
-#meta-list-border {
+#settings-border {
   position: fixed;
   z-index: 100;
   background-attachment: fixed;
@@ -37,7 +32,7 @@ export default class MetaList extends Vue {
   border-radius: 15px;
   background-color: rgba(255, 177, 140, 0.9);
 
-  #meta-list {
+  #setting-items {
     overflow-x: auto;
     overflow-y: auto;
     height: 100%;

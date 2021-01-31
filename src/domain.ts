@@ -1,16 +1,18 @@
 import { now } from "d3";
+import { D3Node } from "./service/d3tree";
 
+export enum DataType {
+    META, INSTANCE
+}
+
+export class NatureData {
+    dataType = DataType.META;
+    data: any;
+}
 export class Meta {
     id = 0;
     name: string = "";
     levels: string[] = []
-    isFake = false;
-    // id in meta table. used to point out the fake `meta` and the real `meta` are same
-    // MetaType::Null is -1
-    // domain-parent is negative less than -1.
-    realId = 0;
-    children?: Meta[];
-    _children?: Meta[];
     meta_type = "";
     meta_key = "";
     description = "";
@@ -21,11 +23,37 @@ export class Meta {
     relation?: Relation;
     flag = 0;
     create_time = new Date;
+    d3node?: D3Node = undefined;
 
+    resetD3Node() {
+        this.d3node = undefined;
+        this.initD3Node();
+    }
+
+
+    initD3Node() {
+        if (this.d3node) return;
+        let color = "black"
+        if (this.isState()) color = "#d02b06"
+        const node = new D3Node;
+        node.id = this.id;
+        node.textColor = color;
+        // the css class does not exists, just to identify the same
+        node.classForSame = "id" + this.id;
+        node.name = this.levels[this.levels.length - 1];
+        node.title = this.name;
+        node.nodeType = this.meta_type;
+        this.d3node = node;
+        // append self to node-------------------
+        const data = new NatureData;
+        data.data = this;
+        data.dataType = DataType.META;
+        this.d3node.data = data;
+        return this;
+    }
     init() {
         this.name = this.meta_type + ":" + this.meta_key + ":" + this.version
         this.levels = this.meta_key.split("/");
-        this.realId = this.id
     }
 
     static fromName(name: string) {
@@ -36,6 +64,8 @@ export class Meta {
         rtn.version = Number.parseInt(parts[2]);
         rtn.levels = rtn.meta_key.split("/");
         rtn.name = name;
+        rtn.id = - 1;
+        rtn.initD3Node();
         return rtn;
     }
 
@@ -43,8 +73,8 @@ export class Meta {
         return this.states.trim().length > 0
     }
 
-    canQueryInstance(): boolean {
-        return this.realId > 0;
+    instanceKey(id: string, para: string, staVer: number) {
+        return this.name + "|" + id + "|" + para + "|" + staVer
     }
 }
 

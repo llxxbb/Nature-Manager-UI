@@ -8,12 +8,12 @@
       src="../assets/logo.png"
     /><span class="h3 align-bottom"> Nature</span>
   </div>
-  <MetaList :ok="tipsSwitch" />
+  <Settings :ok="tipsSwitch" />
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import MetaList from "./MetaList.vue";
+import Settings from "./Settings.vue";
 
 @Options({
   data() {
@@ -22,7 +22,7 @@ import MetaList from "./MetaList.vue";
     };
   },
   components: {
-    MetaList,
+    Settings,
   },
   methods: {
     showTips() {
@@ -31,7 +31,7 @@ import MetaList from "./MetaList.vue";
   },
 })
 export default class Logo extends Vue {}
-</script> 
+</script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">

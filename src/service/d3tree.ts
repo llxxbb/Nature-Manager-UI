@@ -1,8 +1,21 @@
 import { data } from './../testData/node';
-import { Meta } from "@/domain";
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
 import { NODE_SCALE, NODE_SIZE } from '@/config';
+
+export class D3Node {
+    id = 0;
+    name: string = "";
+    title = "";
+    isFake = false;
+    children?: D3Node[];
+    _children?: D3Node[];
+    textColor = "";
+    nodeType = "";
+    classForSame = "";
+    linkData = "";
+    data?: any;
+}
 export class Position {
     x: number = 0;
     y: number = 0;
@@ -12,11 +25,11 @@ export class SvgSize {
     height: number = 0;
 }
 export class TreeEvent {
-    showMetaMenu?: (e: MouseEvent, d: Meta) => void;
+    showMetaMenu?: (e: MouseEvent, d: D3Node) => void;
     hideMetaMenu?: () => void;
     showLayoutMenu?: (e: MouseEvent) => void;
     hideLayoutMenu?: () => void;
-    nodeMoved?: (source: HierarchyPointNode<Meta>, target: HierarchyPointNode<Meta>) => void
+    nodeMoved?: (source: HierarchyPointNode<D3Node>, target: HierarchyPointNode<D3Node>) => void
 }
 
 export enum Shape {
@@ -26,7 +39,7 @@ export enum Shape {
 export class TreePara {
     target: string = "";
     size: SvgSize = {} as any;
-    data: Meta = {} as any;
+    data: D3Node = {} as any;
     event?: TreeEvent;
     shape: Shape = Shape.circle;
 }
@@ -38,8 +51,11 @@ var CurrentNode: HierarchyPointNode<unknown>;
 var SVG: d3.Selection<d3.BaseType, unknown, HTMLElement, any>;
 var TargetToDrop: d3.HierarchyPointNode<unknown> | null;
 var DragStart: boolean = false;
+var SelectNodeX = 0;
+var SelectNodeY = 0;
+
 // make the pointer of mouser out fo the node when drag
-var Offset = 40;
+var Offset = 0.04;
 export class D3Tree {
     show(para: TreePara) {
         ParaData = para
@@ -127,11 +143,7 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
         .data(nodes.links())
         .join("path")
         .attr("d", linkFn)
-        .append("title").text(d => {
-            const toMeta = (d.target.data as any as Meta);
-            if (toMeta.relation) return toMeta.relation.settings;
-            return "";
-        })
+        .append("title").text(d => (d.target.data as any as D3Node).linkData)
 }
 
 function drawNode(
@@ -140,7 +152,7 @@ function drawNode(
 ) {
     upperG.selectAll("g")
         .data(nodes.descendants(), d => {
-            let item = d as HierarchyPointNode<Meta>
+            let item = d as HierarchyPointNode<D3Node>
             return item.data.name
         })
         .join(
@@ -152,7 +164,7 @@ function drawNode(
 function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var enter = enterData.append("g")
         .attr("id", d => {
-            const data = (d as unknown as HierarchyPointNode<Meta>);
+            const data = (d as unknown as HierarchyPointNode<D3Node>);
             return "g" + data.data.id
         })
 
@@ -164,23 +176,24 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     nodeItem.attr("stroke", "#079702")
         .attr("stroke-width", `${0.005 * NODE_SCALE}`)
         .attr("stroke-dasharray", d => {
-            if ((d.data as Meta).isFake)
+            if ((d.data as D3Node).isFake)
                 return `${0.005 * NODE_SCALE}, ${0.01 * NODE_SCALE}`
             else return `100,0`
         })
         .attr("fill", "#f1d5d5")
-        .attr("id", d => `c${(d.data as Meta).id}`)
-        .attr("class", d => { return "id" + ((d.data) as any as Meta).realId })
+        .attr("id", d => `c${(d.data as D3Node).id}`)
+        // used to select same meta
+        .attr("class", d => ((d.data) as any as D3Node).classForSame)
 
     appendText(enter)
 
     // add folder icon
-    let folder = enter.filter(d => d.children ? true : false || (d.data as Meta)._children ? true : false);
+    let folder = enter.filter(d => d.children ? true : false || (d.data as D3Node)._children ? true : false);
     addIcon(folder);
 
     // add Type
     enter.append("text")
-        .text((d) => (d.data as Meta).meta_type)
+        .text((d) => (d.data as D3Node).nodeType)
         .attr("y", `${0.015 * NODE_SCALE}`)
         // distance from text to node
         .attr("x", `${-0.014 * NODE_SCALE}`)
@@ -190,7 +203,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
     // add tooltip
-    enter.append("title").text(d => (d.data as Meta).name)
+    enter.append("title").text(d => (d.data as D3Node).title)
 
     const nodeEvent = enter.append(getShape());
     // node event
@@ -207,9 +220,9 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
                 TargetToDrop = d
             }
             // show same
-            const same = d3.selectAll(".id" + (d.data as any as Meta).realId);
+            const same = d3.selectAll("." + (d.data as any as D3Node).classForSame);
             same.attr("class", d => {
-                return "same " + "id" + (d as HierarchyPointNode<Meta>).data.realId
+                return "same " + (d as HierarchyPointNode<D3Node>).data.classForSame
             })
         })
         .on("mouseout", (_e, _d) => {
@@ -217,7 +230,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
             // remove same
             d3.selectAll(".same")
                 .attr("class", d => {
-                    return "id" + (d as HierarchyPointNode<Meta>).data.realId
+                    return (d as HierarchyPointNode<D3Node>).data.classForSame
                 })
         })
     return enter;
@@ -250,31 +263,39 @@ function shapePropertySet(nodeEvent: d3.Selection<d3.BaseType, d3.HierarchyPoint
 function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var drag = d3.drag()
         .on("start", (e, d) => {
-            changeNodeStyle(e, d as HierarchyPointNode<Meta>)
-            const one = (d as HierarchyPointNode<Meta>);
+            changeNodeStyle(e, d as HierarchyPointNode<D3Node>)
+            const one = (d as HierarchyPointNode<D3Node>);
             // the root node can't be moved
             if (one.parent) DragStart = true
         })
         .on("drag", (e, d) => {
             if (!DragStart) return
-            const one = (d as unknown as HierarchyPointNode<Meta>);
+            const one = (d as unknown as HierarchyPointNode<D3Node>);
             const selected = d3.select(`#g${(one).data.id}`);
+            SelectNodeX = one.x;
+            SelectNodeY = one.y;
+            // make sure that can put it to target
             selected.attr("transform", () => {
-                let x = e.x - one.x + one.y + Offset;
-                let y = e.y - one.y + one.x + Offset;
+                let x = e.x - one.x + one.y + Offset * NODE_SCALE;
+                let y = e.y - one.y + one.x + Offset * NODE_SCALE;
                 return `translate(${x},${y})`;
             });
         })
-        .on("end", (_e, d) => {
+        .on("end", (e, d) => {
             DragStart = false
-            if (!TargetToDrop)
+            if (!TargetToDrop) {
+                // back transform
+                const one = (d as unknown as HierarchyPointNode<D3Node>);
+                const selected = d3.select(`#g${(one).data.id}`);
+                selected.attr("transform", () => `translate(${SelectNodeY},${SelectNodeX})`);
                 return;
+            }
             console
-            let dragged = d as HierarchyPointNode<Meta>;
+            let dragged = d as HierarchyPointNode<D3Node>;
             let target = TargetToDrop
             TargetToDrop = null
             if (ParaData.event && ParaData.event.nodeMoved)
-                ParaData.event?.nodeMoved(dragged, target as HierarchyPointNode<Meta>);
+                ParaData.event?.nodeMoved(dragged, target as HierarchyPointNode<D3Node>);
         });
 
     drag(enter as unknown as d3.Selection<Element, unknown, any, any>);
@@ -298,15 +319,9 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         // used to select all text beside node
         .attr("class", "side")
         // set status meta
-        .attr("fill", d => {
-            const meta = (d.data as any as Meta);
-            return meta.isState() ? "#d02b06" : "black"
-        })
-        .attr("opacity", (d) => ((d.data as any as Meta).isFake ? 0.4 : 1))
-        .text(d => {
-            const m = (d.data as Meta);
-            return m.levels[m.levels.length - 1]
-        })
+        .attr("fill", d => (d.data as any as D3Node).textColor)
+        .attr("opacity", (d) => ((d.data as any as D3Node).isFake ? 0.4 : 1))
+        .text(d => (d.data as D3Node).name)
         .clone(true)
         // stroke no text inner
         .lower()
@@ -333,26 +348,26 @@ function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNo
         .attr("href", d => {
             if (d.children)
                 return `${require("../assets/caret-right-fill.svg")}`;
-            else if ((d.data as Meta)._children)
+            else if ((d.data as D3Node)._children)
                 return `${require("../assets/caret-down-fill.svg")}`;
             return null;
         })
-        .attr("id", d => "i" + (d.data as Meta).id)
+        .attr("id", d => "i" + (d.data as D3Node).id)
 }
 
 function changeNodeStyle(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (CurrentNode) {
-        let old = d3.select("#c" + (CurrentNode.data as Meta).id)
+        let old = d3.select("#c" + (CurrentNode.data as D3Node).id)
         old.attr("stroke", "#079702");
     }
     CurrentNode = d
-    let nNode = "#c" + (CurrentNode.data as Meta).id;
+    let nNode = "#c" + (CurrentNode.data as D3Node).id;
     let n = d3.select(nNode)
     n.attr("stroke", "#8f3200");
 }
 
 function openedCheck(d: unknown) {
-    const node = d as unknown as HierarchyPointNode<Meta>;
+    const node = d as unknown as HierarchyPointNode<D3Node>;
     var child = node.data.children;
     var opened;
     if (child) {
@@ -364,7 +379,7 @@ function openedCheck(d: unknown) {
 }
 
 function hasChildCheck(d: unknown) {
-    const node = d as unknown as HierarchyPointNode<Meta>;
+    const node = d as unknown as HierarchyPointNode<D3Node>;
     var child = node.data.children;
     if (child && child.length > 0)
         return { hasChild: true, node };
@@ -375,7 +390,7 @@ function hasChildCheck(d: unknown) {
 }
 
 function showNodeContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
-    let d = node as HierarchyPointNode<Meta>
+    let d = node as HierarchyPointNode<D3Node>
     changeNodeStyle(e, d);
     if (ParaData.event && ParaData.event.showMetaMenu)
         ParaData.event.showMetaMenu(e, d.data);
@@ -398,9 +413,9 @@ function update(para: TreePara) {
 
 // Toggle folder.
 function toggle(e: MouseEvent, node: HierarchyPointNode<unknown> | unknown) {
-    let d = node as HierarchyPointNode<Meta>
+    let d = node as HierarchyPointNode<D3Node>
     changeNodeStyle(e, d)
-    let data: Meta = d.data
+    let data: D3Node = d.data
     let one = d3.select(`#i${data.id}`)
     if (data.children) {
         data._children = data.children;

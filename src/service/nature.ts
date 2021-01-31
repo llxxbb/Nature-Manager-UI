@@ -1,15 +1,14 @@
 import { NATURE_MANAGER_URL } from "@/config";
 import { Instance, InstanceQueryCondition, Meta, Relation } from "@/domain";
 import { metaDefined, relationDefined } from "@/testData/natureData";
+import { D3Node } from "./d3tree";
 
 const axios = require('axios').default;
-// axios.defaults.headers.post['Accept'] = 'application/json';
-// axios.defaults.headers.post['Content-Type'] = 'application/json';
-// axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 let allMeta: Meta[];
 let metaIdMax = 0;
 export class Nature {
+    // data for relation mode
     async getRelation() {
         // // mock data for test-----------------------
         // // get meta list
@@ -23,158 +22,176 @@ export class Nature {
         // get relation list
         let relationList = await getAllRelation();
 
-        let metaList = allMeta.slice();
+        let metaList = allMeta.slice(); // copy it, and not modify the original
+        let metaMap = new Map;
+        allMeta.forEach(one => {
+            one.initD3Node();
+            metaMap.set(one.name, one);
+        });
         // assembly relation tree-------------------
         // find max id
         metaList.forEach(one => { if (one.id > metaIdMax) metaIdMax = one.id })
         let idIncrease = metaIdMax;
         // process each relation
         relationList.forEach(r => {
-            // find relation meta
-            let from = findMeta(metaList, r, (m, r) => m.name == r.from_meta);
-            let to = findMeta(metaList, r, (m, r) => m.name == r.to_meta, true);
+            // find relation meta and it's index
+            let from = findMeta(metaList, metaMap, r, (m, r) => m.name == r.from_meta);
+            let to = findMeta(metaList, metaMap, r, (m, r) => m.name == r.to_meta, true);
             // check
-            if (!from.meta || !to.meta) return;
+            if (!from.meta || !to.meta) return; // TODO show undefined `Meta` in relation-mode
             if (to.index == from.index) to.index = -1;
             if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idIncrease)
+            if (to.index == -2) {
+                const node = to.meta.d3node as D3Node;
+                node.id = ++idIncrease;
+                node.isFake = true;
+            }
             // add relation
             to.meta.relation = r;
-            addChild(from.meta, to.meta);
+            addChild(from.meta.d3node as D3Node, to.meta.d3node as D3Node);
             // remove "to" from metaList
             if (to.index > -1) metaList.splice(to.index, 1)
         })
         // make tree
-        let root = makeRootMeta(metaList);
+        let root = makeRootMetaNode(metaList);
         return root;
     }
 
+    // data for domain mode
     getDomain() {
-        let unique = new Map<String, Meta>();
-        let root = makeRootMeta([]);
+        let unique = new Map<String, D3Node>();
+        let root = makeRootMetaNode([]);
         let idSeq = -1;
         allMeta.forEach(one => {
+            // init parent
             let path = "/";
+            let parent = unique.get(path);
+            if (!parent) {
+                // only root has no parent
+                parent = root;
+                unique.set(path, parent);
+            }
+            // init child
             for (let index = 0; index < one.levels.length; index++) {
                 // find parent
-                let parent = unique.get(path);
-                if (!parent) {
-                    // only root has no parent
-                    parent = root;
-                    unique.set(path, parent);
-                }
                 const level = one.levels[index];
                 path = path + level + "/";
                 let child = unique.get(path);
-                if (child) continue;
-                if (index < one.levels.length - 1)
-                    child = makeFakeMeta(one.levels, index, --idSeq)
-                else {
-                    child = Object.assign(new Meta, one);
-                    child.children = undefined;
+                if (index < one.levels.length - 1) {
+                    if (!child) {
+                        child = makeParentDomainNode(one.levels, index, --idSeq)
+                        addChild(parent, child)
+                        unique.set(path, child);
+                    }
+                    parent = child;
+                } else {
+                    if (!child) {
+                        child = Object.assign(new D3Node, one.d3node);
+                        child.children = undefined
+                        addChild(parent, child)
+                        unique.set(path, child);
+                    }
+                    else {
+                        // change fake to false, which created early
+                        child.id = one.id;
+                        child.isFake = false;
+                        child.data = one;
+                    }
                 }
-                addChild(parent, child)
-                unique.set(path, child);
             }
         })
         return root;
     }
     async getInstance(condition: InstanceQueryCondition) {
-        let isSingle = true
+        let isLast = true
         const meta = condition.meta;
-        if (meta.isState() && condition.staVer == -1) isSingle = false;
+        if (meta.isState() && condition.staVer == -1) isLast = false;
         let rtn: Instance[] = []
-        const data = {
-            id: condition.id,
-            meta: meta.meta_type + ":" + meta.meta_key + ":" + meta.version,
-            para: condition.para,
-            state_version: condition.staVer
-        };
-        if (isSingle) {
-            let url = NATURE_MANAGER_URL + "/instance/byId";
-            let res = await axios.post(url, data);
-            console.log(res.data.Ok)
+        if (isLast) {
+            const data = {
+                id: condition.id,
+                meta: meta.name,
+                para: condition.para,
+                state_version: condition.staVer
+            };
+            let res = await axios.post(NATURE_MANAGER_URL + "/instance/byId", data);
             rtn.push(res.data.Ok)
+        } else {
+            const data = {
+                id: condition.id,
+                meta: "",
+                key_le: meta.instanceKey(condition.id, condition.para, Number.MAX_SAFE_INTEGER),
+            };
+            let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", data);
+            rtn = res.data.Ok
         }
-
-        // let singleUrl = NATURE_MANAGER_URL + "/instance/";
-        // let size = 1000;
-        // let go = true;
-
-        // let rtnR = await axios.get(singleUrl + "/" + id + "/" + size);
-        //     let rtn = rtnR as { data: { Ok: T[] } }
-        //     let dataReturned = rtn.data.Ok;
-        //     dataReturned.forEach(i => {
-        //         let myMeta = toT(i);
-        //         all.push(myMeta)
-        //     })
-        //     if (dataReturned.length < size) break;
-        //     id = idFun(dataReturned);
-        // return all;
+        if (rtn.length == 0) return null
+        console.log(rtn)
     };
 }
 
-function makeFakeMeta(levels: string[], end: number, id: number) {
-    let rtn = new Meta
-    rtn.id = id;
+function makeParentDomainNode(levels: string[], end: number, nodeId: number) {
+    let rtn = new D3Node
+    rtn.id = nodeId;
+    rtn.classForSame = "id" + nodeId;
     rtn.isFake = true;
-    rtn.meta_key = levels.slice(0, end + 1).join("/")
-    rtn.init()
+    rtn.name = levels[end]
     return rtn
 }
 
-function addChild(parent: Meta, child: Meta) {
+function addChild(parent: D3Node, child: D3Node) {
     if (parent.children)
         parent.children.push(child);
     else
         parent.children = [child];
 }
 
-function makeRootMeta(children: Meta[]) {
-    let root = new Meta;
-    root.children = children;
+function makeRootMetaNode(metaList: Meta[]) {
+    const children = metaList.map(d => d.d3node);
+    let root = new D3Node;
+    root.children = children as D3Node[];
     root.name = "root";
-    root.meta_key = "root";
-    root.levels = ["root"];
+    root.classForSame = "idRoot"
     return root;
 }
 
-function fakeMeta(m: Meta, id: number, metaId: number) {
-    var rtn = Object.assign(new Meta, m);
-    rtn.realId = m.meta_type == "N" ? -1 : m.id;
-    rtn.children = undefined;
-    rtn.isFake = true;
-    rtn.name = rtn.name + "|" + id;
-    rtn.id = metaId;
+function fakeMeta(m: Meta, relationId: number, nodeId: number) {
+    var rtn: Meta = Object.assign(new Meta, m);
+    rtn.resetD3Node();
+    const node = rtn.d3node;
+    if (!node) throw new Error("imposable!");
+    node.id = nodeId;
+    node.isFake = true;
+    node.title = rtn.name + "|" + relationId;
     return rtn;
 }
 
-function findMeta(metaList: Meta[], r: Relation, predicate: (m: Meta, r: Relation) => boolean, isTo = false) {
+function findMeta(metaList: Meta[], metaMap: Map<String, Meta>, r: Relation, predicate: (m: Meta, r: Relation) => boolean, isTo = false) {
+    let index = -1; // not found in `metaList`
+    let name: string = isTo ? r.to_meta : r.from_meta;
+    let meta = metaMap.get(name);
     // check for meta type: Null
     if (isTo) {
-        let toM = Meta.fromName(r.to_meta);
-        if (toM.meta_type == "N") return { meta: toM, index: -1 };
-    };
+        if (!meta) {
+            // maybe MetaType::Null
+            meta = Meta.fromName(name);
+            metaMap.set(name, meta);
+            index = -2; // not found and create new, so need not copy it to fake;
+        }
+        if (meta.meta_type == "N") {
+            meta.id = -1;
+            return { meta, index }
+        };
+    }
     // normal check
-    return findOneLayer(metaList, predicate, r);
-}
-
-function findOneLayer(metaList: Meta[], predicate: (m: Meta, r: Relation) => boolean, r: Relation) {
-    let index = -1; // -1 not found in top level
     let found = metaList.find((m, idx) => {
         if (predicate(m, r)) {
             index = idx;
-            found = m;
             return true;
         }
     })
     if (found) return { meta: found, index };
-    for (let idx = 0; idx < metaList.length; idx++) {
-        let m = metaList[idx];
-        if (!m.children) continue;
-        let fOne: { meta: Meta | null, index: number } = findOneLayer(m.children, predicate, r)
-        if (fOne.meta) return { meta: fOne.meta, index: -1 }
-    }
-    return { meta: null, index: -1 };
+    return { meta, index }
 }
 
 async function getAllRelationMock() {
@@ -205,7 +222,6 @@ async function getAllMetaMock() {
     })
     return meta;
 }
-
 async function getAllMeta() {
     return await getItems<Meta>("metaIdGreatThan",
         item => {

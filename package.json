@@ -1,6 +1,6 @@
 {
   "name": "nature-manager-ui",
-  "version": "0.1.1",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -10,7 +10,7 @@
   "dependencies": {
     "@vue/server-renderer": "^3.0.5",
     "axios": "^0.21.1",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^4.6.0",
     "core-js": "^3.8.3",
     "d3": "^6.4.0",
     "d3-drag": "^2.0.0",
@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
-    "@types/d3": "^6.2.0",
+    "@types/d3": "^6.3.0",
     "@types/mocha": "^5.2.4",
     "@vue/cli-plugin-babel": "^4.5.11",
     "@vue/cli-plugin-typescript": "^4.5.11",
@@ -29,7 +29,7 @@
     "@vue/cli-service": "^4.5.11",
     "@vue/compiler-sfc": "^3.0.5",
     "@vue/test-utils": "^2.0.0-beta.14",
-    "chai": "^4.1.2",
+    "chai": "^4.3.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
     "typescript": "~3.9.3"

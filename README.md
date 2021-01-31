@@ -12,7 +12,29 @@ Please user version 0.20.1 or above of Nature.
 
 ![main](doc/domain.png?raw=truw)
 
+## functions
+
+- change mode by right-click at the blank of the layer.
+- context-menu for node.
+- you can move one node to another.
+- can expand-collapse the nodes.
+- show `State-Meta` text in red title
+- show red circle for current selected node.
+
+- for same `Meta`, use virtual circle to show repeated, and use blue color to identify them when move on them.
+- for use virtual circle to show `domain`.
+- can modify setting in `config.ts`
 ## Change Logs
+
+**0.3.0** 2021-02-08
+
+Don't show instance query when node is not a real meta.
+bug fix: meta-context-menu and layout-context-menu conflict
+show State-Meta text in red 
+can modify setting in `config.ts`
+don't show status-version input box when it's unnecessary
+optimize: put it back for a failed drag
+remove business from d3tree
 
 **v0.2.0** 2021-01-24
 

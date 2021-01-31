@@ -21,7 +21,7 @@ import { InstanceQueryCondition, Meta } from "@/domain";
 import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
-import { D3Tree, TreePara, TreeEvent, Shape } from "../service/d3tree";
+import { D3Tree, TreePara, TreeEvent, Shape, D3Node } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import MetaContextMenu from "./MetaContextMenu.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
@@ -49,14 +49,14 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
     },
   },
   methods: {
-    showMetaMenu(e: MouseEvent, d: Meta) {
+    showMetaMenu(e: MouseEvent, d: D3Node) {
       e.stopPropagation();
       if (this.layerContextShow) this.layerContextShow = false;
       var cm = this.$refs.metaMenu;
       cm.para = {
         top: e.clientY,
         left: e.clientX,
-        meta: d,
+        node: d,
       };
       this.metaContextShow = true;
     },
@@ -101,10 +101,11 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       this.metaContextShow = false;
       console.log(e);
     },
-    addNode(e: { name: string; parent: Meta }) {
+    addNode(e: { name: string; parent: D3Node }) {
       this.metaContextShow = false;
-      let newNode = new Meta();
+      let newNode = new D3Node();
       newNode.name = e.name;
+      if (!e.parent) e.parent = this.relationData;
       if (e.parent.children) e.parent.children.push(newNode);
       else if (e.parent._children) e.parent._children.push(newNode);
       else e.parent.children = [newNode];
@@ -119,8 +120,8 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
       console.log("deleteNode");
     },
     nodeMoved(
-      source: HierarchyPointNode<Meta>,
-      target: HierarchyPointNode<Meta>
+      source: HierarchyPointNode<D3Node>,
+      target: HierarchyPointNode<D3Node>
     ) {
       this.metaContextShow = false;
       // remove from parent

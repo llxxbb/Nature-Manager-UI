@@ -6,7 +6,7 @@
   >
     <ul class="list-group">
       <li
-        v-show="para.meta.canQueryInstance()"
+        v-show="canQueryInstance()"
         class="list-group-item item list-group-item-action"
       >
         <img src="../assets/locate.svg" />
@@ -26,7 +26,7 @@
             placeholder="para"
           />
           <input
-            v-show="para.meta.isState()"
+            v-show="isState()"
             v-model="instanceStaVer"
             title="default -1 : for all version"
             type="text"
@@ -39,7 +39,7 @@
         </div>
       </li>
       <li
-        v-show="para.meta.canQueryInstance()"
+        v-show="canQueryInstance()"
         class="list-group-item item list-group-item-action"
         @click="list"
       >
@@ -72,13 +72,14 @@
 </template>
 
 <script lang="ts">
-import { Meta } from "@/domain";
+import { Meta, NatureData } from "@/domain";
+import { D3Node } from "@/service/d3tree";
 import { Options, Vue } from "vue-class-component";
 
 export class CMPara {
   left = 0;
   top = 0;
-  meta: Meta = new Meta();
+  node: D3Node = (undefined as any) as D3Node;
 }
 
 @Options({
@@ -112,17 +113,32 @@ export class CMPara {
       this.instanceStaVer = "";
     },
     list() {
-      this.$emit("list", this.para.meta);
+      this.$emit("list", this.para.node);
     },
     editNode() {
-      this.$emit("editNode", this.para.meta);
+      this.$emit("editNode", this.para.node);
     },
     deleteNode() {
-      this.$emit("deleteNode", this.para.meta);
+      this.$emit("deleteNode", this.para.node);
     },
     addNode() {
-      this.$emit("addNode", { name: this.metaName, parent: this.para.meta });
+      this.$emit("addNode", {
+        name: this.metaName,
+        parent: this.para.node,
+      });
       this.metaName = "";
+    },
+    canQueryInstance() {
+      if (!this.para.node) return false;
+      if (!this.para.node.data) return false;
+      return true;
+    },
+    isState() {
+      if (!this.para.node) return false;
+      let nd = (this.para.node as D3Node).data;
+      if (!nd) return false;
+      if (nd.data) return nd.data.isState();
+      return false;
     },
   },
 })
