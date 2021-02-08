@@ -1,48 +1,8 @@
-import { data } from './../testData/node';
+import { NODE_SCALE, NODE_SIZE } from '@/config';
+import { TreePara, D3Node, Position, Shape } from '@/domain/node';
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
-import { NODE_SCALE, NODE_SIZE } from '@/config';
 
-export class D3Node {
-    id = 0;
-    name: string = "";
-    title = "";
-    isFake = false;
-    children?: D3Node[];
-    _children?: D3Node[];
-    textColor = "";
-    nodeType = "";
-    classForSame = "";
-    linkData = "";
-    data?: any;
-}
-export class Position {
-    x: number = 0;
-    y: number = 0;
-}
-export class SvgSize {
-    width: number = 0;
-    height: number = 0;
-}
-export class TreeEvent {
-    showMetaMenu?: (e: MouseEvent, d: D3Node) => void;
-    hideMetaMenu?: () => void;
-    showLayoutMenu?: (e: MouseEvent) => void;
-    hideLayoutMenu?: () => void;
-    nodeMoved?: (source: HierarchyPointNode<D3Node>, target: HierarchyPointNode<D3Node>) => void
-}
-
-export enum Shape {
-    circle, rect, rectR
-}
-
-export class TreePara {
-    target: string = "";
-    size: SvgSize = {} as any;
-    data: D3Node = {} as any;
-    event?: TreeEvent;
-    shape: Shape = Shape.circle;
-}
 
 var ParaData: TreePara
 var GForNode: d3.Selection<SVGGElement, unknown, HTMLElement, any>;
@@ -180,18 +140,17 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
                 return `${0.005 * NODE_SCALE}, ${0.01 * NODE_SCALE}`
             else return `100,0`
         })
-        .attr("fill", "#f1d5d5")
+        .attr("fill", "#f9f5d7")
         .attr("id", d => `c${(d.data as D3Node).id}`)
         // used to select same meta
-        .attr("class", d => ((d.data) as any as D3Node).classForSame)
+        .attr("class", d => ((d.data) as any as D3Node).getClassForSame())
 
     appendText(enter)
 
     // add folder icon
-    let folder = enter.filter(d => d.children ? true : false || (d.data as D3Node)._children ? true : false);
-    addIcon(folder);
+    let folder = enter.filter(d => (d.data as D3Node).hasChild());
+    addFolderIcon(folder);
 
-    // add Type
     enter.append("text")
         .text((d) => (d.data as D3Node).nodeType)
         .attr("y", `${0.015 * NODE_SCALE}`)
@@ -210,30 +169,31 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     shapePropertySet(nodeEvent)
     nodeEvent.attr("opacity", "0")
         .on("click", (e, d) => {
-            let { hasChild } = hasChildCheck(d)
+            let hasChild = (d as HierarchyPointNode<D3Node>).data.hasChild();
             if (hasChild) toggle(e, d)
-            else changeNodeStyle(e, d)
+            changeCurrent(e, d)
         })
         .on("contextmenu", showNodeContextMenu)
-        .on("mouseover", (_e, d) => {
-            if (DragStart && d != CurrentNode) {
-                TargetToDrop = d
-            }
-            // show same
-            const same = d3.selectAll("." + (d.data as any as D3Node).classForSame);
-            same.attr("class", d => {
-                return "same " + (d as HierarchyPointNode<D3Node>).data.classForSame
-            })
-        })
+        .on("mouseover", mouseOver)
         .on("mouseout", (_e, _d) => {
             TargetToDrop = null
             // remove same
             d3.selectAll(".same")
                 .attr("class", d => {
-                    return (d as HierarchyPointNode<D3Node>).data.classForSame
+                    return (d as HierarchyPointNode<D3Node>).data.getClassForSame()
                 })
         })
     return enter;
+}
+
+function mouseOver(_e: any, d: d3.HierarchyPointNode<unknown>) {
+    const d3node = d.data as D3Node;
+    if (d != CurrentNode && DragStart) TargetToDrop = d;
+    // show same
+    const same = d3.selectAll("." + d3node.getClassForSame());
+    same.attr("class", d => {
+        return "same " + (d as HierarchyPointNode<D3Node>).data.getClassForSame();
+    });
 }
 
 function getShape(): string {
@@ -263,17 +223,19 @@ function shapePropertySet(nodeEvent: d3.Selection<d3.BaseType, d3.HierarchyPoint
 function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var drag = d3.drag()
         .on("start", (e, d) => {
-            changeNodeStyle(e, d as HierarchyPointNode<D3Node>)
+            changeCurrent(e, d as HierarchyPointNode<D3Node>)
             const one = (d as HierarchyPointNode<D3Node>);
             // the root node can't be moved
-            if (one.parent) DragStart = true
+            if (one.parent) {
+                DragStart = true
+                SelectNodeX = one.x;
+                SelectNodeY = one.y;
+            }
         })
         .on("drag", (e, d) => {
             if (!DragStart) return
             const one = (d as unknown as HierarchyPointNode<D3Node>);
             const selected = d3.select(`#g${(one).data.id}`);
-            SelectNodeX = one.x;
-            SelectNodeY = one.y;
             // make sure that can put it to target
             selected.attr("transform", () => {
                 let x = e.x - one.x + one.y + Offset * NODE_SCALE;
@@ -282,6 +244,7 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
             });
         })
         .on("end", (e, d) => {
+            if (!DragStart) return;
             DragStart = false
             if (!TargetToDrop) {
                 // back transform
@@ -290,7 +253,6 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
                 selected.attr("transform", () => `translate(${SelectNodeY},${SelectNodeX})`);
                 return;
             }
-            console
             let dragged = d as HierarchyPointNode<D3Node>;
             let target = TargetToDrop
             TargetToDrop = null
@@ -330,68 +292,85 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
 
 function setTextPosition(text: d3.Selection<d3.BaseType, unknown, d3.BaseType, d3.HierarchyPointNode<unknown>>) {
     text.attr("x", d => {
-        var { opened } = openedCheck(d);
+        var opened = (d as HierarchyPointNode<D3Node>).data.openedCheck();
         return opened ? -0.04 * NODE_SCALE : 0.04 * NODE_SCALE;
     })
         .attr("text-anchor", d => {
-            var { opened } = openedCheck(d);
+            var opened = (d as HierarchyPointNode<D3Node>).data.openedCheck();
             return opened ? "end" : "start";
         });
 }
 
-function addIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
+function addFolderIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     return folder.append("image")
         .attr("x", `${-0.025 * NODE_SCALE}`)
         .attr("y", `${-0.025 * NODE_SCALE}`)
         .attr("width", `${0.05 * NODE_SCALE}`)
         .attr("height", `${0.05 * NODE_SCALE}`)
         .attr("href", d => {
-            if (d.children)
-                return `${require("../assets/caret-right-fill.svg")}`;
-            else if ((d.data as D3Node)._children)
-                return `${require("../assets/caret-down-fill.svg")}`;
+            const node = d.data as D3Node;
+            if (node.hasChild()) {
+                if (node.openedCheck()) return require("../assets/caret-right-fill.svg");
+                else return require("../assets/caret-down-fill.svg");
+            }
             return null;
         })
         .attr("id", d => "i" + (d.data as D3Node).id)
 }
 
-function changeNodeStyle(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
+function removeNavigateIcon(node: D3Node) {
+    d3.select('#nav' + node.id).remove();
+}
+
+function addNavigateIcon(node: D3Node) {
+    const select = d3.select('#g' + node.id);
+    let g = select.append("g")
+        .attr("id", "nav" + node.id);
+    if (ParaData.event && ParaData.event.navigateLeft && !node.leftNavDone)
+        appendNavIcon(g, node, - 0.050, "left", ParaData.event.navigateLeft);
+    if (ParaData.event && ParaData.event.navigateRight && !node.rightNavDone)
+        appendNavIcon(g, node, + 0.050, "right", ParaData.event.navigateRight);
+}
+
+function appendNavIcon(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
+    node: D3Node, offset: number, icon: string, fun: (n: D3Node) => void) {
+    g.append("circle")
+        .attr("r", 0.03 * NODE_SCALE)
+        .attr("cx", offset * NODE_SCALE)
+    g.append("image")
+        .attr("x", (-0.025 + offset) * NODE_SCALE)
+        .attr("y", -0.025 * NODE_SCALE)
+        .attr("width", 0.05 * NODE_SCALE)
+        .attr("height", 0.05 * NODE_SCALE)
+        .attr("href", require(`../assets/${icon}.svg`))
+    g.append("circle")
+        .attr("r", 0.03 * NODE_SCALE)
+        .attr("cx", offset * NODE_SCALE)
+        .attr("opacity", "0")
+        // TODO click and dbClick event can't work, but mouseover is ok
+        // .on("click", () => { fun(node) })
+        .on("mouseover", () => { fun(node) })
+}
+
+function changeCurrent(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (CurrentNode) {
         let old = d3.select("#c" + (CurrentNode.data as D3Node).id)
         old.attr("stroke", "#079702");
+        if (ParaData.shape == Shape.rectR)
+            removeNavigateIcon(CurrentNode.data as D3Node);
     }
     CurrentNode = d
     let nNode = "#c" + (CurrentNode.data as D3Node).id;
     let n = d3.select(nNode)
     n.attr("stroke", "#8f3200");
-}
-
-function openedCheck(d: unknown) {
-    const node = d as unknown as HierarchyPointNode<D3Node>;
-    var child = node.data.children;
-    var opened;
-    if (child) {
-        opened = child.length == 0 ? false : true;
-    } else {
-        opened = false;
-    }
-    return { opened, node };
-}
-
-function hasChildCheck(d: unknown) {
-    const node = d as unknown as HierarchyPointNode<D3Node>;
-    var child = node.data.children;
-    if (child && child.length > 0)
-        return { hasChild: true, node };
-    child = node.data._children;
-    if (child && child.length > 0)
-        return { hasChild: true, node };
-    return { hasChild: false, node };
+    // show navigator
+    if (ParaData.shape == Shape.rectR)
+        addNavigateIcon(d.data as D3Node);
 }
 
 function showNodeContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
     let d = node as HierarchyPointNode<D3Node>
-    changeNodeStyle(e, d);
+    changeCurrent(e, d);
     if (ParaData.event && ParaData.event.showMetaMenu)
         ParaData.event.showMetaMenu(e, d.data);
     e.preventDefault();
@@ -414,17 +393,9 @@ function update(para: TreePara) {
 // Toggle folder.
 function toggle(e: MouseEvent, node: HierarchyPointNode<unknown> | unknown) {
     let d = node as HierarchyPointNode<D3Node>
-    changeNodeStyle(e, d)
     let data: D3Node = d.data
     let one = d3.select(`#i${data.id}`)
-    if (data.children) {
-        data._children = data.children;
-        data.children = undefined;
-        one.attr("href", `${require("../assets/caret-down-fill.svg")}`)
-    } else {
-        data.children = data._children;
-        data._children = undefined;
-        one.attr("href", `${require("../assets/caret-right-fill.svg")}`)
-    }
+    data.toggle(() => one.attr("href", `${require("../assets/caret-down-fill.svg")}`),
+        () => one.attr("href", `${require("../assets/caret-right-fill.svg")}`))
     update(ParaData)
 }

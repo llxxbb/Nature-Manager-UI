@@ -72,9 +72,11 @@
 </template>
 
 <script lang="ts">
-import { Meta, NatureData } from "@/domain";
-import { D3Node } from "@/service/d3tree";
+import { Meta } from "@/domain/meta";
+import { Instance } from "@/domain/instance";
+import { D3Node, NatureData, DataType } from "@/domain/node";
 import { Options, Vue } from "vue-class-component";
+import { InstanceQueryCondition } from "@/domain/instance";
 
 export class CMPara {
   left = 0;
@@ -98,16 +100,26 @@ export class CMPara {
   emits: ["instance", "list", "editNode", "addNode", "deleteNode"],
   methods: {
     query(e: KeyboardEvent) {
-      let staVer: Number = 0;
+      let data = this.para.node.data as NatureData;
+      // init and meta
+      let meta: Meta;
+      if (data.dataType == DataType.META) {
+        meta = data.data;
+      } else {
+        meta = (data.data as Instance).meta;
+      }
+      // init state version
+      let staVer: number = 0;
       if (this.instanceStaVer.length > 0)
-        staVer = new Number(this.instanceStaVer);
-      else if (this.para.meta.isState()) staVer = -1;
-      this.$emit("instance", {
-        id: this.instanceId,
-        meta: this.para.meta,
-        para: this.instancePara,
-        staVer,
-      });
+        staVer = new Number(this.instanceStaVer) as number;
+      if (staVer == 0 && meta.isState()) staVer = -1;
+      // query
+      let cond = new InstanceQueryCondition();
+      cond.id = this.instanceId;
+      cond.meta = meta;
+      cond.para = this.instancePara;
+      cond.staVer = staVer;
+      this.$emit("instance", cond);
       this.instanceId = "";
       this.instancePara = "";
       this.instanceStaVer = "";
@@ -135,9 +147,11 @@ export class CMPara {
     },
     isState() {
       if (!this.para.node) return false;
-      let nd = (this.para.node as D3Node).data;
+      let nd = (this.para.node as D3Node).data as NatureData;
       if (!nd) return false;
-      if (nd.data) return nd.data.isState();
+      if (nd.dataType == DataType.META) return nd.data.isState();
+      else if (nd.dataType == DataType.INSTANCE)
+        return (nd.data as Instance).meta.isState();
       return false;
     },
   },

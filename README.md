@@ -2,15 +2,25 @@
 
 You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature) 
 
-Please user version 0.20.1 or above of Nature.
+Please user version 0.22.1 or above of Nature.
 
 ## Relation Mode
 
-![main](doc/relation.png?raw=truw)
+In this mode, you can organize how the business to work.
+
+![main](doc/relation.png?raw=true)
 
 ## Domain Mode
 
-![main](doc/domain.png?raw=truw)
+In this mode, you can organize the business domain.
+
+![main](doc/domain.png?raw=true)
+
+## Instance Mode
+
+In this mode, you can see the data flow
+
+![main](doc/instance.png?raw=true)
 
 ## functions
 
@@ -22,19 +32,23 @@ Please user version 0.20.1 or above of Nature.
 - show red circle for current selected node.
 
 - for same `Meta`, use virtual circle to show repeated, and use blue color to identify them when move on them.
-- for use virtual circle to show `domain`.
-- can modify setting in `config.ts`
+- use virtual circle to show `path-domain`.
+- can modify settings in `config.ts`
 ## Change Logs
+
+**0.4.0** 2021-02-10
+
+- support Instance-mode
 
 **0.3.0** 2021-02-08
 
-Don't show instance query when node is not a real meta.
-bug fix: meta-context-menu and layout-context-menu conflict
-show State-Meta text in red 
-can modify setting in `config.ts`
-don't show status-version input box when it's unnecessary
-optimize: put it back for a failed drag
-remove business from d3tree
+- Don't show instance query when node is not a real meta.
+- bug fix: meta-context-menu and layout-context-menu conflict
+- show State-Meta text in red 
+- can modify setting in `config.ts`
+- don't show status-version input box when it's unnecessary
+- optimize: put it back for a failed drag
+- remove business from d3tree
 
 **v0.2.0** 2021-01-24
 
@@ -76,3 +90,4 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+

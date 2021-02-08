@@ -1,14 +1,6 @@
-import { now } from "d3";
-import { D3Node } from "./service/d3tree";
+import { D3Node, DataType, NatureData } from "./node";
+import { Relation } from "./relation";
 
-export enum DataType {
-    META, INSTANCE
-}
-
-export class NatureData {
-    dataType = DataType.META;
-    data: any;
-}
 export class Meta {
     id = 0;
     name: string = "";
@@ -39,7 +31,7 @@ export class Meta {
         node.id = this.id;
         node.textColor = color;
         // the css class does not exists, just to identify the same
-        node.classForSame = "id" + this.id;
+        node.setClassForSame("id" + this.id);
         node.name = this.levels[this.levels.length - 1];
         node.title = this.name;
         node.nodeType = this.meta_type;
@@ -76,44 +68,4 @@ export class Meta {
     instanceKey(id: string, para: string, staVer: number) {
         return this.name + "|" + id + "|" + para + "|" + staVer
     }
-}
-
-export class Relation {
-    id = 0;
-    from_meta = "";
-    to_meta = "";
-    settings = "";
-    flag = 0;
-}
-
-export class InstanceQueryCondition {
-    id: string = "0";
-    meta: Meta = new Meta;
-    para: string = "";
-    staVer: number = 0;
-}
-
-export class Instance {
-    id: string = "0";
-    data: BizObject = new BizObject;
-    create_time: Date = new Date;
-}
-
-export class BizObject {
-    meta: string = "";
-    content: string = "";
-    context: Map<String, String> = new Map;
-    sys_context: Map<String, String> = new Map;
-    states: Set<String> = new Set;
-    state_version: number = 0;
-    from?: FromInstance;
-    para: string = "";
-}
-
-export class FromInstance {
-    id: String = "";
-    meta: String = "";
-    para: String = "";
-    state_version = 0;
-
 }

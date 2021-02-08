@@ -8,7 +8,7 @@
       <li
         v-show="modeDomain()"
         class="list-group-item item list-group-item-action"
-        @click="click"
+        @click="click(1)"
       >
         <img src="../assets/domain.svg" />
         Domain Mode
@@ -16,7 +16,7 @@
       <li
         v-show="modeRelation()"
         class="list-group-item item list-group-item-action"
-        @click="click"
+        @click="click(2)"
       >
         <img src="../assets/relation.svg" />
         Relation Mode
@@ -31,6 +31,7 @@ import { Options, Vue } from "vue-class-component";
 export enum LayoutMode {
   domain,
   relation,
+  instance,
 }
 
 export class LMPara {
@@ -47,13 +48,20 @@ export class LMPara {
   emits: ["changed"],
   methods: {
     modeDomain() {
-      return this.para.mode == LayoutMode.domain;
+      return (
+        this.para.mode == LayoutMode.relation ||
+        this.para.mode == LayoutMode.instance
+      );
     },
     modeRelation() {
-      return this.para.mode == LayoutMode.relation;
+      return (
+        this.para.mode == LayoutMode.domain ||
+        this.para.mode == LayoutMode.instance
+      );
     },
-    click() {
-      this.$emit("changed");
+    click(selected: number) {
+      let rtn = selected == 1 ? LayoutMode.domain : LayoutMode.relation;
+      this.$emit("changed", rtn);
     },
   },
 })

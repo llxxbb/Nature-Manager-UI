@@ -1,14 +1,15 @@
 # dev plan
 
-## version 0.4.0
-
+## version 0.5.0
 ## doing
 
-show undefined `Meta` in relation-mode
+bug: query instance in `Instance-Mode`
+`Instance-Mode`: disable add node and make it imposable to move node
 
-fetch instance data
-support Instance-Layout mode
-add `instance` query function.
+config.js: add fetch-all property for `Instance-mode`
+
+
+show undefined `Meta` in relation-mode
 
 ## other version
 

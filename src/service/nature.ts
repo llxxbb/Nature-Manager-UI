@@ -1,12 +1,15 @@
 import { NATURE_MANAGER_URL } from "@/config";
-import { Instance, InstanceQueryCondition, Meta, Relation } from "@/domain";
+import { InstanceQueryCondition, Instance, FromInstance } from "@/domain/instance";
+import { Meta } from "@/domain/meta";
+import { D3Node } from "@/domain/node";
+import { Relation } from "@/domain/relation";
 import { metaDefined, relationDefined } from "@/testData/natureData";
-import { D3Node } from "./d3tree";
 
 const axios = require('axios').default;
 
 let allMeta: Meta[];
 let metaIdMax = 0;
+let metaMap: Map<String, Meta> = new Map;
 export class Nature {
     // data for relation mode
     async getRelation() {
@@ -23,7 +26,6 @@ export class Nature {
         let relationList = await getAllRelation();
 
         let metaList = allMeta.slice(); // copy it, and not modify the original
-        let metaMap = new Map;
         allMeta.forEach(one => {
             one.initD3Node();
             metaMap.set(one.name, one);
@@ -48,19 +50,19 @@ export class Nature {
             }
             // add relation
             to.meta.relation = r;
-            addChild(from.meta.d3node as D3Node, to.meta.d3node as D3Node);
+            (from.meta.d3node as D3Node).addChild(to.meta.d3node as D3Node);
             // remove "to" from metaList
             if (to.index > -1) metaList.splice(to.index, 1)
         })
         // make tree
-        let root = makeRootMetaNode(metaList);
+        let root = makeMetaRootNode(metaList);
         return root;
     }
 
     // data for domain mode
     getDomain() {
         let unique = new Map<String, D3Node>();
-        let root = makeRootMetaNode([]);
+        let root = makeMetaRootNode([]);
         let idSeq = -1;
         allMeta.forEach(one => {
             // init parent
@@ -80,15 +82,15 @@ export class Nature {
                 if (index < one.levels.length - 1) {
                     if (!child) {
                         child = makeParentDomainNode(one.levels, index, --idSeq)
-                        addChild(parent, child)
+                        parent.addChild(child);
                         unique.set(path, child);
                     }
                     parent = child;
                 } else {
                     if (!child) {
                         child = Object.assign(new D3Node, one.d3node);
-                        child.children = undefined
-                        addChild(parent, child)
+                        child.setChildren(undefined);
+                        parent.addChild(child);
                         unique.set(path, child);
                     }
                     else {
@@ -102,56 +104,80 @@ export class Nature {
         })
         return root;
     }
+
     async getInstance(condition: InstanceQueryCondition) {
-        let isLast = true
+        let useVersion = true
         const meta = condition.meta;
-        if (meta.isState() && condition.staVer == -1) isLast = false;
-        let rtn: Instance[] = []
-        if (isLast) {
-            const data = {
-                id: condition.id,
-                meta: meta.name,
-                para: condition.para,
-                state_version: condition.staVer
-            };
-            let res = await axios.post(NATURE_MANAGER_URL + "/instance/byId", data);
-            rtn.push(res.data.Ok)
+        if (meta.isState() && condition.staVer == -1) useVersion = false;
+        let instance: Instance = undefined as any as Instance;
+        if (useVersion) {
+            instance = await getInstanceById(condition.toFromInstance());
         } else {
+            // get last version of `State-Meta`
             const data = {
                 id: condition.id,
                 meta: "",
                 key_le: meta.instanceKey(condition.id, condition.para, Number.MAX_SAFE_INTEGER),
             };
             let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", data);
-            rtn = res.data.Ok
+            if (res.data.Ok.length > 0) instance = res.data.Ok[0]
         }
-        if (rtn.length == 0) return null
-        console.log(rtn)
+        if (!instance) {
+            alert("Sorry! not found");
+            return null;
+        }
+        let rtn = Instance.toD3Node(instance, metaMap)
+        return rtn
     };
+
+    // fetch upstream
+    async getUpstream(currentNode: D3Node) {
+        currentNode.leftNavDone = true;
+        let instance = currentNode.data.data as Instance
+        let from = instance.data.from;
+        if (!from) return currentNode;
+        let rtnRaw = await getInstanceById(from);
+        let rtn = Instance.toD3Node(rtnRaw, metaMap);
+        rtn.addChild(currentNode)
+        return rtn;
+    }
+
+    // fill downstream
+    async getDownstream(currentNode: D3Node) {
+        // fetch data
+        let res = await axios.post(NATURE_MANAGER_URL + "/instance/downstream", (currentNode.data.data as Instance).getKey());
+        let rtnRaw: Instance[] = res.data.Ok
+        rtnRaw.forEach(d => {
+            let one = Instance.toD3Node(d, metaMap)
+            currentNode.addChild(one);
+            one.leftNavDone = true;
+        })
+        currentNode.rightNavDone = true;
+        const root = currentNode.findRoot();
+        return root;
+    }
+}
+
+async function getInstanceById(condition: FromInstance): Promise<Instance> {
+    let res = await axios.post(NATURE_MANAGER_URL + "/instance/byId", condition);
+    return res.data.Ok;
 }
 
 function makeParentDomainNode(levels: string[], end: number, nodeId: number) {
     let rtn = new D3Node
     rtn.id = nodeId;
-    rtn.classForSame = "id" + nodeId;
+    rtn.setClassForSame("id" + nodeId);
     rtn.isFake = true;
     rtn.name = levels[end]
     return rtn
 }
 
-function addChild(parent: D3Node, child: D3Node) {
-    if (parent.children)
-        parent.children.push(child);
-    else
-        parent.children = [child];
-}
-
-function makeRootMetaNode(metaList: Meta[]) {
+function makeMetaRootNode(metaList: Meta[]) {
     const children = metaList.map(d => d.d3node);
     let root = new D3Node;
-    root.children = children as D3Node[];
+    root.setChildren(children as D3Node[]);
     root.name = "root";
-    root.classForSame = "idRoot"
+    root.setClassForSame("idRoot");
     return root;
 }
 
