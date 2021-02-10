@@ -7,7 +7,6 @@
 ## doing
 
 move `navigate` to context menu
-`Instance-Mode`: disable add node and make it imposable to move node
 
 show undefined `Meta` in relation-mode
 

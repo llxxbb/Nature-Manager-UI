@@ -245,7 +245,8 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
         .on("end", (e, d) => {
             if (!DragStart) return;
             DragStart = false
-            if (!TargetToDrop) {
+            // Instance-Mode can not move
+            if (!TargetToDrop || ParaData.shape == Shape.rectR) {
                 // back transform
                 const one = (d as unknown as HierarchyPointNode<D3Node>);
                 const selected = d3.select(`#g${(one).data.id}`);
