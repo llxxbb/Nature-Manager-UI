@@ -12,11 +12,12 @@ export class NatureData {
 export class D3Node {
     id = 0;
     name: string = "";
+    // tooltip
     title = "";
     isFake = false;
     private children?: D3Node[];
     private _children?: D3Node[];
-    textColor = "";
+    private textColor = "";
     nodeType = "";
     private classForSame = "";
     linkData = "";
@@ -26,6 +27,13 @@ export class D3Node {
     parent: D3Node = undefined as any as D3Node;
     private childSet: Set<Number> = new Set;
 
+    setState(state: boolean) {
+        if (state) this.textColor = "#d02b06";
+        else this.textColor = "black";
+    }
+    getTextColor() {
+        return this.textColor
+    }
     setClassForSame(id: string) {
         this.classForSame = id.replace(/\//g, '-');
     }

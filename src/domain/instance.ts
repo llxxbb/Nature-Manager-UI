@@ -38,6 +38,7 @@ export class Instance {
         nd.dataType = DataType.INSTANCE;
         nd.data = cIns;
         let node = new D3Node;
+        node.setState(meta.isState())
         node.name = meta.levels[meta.levels.length - 1];
         node.setClassForSame(cIns.id == "0" ? "id" + cIns.data.para : "id" + cIns.id);
         node.title = cIns.getKey();

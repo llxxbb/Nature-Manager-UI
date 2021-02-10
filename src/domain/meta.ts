@@ -25,11 +25,9 @@ export class Meta {
 
     initD3Node() {
         if (this.d3node) return;
-        let color = "black"
-        if (this.isState()) color = "#d02b06"
         const node = new D3Node;
         node.id = this.id;
-        node.textColor = color;
+        node.setState(this.isState());
         // the css class does not exists, just to identify the same
         node.setClassForSame("id" + this.id);
         node.name = this.levels[this.levels.length - 1];

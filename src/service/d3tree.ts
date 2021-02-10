@@ -280,7 +280,7 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         // used to select all text beside node
         .attr("class", "side")
         // set status meta
-        .attr("fill", d => (d.data as any as D3Node).textColor)
+        .attr("fill", d => (d.data as any as D3Node).getTextColor())
         .attr("opacity", (d) => ((d.data as any as D3Node).isFake ? 0.4 : 1))
         .text(d => (d.data as D3Node).name)
         .clone(true)
