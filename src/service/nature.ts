@@ -1,4 +1,4 @@
-import { NATURE_MANAGER_URL } from "@/config";
+import { INSTANCE_RELATED_AUTO, NATURE_MANAGER_URL } from "@/config";
 import { InstanceQueryCondition, Instance, FromInstance } from "@/domain/instance";
 import { Meta } from "@/domain/meta";
 import { D3Node } from "@/domain/node";
@@ -127,8 +127,31 @@ export class Nature {
             return null;
         }
         let rtn = Instance.toD3Node(instance, metaMap)
-        return rtn
+        if (INSTANCE_RELATED_AUTO) return await this.fetchInstanceAuto(rtn);
+        return rtn;
     };
+
+    private async fetchInstanceAuto(from: D3Node) {
+        // upstream first
+        let up = await this.getUpstream(from)
+        while (!up.leftNavDone) {
+            up = await this.getUpstream(up)
+        }
+        // fetch downstream
+        await this.getDownRecursively(up);
+        // return 
+        return up;
+    }
+
+    private async getDownRecursively(up: D3Node) {
+        await this.getDownstream(up);
+        if (!up.hasChild()) return;
+        const nodes = up.getChildren() as D3Node[];
+        for (let index = 0; index < nodes.length; index++) {
+            const one = nodes[index];
+            await this.getDownRecursively(one)
+        }
+    }
 
     // fetch upstream
     async getUpstream(currentNode: D3Node) {

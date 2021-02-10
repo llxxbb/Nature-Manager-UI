@@ -1,13 +1,13 @@
 # dev plan
 
 ## version 0.5.0
+
+- config.js: support INSTANCE_RELATED_AUTO
 ## doing
 
-bug: query instance in `Instance-Mode`
+move `navigate` to context menu
+`Instance-Mode`: state instance show in red title
 `Instance-Mode`: disable add node and make it imposable to move node
-
-config.js: add fetch-all property for `Instance-mode`
-
 
 show undefined `Meta` in relation-mode
 

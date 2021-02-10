@@ -18,7 +18,7 @@ var SelectNodeY = 0;
 var Offset = 0.04;
 export class D3Tree {
     show(para: TreePara) {
-        ParaData = para
+        ParaData = para;
         SVG = initSvg(para);
 
         let g = initG(SVG, para);
@@ -150,7 +150,6 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     // add folder icon
     let folder = enter.filter(d => (d.data as D3Node).hasChild());
     addFolderIcon(folder);
-
     enter.append("text")
         .text((d) => (d.data as D3Node).nodeType)
         .attr("y", `${0.015 * NODE_SCALE}`)
