@@ -1,24 +1,19 @@
 <template>
-  <meta-context-menu
+  <node-context-menu
     ref="metaMenu"
-    :show="metaContextShow"
+    :show="nodeContextShow"
     @instance="locateInstance"
     @list="recentInstances"
     @addNode="addNode"
     @editNode="editNode"
     @deleteNode="deleteNode"
-  ></meta-context-menu>
+  ></node-context-menu>
   <layer-context-menu
     ref="layerMenu"
     :show="layerContextShow"
     @changed="modeChanged"
   ></layer-context-menu>
-  <svg
-    id="showArea"
-    ref="showArea"
-    :class="bgMode"
-    xmlns="http://www.w3.org/2000/svg"
-  />
+  <svg id="showArea" ref="showArea" :class="bgMode" xmlns="http://www.w3.org/2000/svg" />
 </template>
 
 <script lang="ts">
@@ -27,21 +22,21 @@ import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
-import MetaContextMenu from "./MetaContextMenu.vue";
+import NodeContextMenu from "./NodeContextMenu.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
 import { TreePara, D3Node, Shape } from "@/domain/node";
 import { Meta } from "@/domain/meta";
 import { InstanceQueryCondition } from "@/domain/instance";
 
 @Options({
-  components: { MetaContextMenu, LayerContextMenu },
+  components: { NodeContextMenu, LayerContextMenu },
   data() {
     return {
       relationData: null,
       domainData: null,
       data2: data2,
       data3: data3,
-      metaContextShow: false,
+      nodeContextShow: false,
       layerContextShow: false,
       tree: null,
       treePara: (null as unknown) as TreePara,
@@ -66,13 +61,13 @@ import { InstanceQueryCondition } from "@/domain/instance";
         left: e.clientX,
         node: d,
       };
-      this.metaContextShow = true;
+      this.nodeContextShow = true;
     },
     hideMetaMenu() {
-      this.metaContextShow = false;
+      this.nodeContextShow = false;
     },
     showLayoutMenu(e: MouseEvent) {
-      if (this.metaContextShow) this.metaContextShow = false;
+      if (this.nodeContextShow) this.nodeContextShow = false;
       var lm = this.$refs.layerMenu;
       lm.para = {
         top: e.clientY,
@@ -102,7 +97,7 @@ import { InstanceQueryCondition } from "@/domain/instance";
       this.bgMode = "mode_" + LayoutMode[mode];
     },
     async locateInstance(e: InstanceQueryCondition) {
-      this.metaContextShow = false;
+      this.nodeContextShow = false;
       let data = await this.nature.getInstance(e);
       if (!data) return;
       this.setMode(LayoutMode.instance);
@@ -123,29 +118,26 @@ import { InstanceQueryCondition } from "@/domain/instance";
       this.tree.show(this.treePara);
     },
     recentInstances(e: Meta) {
-      this.metaContextShow = false;
+      this.nodeContextShow = false;
       console.log(e);
     },
     addNode(e: { name: string; parent: D3Node }) {
-      this.metaContextShow = false;
+      this.nodeContextShow = false;
       let newNode = new D3Node();
       newNode.name = e.name;
       e.parent.addChild(newNode);
       this.tree.show(this.treePara);
     },
     editNode(e: Meta) {
-      this.metaContextShow = false;
+      this.nodeContextShow = false;
       console.log("editNode");
     },
     deleteNode(e: Meta) {
-      this.metaContextShow = false;
+      this.nodeContextShow = false;
       console.log("deleteNode");
     },
-    nodeMoved(
-      source: HierarchyPointNode<D3Node>,
-      target: HierarchyPointNode<D3Node>
-    ) {
-      this.metaContextShow = false;
+    nodeMoved(source: HierarchyPointNode<D3Node>, target: HierarchyPointNode<D3Node>) {
+      this.nodeContextShow = false;
       source.data.moveTo(target.data);
       this.tree.show(this.treePara);
     },

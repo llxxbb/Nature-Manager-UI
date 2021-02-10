@@ -156,7 +156,7 @@ export class CMPara {
     },
   },
 })
-export default class MetaContextMenu extends Vue {
+export default class NodeContextMenu extends Vue {
   para: CMPara = new CMPara();
 }
 </script>
