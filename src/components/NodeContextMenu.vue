@@ -54,7 +54,7 @@
         <img src="../assets/node-edit.svg" />
         edit node
       </li>
-      <li class="list-group-item item list-group-item-action">
+      <li class="list-group-item item list-group-item-action" v-show="canAdd()">
         <img src="../assets/node-plus.svg" />
         add child node
         <input v-model="metaName" class="form-control" @keyup.enter="addNode" />
@@ -141,13 +141,28 @@ export class CMPara {
       this.metaName = "";
     },
     canQueryInstance() {
-      if (!this.para.node) return false;
-      if (!this.para.node.data) return false;
+      if (!this.getNatureData()) return false;
       return true;
     },
+    canAdd() {
+      let nd = this.getNatureData();
+      if (!nd) return true;
+      if (nd.dataType == DataType.INSTANCE) return false;
+      return true;
+    },
+    getInstance(): Instance | null {
+      let nd = this.getNatureData();
+      if (!nd) return null;
+      if (nd.dataType == DataType.INSTANCE) return nd.data as Instance;
+      return null;
+    },
+    getNatureData(): NatureData | null {
+      let node = this.para.node as D3Node;
+      if (!node) return null;
+      return node.data as NatureData;
+    },
     isState() {
-      if (!this.para.node) return false;
-      let nd = (this.para.node as D3Node).data as NatureData;
+      let nd = this.getNatureData();
       if (!nd) return false;
       if (nd.dataType == DataType.META) return nd.data.isState();
       else if (nd.dataType == DataType.INSTANCE)
