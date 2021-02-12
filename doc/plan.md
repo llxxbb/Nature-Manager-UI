@@ -3,7 +3,8 @@
 ## version 0.5.0
 
 - config.js: support INSTANCE_RELATED_AUTO
-`Instance-Mode`: state instance show in red title
+`Instance-Mode`: state instance show in red title.
+- some little optimize.
 ## doing
 
 recent instance

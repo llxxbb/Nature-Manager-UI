@@ -222,6 +222,7 @@ function shapePropertySet(nodeEvent: d3.Selection<d3.BaseType, d3.HierarchyPoint
 function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknown>, SVGGElement, unknown>) {
     var drag = d3.drag()
         .on("start", (e, d) => {
+            hideContextMenu(ParaData);
             changeCurrent(e, d as HierarchyPointNode<D3Node>)
             const one = (d as HierarchyPointNode<D3Node>);
             // the root node can't be moved
@@ -330,15 +331,22 @@ function changeCurrent(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
 }
 
 function showNodeContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
+    if (!ParaData.event) return;
+    if (ParaData.event.hideLayoutMenu)
+        ParaData.event.hideLayoutMenu();
     let d = node as HierarchyPointNode<D3Node>
     changeCurrent(e, d);
     if (ParaData.event && ParaData.event.showNodeMenu)
         ParaData.event.showNodeMenu(e, d.data);
+    e.stopPropagation();
     e.preventDefault();
 }
 
 function showLayerContextMenu(e: MouseEvent) {
-    if (ParaData.event && ParaData.event.showLayoutMenu)
+    if (!ParaData.event) return;
+    if (ParaData.event.hideNodeMenu)
+        ParaData.event.hideNodeMenu();
+    if (ParaData.event.showLayoutMenu)
         ParaData.event.showLayoutMenu(e);
     e.preventDefault();
 }

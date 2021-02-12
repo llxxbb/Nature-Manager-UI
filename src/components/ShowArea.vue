@@ -2,7 +2,6 @@
   <InstanceSelector ref="insSelector"></InstanceSelector>
   <node-context-menu
     ref="nodeMenu"
-    :show="nodeContextShow"
     @instance="locateInstance"
     @list="recentInstances"
     @addNode="addNode"
@@ -13,7 +12,6 @@
   ></node-context-menu>
   <layer-context-menu
     ref="layerMenu"
-    :show="layerContextShow"
     @changed="modeChanged"
   ></layer-context-menu>
   <svg
@@ -29,7 +27,6 @@ import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree } from "../service/d3tree";
-import { data, data2, data3 } from "../testData/node";
 import NodeContextMenu from "./NodeContextMenu.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
 import InstanceSelector from "./InstanceSelector.vue";
@@ -43,10 +40,6 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
     return {
       relationData: null,
       domainData: null,
-      data2: data2,
-      data3: data3,
-      nodeContextShow: false,
-      layerContextShow: false,
       tree: null,
       treePara: (null as unknown) as TreePara,
       nature: (null as unknown) as Nature,
@@ -62,39 +55,36 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
   },
   methods: {
     showNodeMenu(e: MouseEvent, d: D3Node) {
-      e.stopPropagation();
-      if (this.layerContextShow) this.layerContextShow = false;
-      var cm = this.$refs.nodeMenu as NodeContextMenu;
-      cm.para = {
+      let id, para;
+      if (d.data && d.data.dataType == DataType.INSTANCE) {
+        let ins = d.data.data as Instance;
+        id = ins.id.toString();
+        para = ins.data.para ? ins.data.para : "";
+      }
+      let data = {
         top: e.clientY,
         left: e.clientX,
         node: d,
+        id,
+        para,
       };
-      this.nodeContextShow = true;
-      if (!d.data) return;
-      if (d.data.dataType != DataType.INSTANCE) return;
-      let ins = d.data.data as Instance;
-      cm.instanceId = ins.id.toString();
-      cm.instancePara = ins.data.para ? ins.data.para : "";
+      this.$refs.nodeMenu.showMenu(data);
     },
     hideNodeMenu() {
-      this.nodeContextShow = false;
+      this.$refs.nodeMenu.hideMenu();
     },
     showLayoutMenu(e: MouseEvent) {
-      if (this.nodeContextShow) this.nodeContextShow = false;
-      var lm = this.$refs.layerMenu;
-      lm.para = {
+      let para = {
         top: e.clientY,
         left: e.clientX,
         mode: this.currentMode,
       };
-      this.layerContextShow = true;
+      this.$refs.layerMenu.showMenu(para);
     },
     hideLayoutMenu() {
-      this.layerContextShow = false;
+      this.$refs.layerMenu.hideMenu();
     },
     modeChanged(selected: LayoutMode) {
-      this.layerContextShow = false;
       if (selected == LayoutMode.domain) {
         this.setMode(LayoutMode.domain);
         this.treePara.data = this.domainData;
@@ -111,7 +101,6 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       this.bgMode = "mode_" + LayoutMode[mode];
     },
     async locateInstance(e: InstanceQueryCondition) {
-      this.nodeContextShow = false;
       let data = await this.nature.getInstance(e);
       if (!data) return;
       this.setMode(LayoutMode.instance);
@@ -120,21 +109,18 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       this.tree.show(this.treePara);
     },
     async navigateLeft(d: D3Node) {
-      this.nodeContextShow = false;
       let data = await this.nature.getUpstream(d);
       this.treePara.data = data;
       this.treePara.shape = Shape.rectR;
       this.tree.show(this.treePara);
     },
     async navigateRight(d: D3Node) {
-      this.nodeContextShow = false;
       let data = await this.nature.getDownstream(d);
       this.treePara.data = data;
       this.treePara.shape = Shape.rectR;
       this.tree.show(this.treePara);
     },
     recentInstances(e: Meta) {
-      this.nodeContextShow = false;
       console.log(e);
       this.$refs.insSelector.show();
       // let data = await this.nature.getInstance(e);
@@ -145,25 +131,21 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       // this.tree.show(this.treePara);
     },
     addNode(e: { name: string; parent: D3Node }) {
-      this.nodeContextShow = false;
       let newNode = new D3Node();
       newNode.name = e.name;
       e.parent.addChild(newNode);
       this.tree.show(this.treePara);
     },
     editNode(e: Meta) {
-      this.nodeContextShow = false;
       console.log("editNode");
     },
     deleteNode(e: Meta) {
-      this.nodeContextShow = false;
       console.log("deleteNode");
     },
     nodeMoved(
       source: HierarchyPointNode<D3Node>,
       target: HierarchyPointNode<D3Node>
     ) {
-      this.nodeContextShow = false;
       source.data.moveTo(target.data);
       this.tree.show(this.treePara);
     },

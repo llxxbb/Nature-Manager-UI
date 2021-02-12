@@ -100,6 +100,8 @@ export class CMPara {
   left = 0;
   top = 0;
   node: D3Node = (undefined as any) as D3Node;
+  id = "";
+  para = "";
 }
 
 @Options({
@@ -109,10 +111,10 @@ export class CMPara {
       instancePara: "",
       instanceStaVer: "",
       metaName: "",
+      show: false,
     };
   },
   props: {
-    show: Boolean,
     para: CMPara,
   },
   emits: [
@@ -125,13 +127,25 @@ export class CMPara {
     "insRight",
   ],
   methods: {
+    showMenu(data: CMPara) {
+      this.para = data;
+      this.instanceId = data.id ? data.id : "";
+      this.instancePara = data.para ? data.para : "";
+      this.show = true;
+    },
+    hideMenu(){
+      this.show = false;
+    },
     leftInstance() {
+      this.show = false;
       this.$emit("insLeft", this.para.node);
     },
     rightInstance() {
+      this.show = false;
       this.$emit("insRight", this.para.node);
     },
     query(e: KeyboardEvent) {
+      this.show = false;
       let data = this.para.node.data as NatureData;
       // init and meta
       let meta: Meta;
@@ -157,15 +171,19 @@ export class CMPara {
       this.instanceStaVer = "";
     },
     list() {
+      this.show = false;
       this.$emit("list", this.para.node);
     },
     editNode() {
+      this.show = false;
       this.$emit("editNode", this.para.node);
     },
     deleteNode() {
+      this.show = false;
       this.$emit("deleteNode", this.para.node);
     },
     addNode() {
+      this.show = false;
       this.$emit("addNode", {
         name: this.metaName,
         parent: this.para.node,
@@ -216,8 +234,6 @@ export class CMPara {
 })
 export default class NodeContextMenu extends Vue {
   para: CMPara = new CMPara();
-  instanceId: string = "";
-  instancePara: string = "";
 }
 </script>
 <style scoped lang="stylus">

@@ -41,12 +41,23 @@ export class LMPara {
 }
 
 @Options({
+  data() {
+    return {
+      show: false,
+    };
+  },
   props: {
-    show: Boolean,
     para: LMPara,
   },
   emits: ["changed"],
   methods: {
+    showMenu(para: LMPara) {
+      this.para = para;
+      this.show = true;
+    },
+    hideMenu() {
+      this.show = false;
+    },
     modeDomain() {
       return (
         this.para.mode == LayoutMode.relation ||
@@ -60,6 +71,7 @@ export class LMPara {
       );
     },
     click(selected: number) {
+      this.show = false;
       let rtn = selected == 1 ? LayoutMode.domain : LayoutMode.relation;
       this.$emit("changed", rtn);
     },
