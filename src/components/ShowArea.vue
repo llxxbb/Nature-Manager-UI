@@ -120,15 +120,10 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       this.treePara.shape = Shape.rectR;
       this.tree.show(this.treePara);
     },
-    recentInstances(e: Meta) {
-      console.log(e);
-      this.$refs.insSelector.show();
-      // let data = await this.nature.getInstance(e);
-      // if (!data) return;
-      // this.setMode(LayoutMode.instance);
-      // this.treePara.data = data;
-      // this.treePara.shape = Shape.rectR;
-      // this.tree.show(this.treePara);
+    async recentInstances(e: string) {
+      if (!e || e === "") return;
+      let data = await this.nature.getRecent(e);
+      this.$refs.insSelector.show(data);
     },
     addNode(e: { name: string; parent: D3Node }) {
       let newNode = new D3Node();

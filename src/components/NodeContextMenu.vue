@@ -133,7 +133,7 @@ export class CMPara {
       this.instancePara = data.para ? data.para : "";
       this.show = true;
     },
-    hideMenu(){
+    hideMenu() {
       this.show = false;
     },
     leftInstance() {
@@ -172,7 +172,16 @@ export class CMPara {
     },
     list() {
       this.show = false;
-      this.$emit("list", this.para.node);
+      // init meta
+      let node = this.para.node;
+      if (!node.data) return null;
+      let nd = node.data as NatureData;
+      let meta;
+      if (nd.dataType === DataType.META) meta = (nd.data as Meta).name;
+      else if (nd.dataType === DataType.INSTANCE)
+        meta = (nd.data as Instance).data.meta;
+      else return;
+      this.$emit("list", meta);
     },
     editNode() {
       this.show = false;

@@ -9,7 +9,7 @@
 
 recent instance
 
-show undefined `Meta` in relation-mode
+show undefined `Meta` in relation-mode (circle with red bgColor)
 
 ## other version
 

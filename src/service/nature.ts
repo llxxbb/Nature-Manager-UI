@@ -1,4 +1,4 @@
-import { INSTANCE_RELATED_AUTO, NATURE_MANAGER_URL } from "@/config";
+import { INSTANCE_RECENT_SIZE, INSTANCE_RELATED_AUTO, NATURE_MANAGER_URL } from "@/config";
 import { InstanceQueryCondition, Instance, FromInstance } from "@/domain/instance";
 import { Meta } from "@/domain/meta";
 import { D3Node } from "@/domain/node";
@@ -178,6 +178,15 @@ export class Nature {
         currentNode.rightNavDone = true;
         const root = currentNode.findRoot();
         return root;
+    }
+
+    async getRecent(meta: string) {
+        const data = {
+            meta,
+            limit: INSTANCE_RECENT_SIZE
+        };
+        let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", data);
+        return res.data.Ok;
     }
 }
 
