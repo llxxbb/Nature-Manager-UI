@@ -119,8 +119,8 @@ export class SvgSize {
 }
 
 export class TreeEvent {
-    showMetaMenu?: (e: MouseEvent, d: D3Node) => void;
-    hideMetaMenu?: () => void;
+    showNodeMenu?: (e: MouseEvent, d: D3Node) => void;
+    hideNodeMenu?: () => void;
     showLayoutMenu?: (e: MouseEvent) => void;
     hideLayoutMenu?: () => void;
     nodeMoved?: (source: HierarchyPointNode<D3Node>, target: HierarchyPointNode<D3Node>) => void

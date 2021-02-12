@@ -6,6 +6,23 @@
   >
     <ul class="list-group">
       <li
+        v-show="canNavigateInstance()"
+        class="list-group-item item list-group-item-action"
+      >
+        <div class="container">
+          <div class="row">
+            <div v-show="canNavigateLeft()" class="col">
+              get upstream:
+              <img src="../assets/nav-left.svg" @click="leftInstance" />
+            </div>
+            <div v-show="canNavigateRight()" class="col">
+              get downstream:
+              <img src="../assets/nav-right.svg" @click="rightInstance" />
+            </div>
+          </div>
+        </div>
+      </li>
+      <li
         v-show="canQueryInstance()"
         class="list-group-item item list-group-item-action"
       >
@@ -77,6 +94,7 @@ import { Instance } from "@/domain/instance";
 import { D3Node, NatureData, DataType } from "@/domain/node";
 import { Options, Vue } from "vue-class-component";
 import { InstanceQueryCondition } from "@/domain/instance";
+import { INSTANCE_RELATED_AUTO } from "@/config";
 
 export class CMPara {
   left = 0;
@@ -97,8 +115,22 @@ export class CMPara {
     show: Boolean,
     para: CMPara,
   },
-  emits: ["instance", "list", "editNode", "addNode", "deleteNode"],
+  emits: [
+    "instance",
+    "list",
+    "editNode",
+    "addNode",
+    "deleteNode",
+    "insLeft",
+    "insRight",
+  ],
   methods: {
+    leftInstance() {
+      this.$emit("insLeft", this.para.node);
+    },
+    rightInstance() {
+      this.$emit("insRight", this.para.node);
+    },
     query(e: KeyboardEvent) {
       let data = this.para.node.data as NatureData;
       // init and meta
@@ -140,9 +172,20 @@ export class CMPara {
       });
       this.metaName = "";
     },
+    canNavigateInstance() {
+      return this.getInstance() && !INSTANCE_RELATED_AUTO;
+    },
     canQueryInstance() {
       if (!this.getNatureData()) return false;
       return true;
+    },
+    canNavigateLeft() {
+      if (!this.para.node) return false;
+      return !this.para.node.leftNavDone;
+    },
+    canNavigateRight() {
+      if (!this.para.node) return false;
+      return !this.para.node.rightNavDone;
     },
     canAdd() {
       let nd = this.getNatureData();

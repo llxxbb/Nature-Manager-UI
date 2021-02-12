@@ -1,19 +1,26 @@
 <template>
   <node-context-menu
-    ref="metaMenu"
+    ref="nodeMenu"
     :show="nodeContextShow"
     @instance="locateInstance"
     @list="recentInstances"
     @addNode="addNode"
     @editNode="editNode"
     @deleteNode="deleteNode"
+    @insLeft="navigateLeft"
+    @insRight="navigateRight"
   ></node-context-menu>
   <layer-context-menu
     ref="layerMenu"
     :show="layerContextShow"
     @changed="modeChanged"
   ></layer-context-menu>
-  <svg id="showArea" ref="showArea" :class="bgMode" xmlns="http://www.w3.org/2000/svg" />
+  <svg
+    id="showArea"
+    ref="showArea"
+    :class="bgMode"
+    xmlns="http://www.w3.org/2000/svg"
+  />
 </template>
 
 <script lang="ts">
@@ -52,10 +59,10 @@ import { InstanceQueryCondition } from "@/domain/instance";
     },
   },
   methods: {
-    showMetaMenu(e: MouseEvent, d: D3Node) {
+    showNodeMenu(e: MouseEvent, d: D3Node) {
       e.stopPropagation();
       if (this.layerContextShow) this.layerContextShow = false;
-      var cm = this.$refs.metaMenu;
+      var cm = this.$refs.nodeMenu;
       cm.para = {
         top: e.clientY,
         left: e.clientX,
@@ -63,7 +70,7 @@ import { InstanceQueryCondition } from "@/domain/instance";
       };
       this.nodeContextShow = true;
     },
-    hideMetaMenu() {
+    hideNodeMenu() {
       this.nodeContextShow = false;
     },
     showLayoutMenu(e: MouseEvent) {
@@ -106,12 +113,14 @@ import { InstanceQueryCondition } from "@/domain/instance";
       this.tree.show(this.treePara);
     },
     async navigateLeft(d: D3Node) {
+      this.nodeContextShow = false;
       let data = await this.nature.getUpstream(d);
       this.treePara.data = data;
       this.treePara.shape = Shape.rectR;
       this.tree.show(this.treePara);
     },
     async navigateRight(d: D3Node) {
+      this.nodeContextShow = false;
       let data = await this.nature.getDownstream(d);
       this.treePara.data = data;
       this.treePara.shape = Shape.rectR;
@@ -136,7 +145,10 @@ import { InstanceQueryCondition } from "@/domain/instance";
       this.nodeContextShow = false;
       console.log("deleteNode");
     },
-    nodeMoved(source: HierarchyPointNode<D3Node>, target: HierarchyPointNode<D3Node>) {
+    nodeMoved(
+      source: HierarchyPointNode<D3Node>,
+      target: HierarchyPointNode<D3Node>
+    ) {
       this.nodeContextShow = false;
       source.data.moveTo(target.data);
       this.tree.show(this.treePara);
@@ -155,8 +167,8 @@ import { InstanceQueryCondition } from "@/domain/instance";
       },
       data: this.relationData,
       event: {
-        showMetaMenu: this.showMetaMenu,
-        hideMetaMenu: this.hideMetaMenu,
+        showNodeMenu: this.showNodeMenu,
+        hideNodeMenu: this.hideNodeMenu,
         showLayoutMenu: this.showLayoutMenu,
         hideLayoutMenu: this.hideLayoutMenu,
         nodeMoved: this.nodeMoved,

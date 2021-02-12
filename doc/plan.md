@@ -6,7 +6,7 @@
 `Instance-Mode`: state instance show in red title
 ## doing
 
-move `navigate` to context menu
+add state navigate to context menu
 
 show undefined `Meta` in relation-mode
 

@@ -56,8 +56,8 @@ function initSvg(para: TreePara) {
 }
 
 function hideContextMenu(para: TreePara) {
-    if (para.event && para.event.hideMetaMenu)
-        para.event.hideMetaMenu();
+    if (para.event && para.event.hideNodeMenu)
+        para.event.hideNodeMenu();
     if (para.event && para.event.hideLayoutMenu)
         para.event.hideLayoutMenu();
 }
@@ -318,61 +318,22 @@ function addFolderIcon<T extends BaseType>(folder: d3.Selection<T, d3.HierarchyP
         .attr("id", d => "i" + (d.data as D3Node).id)
 }
 
-function removeNavigateIcon(node: D3Node) {
-    d3.select('#nav' + node.id).remove();
-}
-
-function addNavigateIcon(node: D3Node) {
-    const select = d3.select('#g' + node.id);
-    let g = select.append("g")
-        .attr("id", "nav" + node.id);
-    if (ParaData.event && ParaData.event.navigateLeft && !node.leftNavDone)
-        appendNavIcon(g, node, - 0.050, "left", ParaData.event.navigateLeft);
-    if (ParaData.event && ParaData.event.navigateRight && !node.rightNavDone)
-        appendNavIcon(g, node, + 0.050, "right", ParaData.event.navigateRight);
-}
-
-function appendNavIcon(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
-    node: D3Node, offset: number, icon: string, fun: (n: D3Node) => void) {
-    g.append("circle")
-        .attr("r", 0.03 * NODE_SCALE)
-        .attr("cx", offset * NODE_SCALE)
-    g.append("image")
-        .attr("x", (-0.025 + offset) * NODE_SCALE)
-        .attr("y", -0.025 * NODE_SCALE)
-        .attr("width", 0.05 * NODE_SCALE)
-        .attr("height", 0.05 * NODE_SCALE)
-        .attr("href", require(`../assets/${icon}.svg`))
-    g.append("circle")
-        .attr("r", 0.03 * NODE_SCALE)
-        .attr("cx", offset * NODE_SCALE)
-        .attr("opacity", "0")
-        // TODO click and dbClick event can't work, but mouseover is ok
-        // .on("click", () => { fun(node) })
-        .on("mouseover", () => { fun(node) })
-}
-
 function changeCurrent(_e: MouseEvent, d: HierarchyPointNode<unknown>) {
     if (CurrentNode) {
         let old = d3.select("#c" + (CurrentNode.data as D3Node).id)
         old.attr("stroke", "#079702");
-        if (ParaData.shape == Shape.rectR)
-            removeNavigateIcon(CurrentNode.data as D3Node);
     }
     CurrentNode = d
     let nNode = "#c" + (CurrentNode.data as D3Node).id;
     let n = d3.select(nNode)
     n.attr("stroke", "#8f3200");
-    // show navigator
-    if (ParaData.shape == Shape.rectR)
-        addNavigateIcon(d.data as D3Node);
 }
 
 function showNodeContextMenu(e: any, node: d3.HierarchyPointNode<unknown> | unknown) {
     let d = node as HierarchyPointNode<D3Node>
     changeCurrent(e, d);
-    if (ParaData.event && ParaData.event.showMetaMenu)
-        ParaData.event.showMetaMenu(e, d.data);
+    if (ParaData.event && ParaData.event.showNodeMenu)
+        ParaData.event.showNodeMenu(e, d.data);
     e.preventDefault();
 }
 
