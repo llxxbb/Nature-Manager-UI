@@ -1,5 +1,5 @@
 <template>
-  <div id="edit-window" translate="fade">Fun Area</div>
+  <div id="settings-window" translate="fade">Fun Area</div>
 </template>
 
 <script lang="ts">
@@ -17,7 +17,7 @@ export default class Editor extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
-#edit-window {
+#settings-window {
   position: fixed;
   z-index: 500;
   top: 20%;

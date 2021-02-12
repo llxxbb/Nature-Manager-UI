@@ -1,4 +1,5 @@
 <template>
+  <InstanceSelector ref="insSelector"></InstanceSelector>
   <node-context-menu
     ref="nodeMenu"
     :show="nodeContextShow"
@@ -31,12 +32,13 @@ import { D3Tree } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import NodeContextMenu from "./NodeContextMenu.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
+import InstanceSelector from "./InstanceSelector.vue";
 import { TreePara, D3Node, Shape, DataType } from "@/domain/node";
 import { Meta } from "@/domain/meta";
 import { Instance, InstanceQueryCondition } from "@/domain/instance";
 
 @Options({
-  components: { NodeContextMenu, LayerContextMenu },
+  components: { NodeContextMenu, LayerContextMenu, InstanceSelector },
   data() {
     return {
       relationData: null,
@@ -134,6 +136,13 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
     recentInstances(e: Meta) {
       this.nodeContextShow = false;
       console.log(e);
+      this.$refs.insSelector.show();
+      // let data = await this.nature.getInstance(e);
+      // if (!data) return;
+      // this.setMode(LayoutMode.instance);
+      // this.treePara.data = data;
+      // this.treePara.shape = Shape.rectR;
+      // this.tree.show(this.treePara);
     },
     addNode(e: { name: string; parent: D3Node }) {
       this.nodeContextShow = false;
