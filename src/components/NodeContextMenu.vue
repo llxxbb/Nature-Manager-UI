@@ -216,6 +216,8 @@ export class CMPara {
 })
 export default class NodeContextMenu extends Vue {
   para: CMPara = new CMPara();
+  instanceId: string = "";
+  instancePara: string = "";
 }
 </script>
 <style scoped lang="stylus">

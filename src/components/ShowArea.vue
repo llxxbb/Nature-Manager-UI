@@ -31,9 +31,9 @@ import { D3Tree } from "../service/d3tree";
 import { data, data2, data3 } from "../testData/node";
 import NodeContextMenu from "./NodeContextMenu.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
-import { TreePara, D3Node, Shape } from "@/domain/node";
+import { TreePara, D3Node, Shape, DataType } from "@/domain/node";
 import { Meta } from "@/domain/meta";
-import { InstanceQueryCondition } from "@/domain/instance";
+import { Instance, InstanceQueryCondition } from "@/domain/instance";
 
 @Options({
   components: { NodeContextMenu, LayerContextMenu },
@@ -62,13 +62,18 @@ import { InstanceQueryCondition } from "@/domain/instance";
     showNodeMenu(e: MouseEvent, d: D3Node) {
       e.stopPropagation();
       if (this.layerContextShow) this.layerContextShow = false;
-      var cm = this.$refs.nodeMenu;
+      var cm = this.$refs.nodeMenu as NodeContextMenu;
       cm.para = {
         top: e.clientY,
         left: e.clientX,
         node: d,
       };
       this.nodeContextShow = true;
+      if (!d.data) return;
+      if (d.data.dataType != DataType.INSTANCE) return;
+      let ins = d.data.data as Instance;
+      cm.instanceId = ins.id.toString();
+      cm.instancePara = ins.data.para ? ins.data.para : "";
     },
     hideNodeMenu() {
       this.nodeContextShow = false;
