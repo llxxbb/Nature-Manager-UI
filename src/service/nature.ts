@@ -109,24 +109,22 @@ export class Nature {
         let useVersion = true
         const meta = condition.meta;
         if (meta.isState() && condition.staVer == -1) useVersion = false;
-        let instance: Instance = undefined as any as Instance;
+        let instance;
         if (useVersion) {
             instance = await getInstanceById(condition.toFromInstance());
         } else {
             // get last version of `State-Meta`
             const data = {
-                id: condition.id,
-                meta: "",
                 key_le: meta.instanceKey(condition.id, condition.para, Number.MAX_SAFE_INTEGER),
             };
-            let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", data);
-            if (res.data.Ok.length > 0) instance = res.data.Ok[0]
+            let insResult = await getInstanceList(data)
+            if (insResult.length > 0) instance = insResult[0]
         }
         if (!instance) {
             alert("Sorry! not found");
             return null;
         }
-        let rtn = Instance.toD3Node(instance, metaMap)
+        let rtn = Instance.toD3Node(instance)
         if (INSTANCE_RELATED_AUTO) return await this.fetchInstanceAuto(rtn);
         return rtn;
     };
@@ -160,7 +158,8 @@ export class Nature {
         let from = instance.data.from;
         if (!from) return currentNode;
         let rtnRaw = await getInstanceById(from);
-        let rtn = Instance.toD3Node(rtnRaw, metaMap);
+        if (!rtnRaw) return currentNode;
+        let rtn = Instance.toD3Node(rtnRaw);
         rtn.addChild(currentNode)
         return rtn;
     }
@@ -171,7 +170,8 @@ export class Nature {
         let res = await axios.post(NATURE_MANAGER_URL + "/instance/downstream", (currentNode.data.data as Instance).getKey());
         let rtnRaw: Instance[] = res.data.Ok
         rtnRaw.forEach(d => {
-            let one = Instance.toD3Node(d, metaMap)
+            let ins = rawToInstance(d)
+            let one = Instance.toD3Node(ins)
             currentNode.addChild(one);
             one.leftNavDone = true;
         })
@@ -180,25 +180,45 @@ export class Nature {
         return root;
     }
 
-    async getRecent(meta: string) {
+    async getInstanceList(meta: string) {
         const data = {
             meta,
             limit: INSTANCE_RECENT_SIZE
         };
-        let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", data);
-        let rtn: Instance[] = []
-        res.data.Ok.forEach((d: any) => {
-            let ins: Instance = Object.assign(new Instance, d);
-            ins.meta = metaMap.get(ins.data.meta) as Meta;
-            rtn.push(ins);
-        });
-        return rtn;
+        return await getInstanceList(data);
+    }
+
+    async getStateList(condition: string) {
+        const data = {
+            key_le: condition,
+            limit: INSTANCE_RECENT_SIZE
+        };
+        return await getInstanceList(data);
     }
 }
+async function getInstanceList(condition: any) {
+    let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", condition);
+    let rtn: Instance[] = []
+    res.data.Ok.forEach((d: any) => rtn.push(rawToInstance(d)));
+    return rtn;
+}
+function rawToInstance(raw: any) {
+    let ins: Instance = Object.assign(new Instance, raw);
+    ins.meta = metaMap.get(ins.data.meta) as Meta;
+    return ins;
+}
 
-async function getInstanceById(condition: FromInstance): Promise<Instance> {
+async function getInstanceById(condition: FromInstance) {
     let res = await axios.post(NATURE_MANAGER_URL + "/instance/byId", condition);
-    return res.data.Ok;
+    if (res.data.Err) {
+        console.log(res.data);
+        return null;
+    }
+    if (!res.data.Ok) {
+        alert("not found")
+        return null;
+    }
+    return rawToInstance(res.data.Ok);
 }
 
 function makeParentDomainNode(levels: string[], end: number, nodeId: number) {

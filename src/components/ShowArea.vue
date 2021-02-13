@@ -1,14 +1,15 @@
 <template>
-  <InstanceSelector ref="insSelector" @flow="locateInstance"></InstanceSelector>
+  <InstanceSelector ref="insSelector" @flow="dataFlow"></InstanceSelector>
   <node-context-menu
     ref="nodeMenu"
-    @instance="locateInstance"
-    @list="recentInstances"
+    @dataFlow="dataFlow"
+    @list="instanceList"
     @addNode="addNode"
     @editNode="editNode"
     @deleteNode="deleteNode"
     @insLeft="navigateLeft"
     @insRight="navigateRight"
+    @stateList="stateList"
   ></node-context-menu>
   <layer-context-menu
     ref="layerMenu"
@@ -100,7 +101,7 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       this.currentMode = mode;
       this.bgMode = "mode_" + LayoutMode[mode];
     },
-    async locateInstance(e: InstanceQueryCondition) {
+    async dataFlow(e: InstanceQueryCondition) {
       let data = await this.nature.getInstance(e);
       if (!data) return;
       this.setMode(LayoutMode.instance);
@@ -120,9 +121,14 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       this.treePara.shape = Shape.rectR;
       this.tree.show(this.treePara);
     },
-    async recentInstances(e: string) {
+    async instanceList(e: string) {
       if (!e || e === "") return;
-      let data = await this.nature.getRecent(e);
+      let data = await this.nature.getInstanceList(e);
+      this.$refs.insSelector.show(data);
+    },
+    async stateList(e: string){
+      if (!e || e === "") return;
+      let data = await this.nature.getStateList(e);
       this.$refs.insSelector.show(data);
     },
     addNode(e: { name: string; parent: D3Node }) {

@@ -16,7 +16,7 @@ export class InstanceQueryCondition {
         rtn.state_version = this.staVer;
         return rtn;
     }
-    static fromInstance(ins: Instance){
+    static fromInstance(ins: Instance) {
         let rtn = new InstanceQueryCondition;
         rtn.id = ins.id;
         rtn.meta = ins.meta;
@@ -43,16 +43,13 @@ export class Instance {
         return this.id + "|" + para + "|" + ver
     }
 
-    static toD3Node(raw: Instance, metaMap: Map<String, Meta>) {
-        let cIns = Object.assign(new Instance, raw);
-        let meta = metaMap.get(cIns.data.meta) as Meta;
-        cIns.meta = meta;
+    static toD3Node(cIns: Instance) {
         const nd = new NatureData;
         nd.dataType = DataType.INSTANCE;
         nd.data = cIns;
         let node = new D3Node;
-        node.setState(meta.isState())
-        node.name = meta.levels[meta.levels.length - 1];
+        node.setState(cIns.meta.isState())
+        node.name = cIns.meta.levels[cIns.meta.levels.length - 1];
         node.setClassForSame(cIns.id == "0" ? "id" + cIns.data.para : "id" + cIns.id);
         node.title = cIns.getKey();
         node.data = nd;

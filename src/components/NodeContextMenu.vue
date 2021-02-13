@@ -170,13 +170,15 @@ export class CMPara {
     para: CMPara,
   },
   emits: [
-    "instance",
+    "dataFlow",
     "list",
     "editNode",
     "addNode",
     "deleteNode",
     "insLeft",
     "insRight",
+    "stateList",
+    "detail",
   ],
   methods: {
     showMenu(data: CMPara) {
@@ -197,6 +199,10 @@ export class CMPara {
       this.$emit("insRight", this.para.node);
     },
     query(e: KeyboardEvent) {
+      if (this.instanceId === "" && this.instancePara === "") {
+        alert("please input [id] and | or [para]");
+        return;
+      }
       this.show = false;
       // init and meta
       let meta: Meta;
@@ -212,7 +218,7 @@ export class CMPara {
       cond.meta = meta;
       cond.para = this.instancePara;
       cond.staVer = staVer;
-      this.$emit("instance", cond);
+      this.$emit("dataFlow", cond);
       this.instanceId = "";
       this.instancePara = "";
       this.instanceStaVer = "";
@@ -221,7 +227,19 @@ export class CMPara {
       this.show = false;
       this.$emit("list", this.getMeta().name);
     },
-    stateList() {},
+    stateList() {
+      this.show = false;
+      let ver =
+        this.instanceStaVer === ""
+          ? Number.MAX_SAFE_INTEGER
+          : this.instanceStaVer;
+      const condition = (this.getMeta() as Meta).instanceKey(
+        this.instanceId,
+        this.instancePara,
+        ver
+      );
+      this.$emit("stateList", condition);
+    },
     detail() {},
     editNode() {
       this.show = false;
