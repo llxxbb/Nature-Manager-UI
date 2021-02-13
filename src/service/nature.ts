@@ -186,7 +186,13 @@ export class Nature {
             limit: INSTANCE_RECENT_SIZE
         };
         let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", data);
-        return res.data.Ok;
+        let rtn: Instance[] = []
+        res.data.Ok.forEach((d: any) => {
+            let ins: Instance = Object.assign(new Instance, d);
+            ins.meta = metaMap.get(ins.data.meta) as Meta;
+            rtn.push(ins);
+        });
+        return rtn;
     }
 }
 

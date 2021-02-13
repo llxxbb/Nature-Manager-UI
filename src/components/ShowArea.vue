@@ -1,5 +1,5 @@
 <template>
-  <InstanceSelector ref="insSelector"></InstanceSelector>
+  <InstanceSelector ref="insSelector" @flow="locateInstance"></InstanceSelector>
   <node-context-menu
     ref="nodeMenu"
     @instance="locateInstance"

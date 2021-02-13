@@ -16,6 +16,14 @@ export class InstanceQueryCondition {
         rtn.state_version = this.staVer;
         return rtn;
     }
+    static fromInstance(ins: Instance){
+        let rtn = new InstanceQueryCondition;
+        rtn.id = ins.id;
+        rtn.meta = ins.meta;
+        rtn.para = ins.data.para;
+        rtn.staVer = ins.data.state_version;
+        return rtn;
+    }
 }
 
 export class Instance {
@@ -28,6 +36,11 @@ export class Instance {
         let para = this.data.para ? this.data.para : "";
         let ver = this.data.state_version ? this.data.state_version : 0
         return this.data.meta + "|" + this.id + "|" + para + "|" + ver
+    }
+    keyNoMeta() {
+        let para = this.data.para ? this.data.para : "";
+        let ver = this.data.state_version ? this.data.state_version : 0
+        return this.id + "|" + para + "|" + ver
     }
 
     static toD3Node(raw: Instance, metaMap: Map<String, Meta>) {

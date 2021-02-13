@@ -36,6 +36,11 @@ In this mode, you can see the data flow
 - can modify settings in `config.ts`
 ## Change Logs
 
+**0.5.0** 2021-02-13
+
+- recent instance
+- config.js: support INSTANCE_RELATED_AUTO
+
 **0.4.0** 2021-02-10
 
 - support Instance-mode

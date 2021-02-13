@@ -50,9 +50,12 @@
             class="form-control"
             placeholder="status version"
           />
-          <button type="button" class="btn btn-success" @click="query">
-            go
-          </button>
+          <img
+            src="../assets/relation.svg"
+            class="btn btn-outline-success"
+            title="show data flow of this `Instance`"
+            @click="query"
+          />
         </div>
       </li>
       <li

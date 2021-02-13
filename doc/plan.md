@@ -1,13 +1,10 @@
 # dev plan
 
-## version 0.5.0
-
-- config.js: support INSTANCE_RELATED_AUTO
-`Instance-Mode`: state instance show in red title.
-- some little optimize.
+## version 0.6.0
 ## doing
 
-recent instance
+view instance detail
+list state-instance
 
 show undefined `Meta` in relation-mode (circle with red bgColor)
 
