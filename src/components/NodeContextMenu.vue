@@ -5,23 +5,37 @@
     :style="{ top: para.top + 'px', left: para.left + 'px' }"
   >
     <ul class="list-group">
+      <!-- navigator -->
       <li
         v-show="canNavigateInstance()"
         class="list-group-item item list-group-item-action"
       >
+        <img src="../assets/nav.svg" />
+        data-flow navigate
         <div class="container">
           <div class="row">
-            <div v-show="canNavigateLeft()" class="col">
-              get upstream:
-              <img src="../assets/nav-left.svg" @click="leftInstance" />
+            <div class="col">
+              <div v-show="canNavigateLeft()">
+                <img
+                  class="btn btn-outline-primary float-start"
+                  src="../assets/nav-left.svg"
+                  @click="leftInstance"
+                />
+              </div>
             </div>
-            <div v-show="canNavigateRight()" class="col">
-              get downstream:
-              <img src="../assets/nav-right.svg" @click="rightInstance" />
+            <div class="col">
+              <div v-show="canNavigateRight()">
+                <img
+                  class="btn btn-outline-primary float-end"
+                  src="../assets/nav-right.svg"
+                  @click="rightInstance"
+                />
+              </div>
             </div>
           </div>
         </div>
       </li>
+      <!-- query instance -->
       <li
         v-show="canQueryInstance()"
         class="list-group-item item list-group-item-action"
@@ -29,35 +43,70 @@
         <img src="../assets/locate.svg" />
         query instance
         <div class="input-group">
-          <input
-            v-model="instanceId"
-            type="text"
-            title="default 0"
-            class="form-control"
-            placeholder="id"
-          />
-          <input
-            v-model="instancePara"
-            type="text"
-            class="form-control"
-            placeholder="para"
-          />
-          <input
-            v-show="isState()"
-            v-model="instanceStaVer"
-            title="default -1 : for all version"
-            type="text"
-            class="form-control"
-            placeholder="status version"
-          />
-          <img
-            src="../assets/relation.svg"
-            class="btn btn-outline-success"
-            title="show data flow of this `Instance`"
-            @click="query"
-          />
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <input
+                  v-model="instanceId"
+                  type="text"
+                  title="default 0"
+                  class="form-control"
+                  placeholder="id"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <input
+                  v-model="instancePara"
+                  type="text"
+                  class="form-control"
+                  placeholder="para"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <input
+                  v-show="isState()"
+                  v-model="instanceStaVer"
+                  title="default -1 : for all version"
+                  type="text"
+                  class="form-control"
+                  placeholder="status version"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <button
+                  class="btn btn-outline-success"
+                  title="show data flow of this `Instance`"
+                  @click="query"
+                >
+                  Data Flow
+                </button>
+                <button
+                  v-show="isState()"
+                  class="btn btn-outline-success"
+                  title="show recent version of this `Instance`"
+                  @click="stateList"
+                >
+                  State List
+                </button>
+                <button
+                  class="btn btn-outline-success"
+                  title="show detail info of this `Instance`"
+                  @click="detail"
+                >
+                  Detail
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </li>
+      <!-- recent instance -->
       <li
         v-show="canQueryInstance()"
         class="list-group-item item list-group-item-action"
@@ -149,14 +198,9 @@ export class CMPara {
     },
     query(e: KeyboardEvent) {
       this.show = false;
-      let data = this.para.node.data as NatureData;
       // init and meta
       let meta: Meta;
-      if (data.dataType == DataType.META) {
-        meta = data.data;
-      } else {
-        meta = (data.data as Instance).meta;
-      }
+      meta = this.getMeta();
       // init state version
       let staVer: number = 0;
       if (this.instanceStaVer.length > 0)
@@ -175,17 +219,10 @@ export class CMPara {
     },
     list() {
       this.show = false;
-      // init meta
-      let node = this.para.node;
-      if (!node.data) return null;
-      let nd = node.data as NatureData;
-      let meta;
-      if (nd.dataType === DataType.META) meta = (nd.data as Meta).name;
-      else if (nd.dataType === DataType.INSTANCE)
-        meta = (nd.data as Instance).data.meta;
-      else return;
-      this.$emit("list", meta);
+      this.$emit("list", this.getMeta().name);
     },
+    stateList() {},
+    detail() {},
     editNode() {
       this.show = false;
       this.$emit("editNode", this.para.node);
@@ -246,6 +283,15 @@ export class CMPara {
 })
 export default class NodeContextMenu extends Vue {
   para: CMPara = new CMPara();
+
+  private getMeta(): Meta {
+    let data = this.para.node.data as NatureData;
+    if (data.dataType == DataType.META) {
+      return data.data;
+    } else {
+      return (data.data as Instance).meta;
+    }
+  }
 }
 </script>
 <style scoped lang="stylus">

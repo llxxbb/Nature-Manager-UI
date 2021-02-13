@@ -1,6 +1,6 @@
 <template>
   <!-- Modal -->
-  <div :class="canShow" id="insSel" tabindex="-1" role="dialog">
+  <div :class="canShow" id="insSel" tabindex="-1" role="dialog" @keyup.esc="close()">
     <div class="modal-dialog" role="document" style="max-width: 900px">
       <div class="modal-content">
         <!-- header -->

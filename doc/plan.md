@@ -3,8 +3,8 @@
 ## version 0.6.0
 ## doing
 
-view instance detail
 list state-instance
+view instance detail
 
 show undefined `Meta` in relation-mode (circle with red bgColor)
 
