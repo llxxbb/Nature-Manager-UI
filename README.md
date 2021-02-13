@@ -2,7 +2,7 @@
 
 You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature) 
 
-Please user version 0.22.1 or above of Nature.
+Please user version 0.22.2 or above of Nature.
 
 ## Relation Mode
 
