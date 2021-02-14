@@ -4,9 +4,10 @@
 
 list state-instance
 view instance detail
+show current instance detail
 ## doing
 
-show current instance detail
+
 
 show undefined `Meta` in relation-mode (circle with red bgColor)
 

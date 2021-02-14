@@ -5,6 +5,15 @@
     :style="{ top: para.top + 'px', left: para.left + 'px' }"
   >
     <ul class="list-group">
+      <!-- get instance detail -->
+      <li
+        v-show="getInstance()"
+        class="list-group-item item list-group-item-action"
+        @click="currentDetail"
+      >
+        <img src="../assets/locate.svg" />
+        show detail of current `Instance`
+      </li>
       <!-- navigator -->
       <li
         v-show="canNavigateInstance()"
@@ -40,7 +49,7 @@
         v-show="canQueryInstance()"
         class="list-group-item item list-group-item-action"
       >
-        <img src="../assets/locate.svg" />
+        <img src="../assets/query-instance.svg" />
         query instance
         <div class="input-group">
           <div class="container">
@@ -201,6 +210,16 @@ export class CMPara {
     query(e: string) {
       if (!this.checkInput()) return;
       this.$emit(e, this.genCondition());
+    },
+    currentDetail() {
+      this.show = false;
+      let ins = this.getInstance() as Instance
+      let cond = new InstanceQueryCondition();
+      cond.id = ins.id;
+      cond.meta = ins.meta;
+      cond.para = ins.data.para;
+      cond.staVer = ins.data.state_version;
+      this.$emit("detail", cond);
     },
     list() {
       this.show = false;
