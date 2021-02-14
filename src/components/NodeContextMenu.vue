@@ -82,7 +82,7 @@
                 <button
                   class="btn btn-outline-success"
                   title="show data flow of this `Instance`"
-                  @click="query"
+                  @click="query('dataFlow')"
                 >
                   Data Flow
                 </button>
@@ -97,7 +97,7 @@
                 <button
                   class="btn btn-outline-success"
                   title="show detail info of this `Instance`"
-                  @click="detail"
+                  @click="query('detail')"
                 >
                   Detail
                 </button>
@@ -198,30 +198,9 @@ export class CMPara {
       this.show = false;
       this.$emit("insRight", this.para.node);
     },
-    query(e: KeyboardEvent) {
-      if (this.instanceId === "" && this.instancePara === "") {
-        alert("please input [id] and | or [para]");
-        return;
-      }
-      this.show = false;
-      // init and meta
-      let meta: Meta;
-      meta = this.getMeta();
-      // init state version
-      let staVer: number = 0;
-      if (this.instanceStaVer.length > 0)
-        staVer = new Number(this.instanceStaVer) as number;
-      if (staVer == 0 && meta.isState()) staVer = -1;
-      // query
-      let cond = new InstanceQueryCondition();
-      cond.id = this.instanceId;
-      cond.meta = meta;
-      cond.para = this.instancePara;
-      cond.staVer = staVer;
-      this.$emit("dataFlow", cond);
-      this.instanceId = "";
-      this.instancePara = "";
-      this.instanceStaVer = "";
+    query(e: string) {
+      if (!this.checkInput()) return;
+      this.$emit(e, this.genCondition());
     },
     list() {
       this.show = false;
@@ -240,7 +219,6 @@ export class CMPara {
       );
       this.$emit("stateList", condition);
     },
-    detail() {},
     editNode() {
       this.show = false;
       this.$emit("editNode", this.para.node);
@@ -278,17 +256,6 @@ export class CMPara {
       if (nd.dataType == DataType.INSTANCE) return false;
       return true;
     },
-    getInstance(): Instance | null {
-      let nd = this.getNatureData();
-      if (!nd) return null;
-      if (nd.dataType == DataType.INSTANCE) return nd.data as Instance;
-      return null;
-    },
-    getNatureData(): NatureData | null {
-      let node = this.para.node as D3Node;
-      if (!node) return null;
-      return node.data as NatureData;
-    },
     isState() {
       let nd = this.getNatureData();
       if (!nd) return false;
@@ -296,6 +263,34 @@ export class CMPara {
       else if (nd.dataType == DataType.INSTANCE)
         return (nd.data as Instance).meta.isState();
       return false;
+    },
+    genCondition() {
+      this.show = false;
+      // init and meta
+      let meta: Meta;
+      meta = this.getMeta();
+      // init state version
+      let staVer: number = 0;
+      if (this.instanceStaVer.length > 0)
+        staVer = new Number(this.instanceStaVer) as number;
+      if (staVer == 0 && meta.isState()) staVer = -1;
+      // query
+      let cond = new InstanceQueryCondition();
+      cond.id = this.instanceId;
+      cond.meta = meta;
+      cond.para = this.instancePara;
+      cond.staVer = staVer;
+      this.instanceId = "";
+      this.instancePara = "";
+      this.instanceStaVer = "";
+      return cond;
+    },
+    checkInput() {
+      if (this.instanceId === "" && this.instancePara === "") {
+        alert("please input [id] and | or [para]");
+        return false;
+      }
+      return true;
     },
   },
 })
@@ -309,6 +304,17 @@ export default class NodeContextMenu extends Vue {
     } else {
       return (data.data as Instance).meta;
     }
+  }
+  private getInstance(): Instance | null {
+    let nd = this.getNatureData();
+    if (!nd) return null;
+    if (nd.dataType == DataType.INSTANCE) return nd.data as Instance;
+    return null;
+  }
+  private getNatureData(): NatureData | null {
+    let node = this.para.node as D3Node;
+    if (!node) return null;
+    return node.data as NatureData;
   }
 }
 </script>

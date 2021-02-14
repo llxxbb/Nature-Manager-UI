@@ -106,6 +106,14 @@ export class Nature {
     }
 
     async getInstance(condition: InstanceQueryCondition) {
+        let ins = await this.getOneInstance(condition);
+        if (!ins) return null;
+        let rtn = Instance.toD3Node(ins as any as Instance);
+        if (INSTANCE_RELATED_AUTO) return await this.fetchInstanceAuto(rtn);
+        return rtn;
+    };
+
+    async getOneInstance(condition: InstanceQueryCondition) {
         let useVersion = true
         const meta = condition.meta;
         if (meta.isState() && condition.staVer == -1) useVersion = false;
@@ -120,14 +128,9 @@ export class Nature {
             let insResult = await getInstanceList(data)
             if (insResult.length > 0) instance = insResult[0]
         }
-        if (!instance) {
-            alert("Sorry! not found");
-            return null;
-        }
-        let rtn = Instance.toD3Node(instance)
-        if (INSTANCE_RELATED_AUTO) return await this.fetchInstanceAuto(rtn);
-        return rtn;
-    };
+        if (!instance) alert("Sorry! not found");
+        return instance;
+    }
 
     private async fetchInstanceAuto(from: D3Node) {
         // upstream first

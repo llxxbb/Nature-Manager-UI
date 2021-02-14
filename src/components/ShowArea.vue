@@ -1,5 +1,6 @@
 <template>
-  <InstanceSelector ref="insSelector" @flow="dataFlow"></InstanceSelector>
+  <instance-selector ref="insSelector" @flow="dataFlow"></instance-selector>
+  <instance-detail ref="insDetail"></instance-detail>
   <node-context-menu
     ref="nodeMenu"
     @dataFlow="dataFlow"
@@ -10,6 +11,7 @@
     @insLeft="navigateLeft"
     @insRight="navigateRight"
     @stateList="stateList"
+    @detail="detail"
   ></node-context-menu>
   <layer-context-menu
     ref="layerMenu"
@@ -34,9 +36,15 @@ import InstanceSelector from "./InstanceSelector.vue";
 import { TreePara, D3Node, Shape, DataType } from "@/domain/node";
 import { Meta } from "@/domain/meta";
 import { Instance, InstanceQueryCondition } from "@/domain/instance";
+import InstanceDetail from "./InstanceDetail.vue";
 
 @Options({
-  components: { NodeContextMenu, LayerContextMenu, InstanceSelector },
+  components: {
+    NodeContextMenu,
+    LayerContextMenu,
+    InstanceSelector,
+    InstanceDetail,
+  },
   data() {
     return {
       relationData: null,
@@ -109,6 +117,11 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       this.treePara.shape = Shape.rectR;
       this.tree.show(this.treePara);
     },
+    async detail(e: InstanceQueryCondition) {
+      let data = await this.nature.getOneInstance(e);
+      if (!data) return;
+      this.$refs.insDetail.show(data);
+    },
     async navigateLeft(d: D3Node) {
       let data = await this.nature.getUpstream(d);
       this.treePara.data = data;
@@ -126,7 +139,7 @@ import { Instance, InstanceQueryCondition } from "@/domain/instance";
       let data = await this.nature.getInstanceList(e);
       this.$refs.insSelector.show(data);
     },
-    async stateList(e: string){
+    async stateList(e: string) {
       if (!e || e === "") return;
       let data = await this.nature.getStateList(e);
       this.$refs.insSelector.show(data);
