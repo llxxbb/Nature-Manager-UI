@@ -1,17 +1,15 @@
 # dev plan
 
-## version 0.6.0
-
-list state-instance
-view instance detail
-show current instance detail
+**0.7.0** 
 ## doing
 
-
+add node
 
 show undefined `Meta` in relation-mode (circle with red bgColor)
 
 ## other version
+
+add relation
 
 settings: add slide for node-size, zoom size
 

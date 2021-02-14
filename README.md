@@ -2,7 +2,7 @@
 
 You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature) 
 
-Please user version 0.22.2 or above of Nature.
+Please user version 0.22.3 or above of Nature.
 
 ## Relation Mode
 
@@ -35,6 +35,12 @@ In this mode, you can see the data flow
 - use virtual circle to show `path-domain`.
 - can modify settings in `config.ts`
 ## Change Logs
+
+**0.6.0** 2021-02-15
+
+list state-instance
+view instance detail
+show current instance detail
 
 **0.5.0** 2021-02-13
 
