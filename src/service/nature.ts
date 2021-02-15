@@ -1,4 +1,4 @@
-import { INSTANCE_RECENT_SIZE, INSTANCE_RELATED_AUTO, NATURE_MANAGER_URL } from "@/config";
+import { DOMAIN_SEPARATOR, INSTANCE_RECENT_SIZE, INSTANCE_RELATED_AUTO, NATURE_MANAGER_URL } from "@/config";
 import { InstanceQueryCondition, Instance, FromInstance } from "@/domain/instance";
 import { Meta } from "@/domain/meta";
 import { D3Node } from "@/domain/node";
@@ -66,7 +66,7 @@ export class Nature {
         let idSeq = -1;
         allMeta.forEach(one => {
             // init parent
-            let path = "/";
+            let path = DOMAIN_SEPARATOR;
             let parent = unique.get(path);
             if (!parent) {
                 // only root has no parent
@@ -77,7 +77,7 @@ export class Nature {
             for (let index = 0; index < one.levels.length; index++) {
                 // find parent
                 const level = one.levels[index];
-                path = path + level + "/";
+                path = path + level + DOMAIN_SEPARATOR;
                 let child = unique.get(path);
                 if (index < one.levels.length - 1) {
                     if (!child) {

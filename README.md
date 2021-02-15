@@ -38,9 +38,9 @@ In this mode, you can see the data flow
 
 **0.6.0** 2021-02-15
 
-list state-instance
-view instance detail
-show current instance detail
+- list state-instance
+- view instance detail
+- show current instance detail
 
 **0.5.0** 2021-02-13
 

@@ -1,3 +1,4 @@
+import { DOMAIN_SEPARATOR } from "@/config";
 import { D3Node, DataType, NatureData } from "./node";
 import { Relation } from "./relation";
 
@@ -43,7 +44,7 @@ export class Meta {
     }
     init() {
         this.name = this.meta_type + ":" + this.meta_key + ":" + this.version
-        this.levels = this.meta_key.split("/");
+        this.levels = this.meta_key.split(DOMAIN_SEPARATOR);
     }
 
     static fromName(name: string) {
@@ -52,7 +53,7 @@ export class Meta {
         rtn.meta_type = parts[0];
         rtn.meta_key = parts[1];
         rtn.version = Number.parseInt(parts[2]);
-        rtn.levels = rtn.meta_key.split("/");
+        rtn.levels = rtn.meta_key.split(DOMAIN_SEPARATOR);
         rtn.name = name;
         rtn.id = - 1;
         rtn.initD3Node();
