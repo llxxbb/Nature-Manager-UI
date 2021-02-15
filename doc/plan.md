@@ -4,7 +4,6 @@
 ## doing
 
 add node
-
 show undefined `Meta` in relation-mode (circle with red bgColor)
 
 ## other version

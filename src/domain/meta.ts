@@ -2,6 +2,13 @@ import { DOMAIN_SEPARATOR } from "@/config";
 import { D3Node, DataType, NatureData } from "./node";
 import { Relation } from "./relation";
 
+export class MetaConfig {
+    "is_state" = false;		// 缺省false, 如果`Meta`的 `state` 属性为空但又需要成为状态数据时，可以将这个属性设置为true。如一个计数器 `Meta` 是需要状态的。
+    "master" = null;
+    "multi_meta" = [];
+    "cache_saved" = false;
+    "only_one" = false;
+}
 export class Meta {
     id = 0;
     name: string = "";
@@ -13,6 +20,7 @@ export class Meta {
     states = "";
     fields = "";
     config = "";
+    configObj: MetaConfig = new MetaConfig;
     relation?: Relation;
     flag = 0;
     create_time = new Date;
@@ -45,6 +53,8 @@ export class Meta {
     init() {
         this.name = this.meta_type + ":" + this.meta_key + ":" + this.version
         this.levels = this.meta_key.split(DOMAIN_SEPARATOR);
+        if (this.config.trim().length > 0) this.configObj = JSON.parse(this.config);
+        if (this.states.trim().length > 0) this.configObj.is_state = true;
     }
 
     static fromName(name: string) {
@@ -61,7 +71,7 @@ export class Meta {
     }
 
     isState(): boolean {
-        return this.states.trim().length > 0
+        return this.configObj.is_state;
     }
 
     instanceKey(id: string, para: string, staVer: number) {

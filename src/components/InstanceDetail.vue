@@ -100,7 +100,6 @@ import { Options, Vue } from "vue-class-component";
   },
   methods: {
     show(data: Instance) {
-      console.log(data);
       this.ins = data;
       this.from = JSON.stringify(data.data.from, null, "\t");
       this.content = JSON.stringify(data.data.content, null, "\t");

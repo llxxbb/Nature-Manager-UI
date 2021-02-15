@@ -34,11 +34,12 @@ In this mode, you can see the data flow
 - can modify settings in `config.ts`
 ## Change Logs
 
-**0.6.0** 2021-02-15
+**0.6.1** 2021-02-15
 
 - list state-instance
 - view instance detail
 - show current instance detail
+- bug fix: state not shown in red
 
 **0.5.0** 2021-02-13
 

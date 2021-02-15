@@ -214,7 +214,7 @@ function rawToInstance(raw: any) {
 async function getInstanceById(condition: FromInstance) {
     let res = await axios.post(NATURE_MANAGER_URL + "/instance/byId", condition);
     if (res.data.Err) {
-        console.log(res.data);
+        alert("remote err: " + JSON.stringify(res.data.Err));
         return null;
     }
     if (!res.data.Ok) {
