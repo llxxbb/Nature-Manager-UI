@@ -5,9 +5,6 @@
     ref="nodeMenu"
     @dataFlow="dataFlow"
     @list="instanceList"
-    @addNode="addNode"
-    @editNode="editNode"
-    @deleteNode="deleteNode"
     @insLeft="navigateLeft"
     @insRight="navigateRight"
     @stateList="stateList"
@@ -27,14 +24,12 @@
 
 <script lang="ts">
 import { Nature } from "@/service/nature";
-import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree } from "../service/d3tree";
 import NodeContextMenu from "./NodeContextMenu.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
 import InstanceSelector from "./InstanceSelector.vue";
 import { TreePara, D3Node, Shape, DataType } from "@/domain/node";
-import { Meta } from "@/domain/meta";
 import { Instance, InstanceQueryCondition } from "@/domain/instance";
 import InstanceDetail from "./InstanceDetail.vue";
 
@@ -143,25 +138,6 @@ import InstanceDetail from "./InstanceDetail.vue";
       if (!e || e === "") return;
       let data = await this.nature.getStateList(e);
       this.$refs.insSelector.show(data);
-    },
-    addNode(e: { name: string; parent: D3Node }) {
-      let newNode = new D3Node();
-      newNode.name = e.name;
-      e.parent.addChild(newNode);
-      this.tree.show(this.treePara);
-    },
-    editNode(e: Meta) {
-      console.log("editNode");
-    },
-    deleteNode(e: Meta) {
-      console.log("deleteNode");
-    },
-    nodeMoved(
-      source: HierarchyPointNode<D3Node>,
-      target: HierarchyPointNode<D3Node>
-    ) {
-      source.data.moveTo(target.data);
-      this.tree.show(this.treePara);
     },
   },
   async mounted() {

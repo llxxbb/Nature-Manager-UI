@@ -246,6 +246,8 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
         .on("end", (e, d) => {
             if (!DragStart) return;
             DragStart = false
+            // disable move for free version UI
+            TargetToDrop = null
             // Instance-Mode can not move
             if (!TargetToDrop || ParaData.shape == Shape.rectR) {
                 // back transform
@@ -254,11 +256,6 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
                 selected.attr("transform", () => `translate(${SelectNodeY},${SelectNodeX})`);
                 return;
             }
-            let dragged = d as HierarchyPointNode<D3Node>;
-            let target = TargetToDrop
-            TargetToDrop = null
-            if (ParaData.event && ParaData.event.nodeMoved)
-                ParaData.event?.nodeMoved(dragged, target as HierarchyPointNode<D3Node>);
         });
 
     drag(enter as unknown as d3.Selection<Element, unknown, any, any>);

@@ -22,15 +22,13 @@ In this mode, you can see the data flow
 
 ![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/e601da14497c958843e818fec49d81d5f9142c721a9e8da2e776188bd0e61f6a303aa16a1306d556211ab4118d32ce28?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=instance.png&size=750)
 
-## functions
+## Functions
 
 - change mode by right-click at the blank of the layer.
 - context-menu for node.
-- you can move one node to another.
 - can expand-collapse the nodes.
 - show `State-Meta` text in red title
 - show red circle for current selected node.
-
 - for same `Meta`, use virtual circle to show repeated, and use blue color to identify them when move on them.
 - use virtual circle to show `path-domain`.
 - can modify settings in `config.ts`
