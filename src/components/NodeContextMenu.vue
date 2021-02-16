@@ -124,6 +124,27 @@
         <img src="../assets/list.svg" />
         query recent instances
       </li>
+      <li
+        v-show="false"
+        class="list-group-item item list-group-item-action"
+        @click="editNode"
+      >
+        <img src="../assets/node-edit.svg" />
+        edit node
+      </li>
+      <li class="list-group-item item list-group-item-action" v-show="canAdd()">
+        <img src="../assets/node-plus.svg" />
+        add child node
+        <input v-model="metaName" class="form-control" @keyup.enter="addNode" />
+      </li>
+      <li
+        v-show="false"
+        class="list-group-item item list-group-item-action"
+        @click="deleteNode"
+      >
+        <img src="../assets/node-minus.svg" />
+        delete node
+      </li>
     </ul>
   </div>
 </template>
@@ -160,6 +181,9 @@ export class CMPara {
   emits: [
     "dataFlow",
     "list",
+    "editNode",
+    "addNode",
+    "deleteNode",
     "insLeft",
     "insRight",
     "stateList",
@@ -213,6 +237,22 @@ export class CMPara {
         ver
       );
       this.$emit("stateList", condition);
+    },
+    editNode() {
+      this.show = false;
+      this.$emit("editNode", this.para.node);
+    },
+    deleteNode() {
+      this.show = false;
+      this.$emit("deleteNode", this.para.node);
+    },
+    addNode() {
+      this.show = false;
+      this.$emit("addNode", {
+        name: this.metaName,
+        parent: this.para.node,
+      });
+      this.metaName = "";
     },
     canNavigateInstance() {
       return this.getInstance() && !INSTANCE_RELATED_AUTO;
