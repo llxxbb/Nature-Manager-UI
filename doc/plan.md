@@ -1,11 +1,9 @@
 # dev plan
 
-**0.7.0** 
-
-- tooltip for `Meta`
-- tooltip for `Instance`
+**0.8.0** 
 ## doing
 
+tooltip for `Relation`
 add new meta
 edit meta
 enable or disable meta

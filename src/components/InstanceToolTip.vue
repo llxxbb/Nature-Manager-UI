@@ -1,5 +1,5 @@
 <template>
-  <tool-tip ref="toolTip" class="tip-meta" :width="500">
+  <tool-tip ref="toolTip" class="tip-meta" width="500" bgColor="#b1fcbc">
     <table class="table">
       <tbody>
         <tr v-show="ins?.getKey()">

@@ -2,7 +2,12 @@
   <div
     id="tool-win"
     v-show="visiable"
-    :style="{ top: top + 'px', left: left + 'px', width: width + 'px' }"
+    :style="{
+      top: top + 'px',
+      left: left + 'px',
+      width: width + 'px',
+      'background-color': bgColor,
+    }"
   >
     <slot></slot>
   </div>
@@ -13,8 +18,12 @@ import { Vue, Options } from "vue-class-component";
 @Options({
   props: {
     width: {
-      type: Number,
-      default: 400,
+      type: String,
+      default: "400",
+    },
+    bgColor: {
+      type: String,
+      default: "#fed2be",
     },
   },
   data() {
@@ -50,6 +59,5 @@ export default class ToolTip extends Vue {}
   left: 0px;
   border: 2px solid #fefe90;
   border-radius: 15px;
-  background-color: rgb(254, 210, 190);
 }
 </style>
