@@ -1,7 +1,7 @@
 <template>
   <instance-selector ref="insSelector" @flow="dataFlow"></instance-selector>
-  <instance-detail ref="insDetail"></instance-detail>
   <meta-tool-tip ref="tipMeta"></meta-tool-tip>
+  <instance-tool-tip ref="tipIns"></instance-tool-tip>
   <node-context-menu
     ref="nodeMenu"
     @dataFlow="dataFlow"
@@ -12,7 +12,6 @@
     @insLeft="navigateLeft"
     @insRight="navigateRight"
     @stateList="stateList"
-    @detail="detail"
   ></node-context-menu>
   <layer-context-menu
     ref="layerMenu"
@@ -34,10 +33,10 @@ import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree } from "../service/d3tree";
-import InstanceDetail from "./InstanceDetail.vue";
 import InstanceSelector from "./InstanceSelector.vue";
 import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
 import MetaToolTip from "./MetaToolTip.vue";
+import InstanceToolTip from "./InstanceToolTip.vue";
 import NodeContextMenu from "./NodeContextMenu.vue";
 
 @Options({
@@ -45,8 +44,8 @@ import NodeContextMenu from "./NodeContextMenu.vue";
     NodeContextMenu,
     LayerContextMenu,
     InstanceSelector,
-    InstanceDetail,
     MetaToolTip,
+    InstanceToolTip,
   },
   data() {
     return {
@@ -120,11 +119,6 @@ import NodeContextMenu from "./NodeContextMenu.vue";
       this.treePara.shape = Shape.rectR;
       this.tree.show(this.treePara);
     },
-    async detail(e: InstanceQueryCondition) {
-      let data = await this.nature.getOneInstance(e);
-      if (!data) return;
-      this.$refs.insDetail.show(data);
-    },
     async navigateLeft(d: D3Node) {
       let data = await this.nature.getUpstream(d);
       this.treePara.data = data;
@@ -170,12 +164,13 @@ import NodeContextMenu from "./NodeContextMenu.vue";
       if (
         this.currentMode == LayoutMode.domain ||
         this.currentMode == LayoutMode.relation
-      ) {
+      )
         this.$refs.tipMeta.setPara(d, e.clientX, e.clientY);
-      }
+      else this.$refs.tipIns.show(d, e.clientX, e.clientY);
     },
     hideNodeTip() {
       this.$refs.tipMeta.hide();
+      this.$refs.tipIns.hide();
     },
     showLinkTip(e: MouseEvent, d: D3Node) {},
     hideLinkTip() {},

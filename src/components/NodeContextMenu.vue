@@ -5,15 +5,6 @@
     :style="{ top: para.top + 'px', left: para.left + 'px' }"
   >
     <ul class="list-group">
-      <!-- get instance detail -->
-      <li
-        v-show="getInstance()"
-        class="list-group-item item list-group-item-action"
-        @click="currentDetail"
-      >
-        <img src="../assets/locate.svg" />
-        show detail of current `Instance`
-      </li>
       <!-- navigator -->
       <li
         v-show="canNavigateInstance()"
@@ -91,7 +82,7 @@
                 <button
                   class="btn btn-outline-success"
                   title="show data flow of this `Instance`"
-                  @click="query('dataFlow')"
+                  @click="query()"
                 >
                   Data Flow
                 </button>
@@ -102,13 +93,6 @@
                   @click="stateList"
                 >
                   State List
-                </button>
-                <button
-                  class="btn btn-outline-success"
-                  title="show detail info of this `Instance`"
-                  @click="query('detail')"
-                >
-                  Detail
                 </button>
               </div>
             </div>
@@ -187,7 +171,6 @@ export class CMPara {
     "insLeft",
     "insRight",
     "stateList",
-    "detail",
   ],
   methods: {
     showMenu(data: CMPara) {
@@ -207,19 +190,9 @@ export class CMPara {
       this.show = false;
       this.$emit("insRight", this.para.node);
     },
-    query(e: string) {
+    query() {
       if (!this.checkInput()) return;
-      this.$emit(e, this.genCondition());
-    },
-    currentDetail() {
-      this.show = false;
-      let ins = this.getInstance() as Instance
-      let cond = new InstanceQueryCondition();
-      cond.id = ins.id;
-      cond.meta = ins.meta;
-      cond.para = ins.data.para;
-      cond.staVer = ins.data.state_version;
-      this.$emit("detail", cond);
+      this.$emit('dataFlow', this.genCondition());
     },
     list() {
       this.show = false;

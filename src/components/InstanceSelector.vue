@@ -1,13 +1,17 @@
 <template>
   <!-- Modal -->
-  <div :class="canShow" id="insSel" tabindex="-1" role="dialog" @keyup.esc="close()">
+  <div
+    :class="canShow"
+    id="insSel"
+    tabindex="-1"
+    role="dialog"
+    @keyup.esc="close()"
+  >
     <div class="modal-dialog" role="document" style="max-width: 900px">
       <div class="modal-content">
         <!-- header -->
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">
-            Instance List
-          </h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">Instance List</h5>
           <button type="button" class="close" @click="close()">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -28,12 +32,13 @@
                 <th scope="row">{{ item.keyNoMeta() }}</th>
                 <td>{{ item.data.states }}</td>
                 <td>
-                  <img
-                    src="../assets/relation.svg"
+                  <button
                     class="btn btn-outline-success"
                     title="show data flow of this `Instance`"
                     @click="getFlow(item)"
-                  />
+                  >
+                    data flow
+                  </button>
                 </td>
               </tr>
             </tbody>

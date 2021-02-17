@@ -3,9 +3,8 @@
 **0.7.0** 
 
 - tooltip for `Meta`
-## doing
-
 - tooltip for `Instance`
+## doing
 
 add new meta
 edit meta
