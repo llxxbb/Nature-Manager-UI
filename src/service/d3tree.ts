@@ -160,9 +160,6 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
 
     enter.attr("transform", (d: Position) => `translate(${d.y},${d.x})`);
 
-    // add tooltip
-    enter.append("title").text(d => (d.data as D3Node).title)
-
     const nodeEvent = enter.append(getShape());
     // node event
     shapePropertySet(nodeEvent)
@@ -174,18 +171,19 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         })
         .on("contextmenu", showNodeContextMenu)
         .on("mouseover", mouseOver)
-        .on("mouseout", (_e, _d) => {
+        .on("mouseout", (_e, d) => {
             TargetToDrop = null
             // remove same
             d3.selectAll(".same")
                 .attr("class", d => {
                     return (d as HierarchyPointNode<D3Node>).data.getClassForSame()
                 })
+            if (ParaData.event?.hideNodeTip) ParaData.event.hideNodeTip(d.data as D3Node)
         })
     return enter;
 }
 
-function mouseOver(_e: any, d: d3.HierarchyPointNode<unknown>) {
+function mouseOver(e: any, d: d3.HierarchyPointNode<unknown>) {
     const d3node = d.data as D3Node;
     if (d != CurrentNode && DragStart) TargetToDrop = d;
     // show same
@@ -193,6 +191,7 @@ function mouseOver(_e: any, d: d3.HierarchyPointNode<unknown>) {
     same.attr("class", d => {
         return "same " + (d as HierarchyPointNode<D3Node>).data.getClassForSame();
     });
+    if (ParaData.event?.showNodeTip) ParaData.event.showNodeTip(e, d.data as D3Node)
 }
 
 function getShape(): string {
@@ -254,6 +253,10 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
                 selected.attr("transform", () => `translate(${SelectNodeY},${SelectNodeX})`);
                 return;
             }
+            // close tip
+            if (ParaData.event?.hideNodeTip) ParaData.event.hideNodeTip(d as D3Node)
+            if (ParaData.event?.hideLinkTip) ParaData.event.hideLinkTip(d as D3Node)
+            // do move
             let dragged = d as HierarchyPointNode<D3Node>;
             let target = TargetToDrop
             TargetToDrop = null

@@ -126,6 +126,10 @@ export class TreeEvent {
     nodeMoved?: (source: HierarchyPointNode<D3Node>, target: HierarchyPointNode<D3Node>) => void
     navigateLeft?: (d: D3Node) => void
     navigateRight?: (d: D3Node) => void
+    showNodeTip?: (e: MouseEvent, d:D3Node) => void
+    hideNodeTip?: (d:D3Node) => void
+    showLinkTip?: (e: MouseEvent, d:D3Node) => void
+    hideLinkTip?: (d:D3Node) => void
 }
 
 export enum Shape {

@@ -1,10 +1,18 @@
 # dev plan
 
 **0.7.0** 
+
+- tooltip for `Meta`
 ## doing
 
-add node
-show undefined `Meta` in relation-mode (circle with red bgColor)
+- tooltip for `Instance`
+
+add new meta
+edit meta
+enable or disable meta
+
+disabled Meta(delete line style)
+show undefined `Meta` in relation-mode (circle with gray bgColor)
 
 ## other version
 

@@ -1,6 +1,7 @@
 <template>
   <instance-selector ref="insSelector" @flow="dataFlow"></instance-selector>
   <instance-detail ref="insDetail"></instance-detail>
+  <meta-tool-tip ref="tipMeta"></meta-tool-tip>
   <node-context-menu
     ref="nodeMenu"
     @dataFlow="dataFlow"
@@ -26,17 +27,18 @@
 </template>
 
 <script lang="ts">
+import { Instance, InstanceQueryCondition } from "@/domain/instance";
+import { Meta } from "@/domain/meta";
+import { D3Node, DataType, NatureData, Shape, TreePara } from "@/domain/node";
 import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree } from "../service/d3tree";
-import NodeContextMenu from "./NodeContextMenu.vue";
-import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
-import InstanceSelector from "./InstanceSelector.vue";
-import { TreePara, D3Node, Shape, DataType } from "@/domain/node";
-import { Meta } from "@/domain/meta";
-import { Instance, InstanceQueryCondition } from "@/domain/instance";
 import InstanceDetail from "./InstanceDetail.vue";
+import InstanceSelector from "./InstanceSelector.vue";
+import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
+import MetaToolTip from "./MetaToolTip.vue";
+import NodeContextMenu from "./NodeContextMenu.vue";
 
 @Options({
   components: {
@@ -44,6 +46,7 @@ import InstanceDetail from "./InstanceDetail.vue";
     LayerContextMenu,
     InstanceSelector,
     InstanceDetail,
+    MetaToolTip,
   },
   data() {
     return {
@@ -163,6 +166,19 @@ import InstanceDetail from "./InstanceDetail.vue";
       source.data.moveTo(target.data);
       this.tree.show(this.treePara);
     },
+    showNodeTip(e: MouseEvent, d: D3Node) {
+      if (
+        this.currentMode == LayoutMode.domain ||
+        this.currentMode == LayoutMode.relation
+      ) {
+        this.$refs.tipMeta.setPara(d, e.clientX, e.clientY);
+      }
+    },
+    hideNodeTip() {
+      this.$refs.tipMeta.hide();
+    },
+    showLinkTip(e: MouseEvent, d: D3Node) {},
+    hideLinkTip() {},
   },
   async mounted() {
     this.nature = new Nature();
@@ -184,6 +200,10 @@ import InstanceDetail from "./InstanceDetail.vue";
         nodeMoved: this.nodeMoved,
         navigateLeft: this.navigateLeft,
         navigateRight: this.navigateRight,
+        showNodeTip: this.showNodeTip,
+        hideNodeTip: this.hideNodeTip,
+        showLinkTip: this.showLinkTip,
+        hideLinkTip: this.hideLinkTip,
       },
       shape: Shape.circle,
     };
