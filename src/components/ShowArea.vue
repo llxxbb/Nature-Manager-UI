@@ -2,6 +2,7 @@
   <instance-selector ref="insSelector" @flow="dataFlow"></instance-selector>
   <meta-tool-tip ref="tipMeta"></meta-tool-tip>
   <instance-tool-tip ref="tipIns"></instance-tool-tip>
+  <relation-tool-tip ref="tipRelation"></relation-tool-tip>
   <node-context-menu
     ref="nodeMenu"
     @dataFlow="dataFlow"
@@ -38,6 +39,7 @@ import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
 import MetaToolTip from "./MetaToolTip.vue";
 import InstanceToolTip from "./InstanceToolTip.vue";
 import NodeContextMenu from "./NodeContextMenu.vue";
+import RelationToolTip from "./RelationToolTip.vue";
 
 @Options({
   components: {
@@ -46,6 +48,7 @@ import NodeContextMenu from "./NodeContextMenu.vue";
     InstanceSelector,
     MetaToolTip,
     InstanceToolTip,
+    RelationToolTip,
   },
   data() {
     return {
@@ -172,8 +175,13 @@ import NodeContextMenu from "./NodeContextMenu.vue";
       this.$refs.tipMeta.hide();
       this.$refs.tipIns.hide();
     },
-    showLinkTip(e: MouseEvent, d: D3Node) {},
-    hideLinkTip() {},
+    showLinkTip(e: MouseEvent, d: D3Node) {
+      if (this.currentMode == LayoutMode.relation)
+        this.$refs.tipRelation.setPara(d, e.clientX, e.clientY);
+    },
+    hideLinkTip() {
+      this.$refs.tipRelation.hide();
+    },
   },
   async mounted() {
     this.nature = new Nature();

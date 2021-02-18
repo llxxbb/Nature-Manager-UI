@@ -20,7 +20,6 @@ export class D3Node {
     private textColor = "";
     nodeType = "";
     private classForSame = "";
-    linkData = "";
     data?: any;
     leftNavDone = false;
     rightNavDone = false;
@@ -127,9 +126,9 @@ export class TreeEvent {
     navigateLeft?: (d: D3Node) => void
     navigateRight?: (d: D3Node) => void
     showNodeTip?: (e: MouseEvent, d:D3Node) => void
-    hideNodeTip?: (d:D3Node) => void
+    hideNodeTip?: () => void
     showLinkTip?: (e: MouseEvent, d:D3Node) => void
-    hideLinkTip?: (d:D3Node) => void
+    hideLinkTip?: () => void
 }
 
 export enum Shape {

@@ -1,5 +1,5 @@
 <template>
-  <tool-tip ref="toolTip" class="tip-meta">
+  <tool-tip ref="toolTip" class="tip-meta" bgColor="#f6facc">
     <table class="table">
       <tbody>
         <tr v-show="meta?.name">
@@ -16,7 +16,9 @@
         </tr>
         <tr v-show="meta?.config">
           <th scope="row">config:&ensp;</th>
-          <td class="wrap">{{ meta?.config }}</td>
+          <td class="wrap">
+            <pre><code>{{ JSON.stringify(meta?.configObj, null, "  ") }}</code></pre>
+          </td>
         </tr>
         <tr v-show="meta?.description">
           <th scope="row">desc:&ensp;</th>

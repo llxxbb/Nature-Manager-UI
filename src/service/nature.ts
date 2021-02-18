@@ -294,6 +294,7 @@ async function getAllRelation() {
     return await getItems<Relation>("relationIdGreatThan",
         item => {
             let rtn = Object.assign(new Relation, item);
+            rtn.init();
             return rtn;
         }, items => {
             return items[items.length - 1].id;

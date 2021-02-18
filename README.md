@@ -34,10 +34,11 @@ In this mode, you can see the data flow
 - can modify settings in `config.ts`
 ## Change Logs
 
-**0.7.0**  2021-02-17
+**0.7.0**  2021-02-18
 
 - tooltip for `Meta`
 - tooltip for `Instance`
+- tooltip for `Relation`
 
 **0.6.1** 2021-02-15
 

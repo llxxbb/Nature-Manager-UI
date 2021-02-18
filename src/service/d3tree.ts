@@ -30,7 +30,7 @@ export class D3Tree {
             .attr("fill", "none")
             .attr("stroke", "#555")
             .attr("stroke-opacity", 0.4)
-            .attr("stroke-width", 0.005 * NODE_SCALE)
+            .attr("stroke-width", 0.01 * NODE_SCALE)
         drawLinks(GForLink, nodes);
 
         // set font property to node
@@ -103,7 +103,12 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
         .data(nodes.links())
         .join("path")
         .attr("d", linkFn)
-        .append("title").text(d => (d.target.data as any as D3Node).linkData)
+        .on("mouseover", (e, d) => {
+            if (ParaData.event?.showLinkTip) ParaData.event.showLinkTip(e, d.target.data as D3Node)
+        })
+        .on("mouseout", (_e, _d) => {
+            if (ParaData.event?.hideLinkTip) ParaData.event.hideLinkTip()
+        })
 }
 
 function drawNode(
@@ -178,7 +183,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
                 .attr("class", d => {
                     return (d as HierarchyPointNode<D3Node>).data.getClassForSame()
                 })
-            if (ParaData.event?.hideNodeTip) ParaData.event.hideNodeTip(d.data as D3Node)
+            if (ParaData.event?.hideNodeTip) ParaData.event.hideNodeTip()
         })
     return enter;
 }
@@ -254,8 +259,8 @@ function dragEvent(enter: d3.Selection<SVGGElement, d3.HierarchyPointNode<unknow
                 return;
             }
             // close tip
-            if (ParaData.event?.hideNodeTip) ParaData.event.hideNodeTip(d as D3Node)
-            if (ParaData.event?.hideLinkTip) ParaData.event.hideLinkTip(d as D3Node)
+            if (ParaData.event?.hideNodeTip) ParaData.event.hideNodeTip()
+            if (ParaData.event?.hideLinkTip) ParaData.event.hideLinkTip()
             // do move
             let dragged = d as HierarchyPointNode<D3Node>;
             let target = TargetToDrop

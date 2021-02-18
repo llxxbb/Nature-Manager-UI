@@ -3,7 +3,6 @@
 **0.8.0** 
 ## doing
 
-tooltip for `Relation`
 add new meta
 edit meta
 enable or disable meta
