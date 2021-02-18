@@ -8,7 +8,7 @@ Please user version 0.22.4 or above of Nature.
 
 In this mode, you can organize how the business to work.
 
-![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/6c770f7b3c7ec9323594d9982d4d47a0d01a6043dda95580e27d8c692ba80184cb1385ec459e953cc9eabe3adcb80298?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=relation.png&size=750)
+![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/91bec042a199e48e3ec85f3c8e75f35da0fe23538371fe6b14b361d78d9210ae886d5e96a399fb500d6bc2e211d87aba?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=relation.png&size=750)
 
 ## Domain Mode
 
