@@ -3,12 +3,13 @@
 **0.8.0** 
 ## doing
 
+- disabled Meta(text with delete line)[https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-decoration]
+- disabled Relation(yellow line)
+- show undefined `Meta` in relation-mode (circle with gray bgColor)
+
 add new meta
 edit meta
 enable or disable meta
-
-disabled Meta(delete line style)
-show undefined `Meta` in relation-mode (circle with gray bgColor)
 
 ## other version
 
