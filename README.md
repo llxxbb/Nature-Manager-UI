@@ -20,7 +20,7 @@ In this mode, you can organize the business domain.
 
 In this mode, you can see the data flow
 
-![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/b05fc52333622cbb6cb5b426efb80459a5c61dc2248a84734336fa9cc07dd493245f0a7cf5cab680d93639ca0185080e?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=instance.png&size=750)
+![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/a743a60f811309429113f126381e9b4c465276dcb0c5a6ad2dab4dcd2c4602db658c9fc0d27dc52e149bc5b8381732a1?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=instance.png&size=750)
 
 ## Functions
 
