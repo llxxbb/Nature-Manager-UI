@@ -8,19 +8,19 @@ Please user version 0.22.4 or above of Nature.
 
 In this mode, you can organize how the business to work.
 
-![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/91bec042a199e48e3ec85f3c8e75f35da0fe23538371fe6b14b361d78d9210ae886d5e96a399fb500d6bc2e211d87aba?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=relation.png&size=750)
+![main](doc/relation.png?raw=true)
 
 ## Domain Mode
 
 In this mode, you can organize the business domain.
 
-![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/c3daeb79f2ef30b58c10d1a1bd2d7ea2d7e2bf5eda7c4e959e1c9c1dd78d894428758e02d24438a0f97be3c83b8e3e11?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=domain.png&size=750)
+![main](doc/domain.png?raw=true)
 
 ## Instance Mode
 
 In this mode, you can see the data flow
 
-![main](https://picabstract-preview-ftn.weiyun.com/ftn_pic_abs_v3/83e3ef7f92e51746f1abc7c8511ee06c148a843d8eb0bbd0c3afb4e20536cb4cb618733bed768874e23061b435f8d8df?pictype=scale&from=30113&version=3.3.3.3&uin=309577603&fname=instance.png&size=750)
+![main](doc/instance.png?raw=true)
 
 ## Functions
 
