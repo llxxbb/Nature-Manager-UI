@@ -7,6 +7,9 @@
 - disabled Relation(yellow line)
 - show undefined `Meta` in relation-mode (circle with gray bgColor)
 
+Data-Flow Mode：show task info between `Instance`
+Data-Flow Mode：display node for Null `Instance`
+
 add new meta
 edit meta
 enable or disable meta
