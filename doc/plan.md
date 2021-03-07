@@ -8,7 +8,7 @@
 
 ## doing
 
-- show undefined `Meta` in relation-mode (circle with red bgColor)
+- show undefined `Meta` in relation-mode (circle with pink bgColor)
 
 - disabled Relation(yellow line)
 

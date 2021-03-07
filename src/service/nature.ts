@@ -257,18 +257,15 @@ function findMeta(metaList: Meta[], metaMap: Map<String, Meta>, r: Relation, pre
     let index = -1; // not found in `metaList`
     let name: string = isTo ? r.to_meta : r.from_meta;
     let meta = metaMap.get(name);
+    if (!meta) {
+        meta = Meta.fromName(name);
+        metaMap.set(name, meta);
+        index = -2; // not found and create new, so need not copy it to fake;
+    }
     // check for meta type: Null
-    if (isTo) {
-        if (!meta) {
-            // maybe MetaType::Null
-            meta = Meta.fromName(name);
-            metaMap.set(name, meta);
-            index = -2; // not found and create new, so need not copy it to fake;
-        }
-        if (meta.meta_type == "N") {
-            meta.id = -1;
-            return { meta, index }
-        };
+    if (isTo && meta.meta_type == "N") {
+        meta.id = -1;
+        return { meta, index }
     }
     // normal check
     let found = metaList.find((m, idx) => {

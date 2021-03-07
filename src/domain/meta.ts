@@ -23,6 +23,7 @@ export class Meta {
     configObj: MetaConfig = new MetaConfig;
     relation?: Relation;
     flag = 0;
+    undefined = false;
     create_time = new Date;
     d3node?: D3Node = undefined;
 
@@ -48,7 +49,8 @@ export class Meta {
         data.data = this;
         data.dataType = DataType.META;
         this.d3node.data = data;
-        node.disabled = this.flag == 1? false: true;
+        node.disabled = this.flag == 1 ? false : true;
+        node.undefined = this.undefined;
         return this;
     }
     init() {
