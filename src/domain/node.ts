@@ -25,6 +25,7 @@ export class D3Node {
     rightNavDone = false;
     parent: D3Node = undefined as any as D3Node;
     private childSet: Set<Number> = new Set;
+    disabled = false;
 
     setState(state: boolean) {
         if (state) this.textColor = "#d02b06";

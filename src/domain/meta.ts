@@ -48,6 +48,7 @@ export class Meta {
         data.data = this;
         data.dataType = DataType.META;
         this.d3node.data = data;
+        node.disabled = this.flag == 1? false: true;
         return this;
     }
     init() {

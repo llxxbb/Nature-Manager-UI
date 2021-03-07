@@ -1,11 +1,18 @@
 # dev plan
 
 **0.8.0** 
+
+**0.7.1** 
+
+- disabled Meta: circle with gray bgColor
+
 ## doing
 
-- disabled Meta(text with delete line)[https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-decoration]
+- show undefined `Meta` in relation-mode (circle with red bgColor)
+
 - disabled Relation(yellow line)
-- show undefined `Meta` in relation-mode (circle with gray bgColor)
+
+- instance mode: use `Task` replace `Relation`
 
 Data-Flow Mode：show task info between `Instance`
 Data-Flow Mode：display node for Null `Instance`

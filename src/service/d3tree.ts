@@ -145,7 +145,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
                 return `${0.005 * NODE_SCALE}, ${0.01 * NODE_SCALE}`
             else return `100,0`
         })
-        .attr("fill", "#f9f5d7")
+        .attr("fill", d => (d.data as any as D3Node).disabled ? "#bdbdbd" : "#f9f5d7")
         .attr("id", d => `c${(d.data as D3Node).id}`)
         // used to select same meta
         .attr("class", d => ((d.data) as any as D3Node).getClassForSame())
