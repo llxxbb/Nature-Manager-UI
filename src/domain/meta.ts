@@ -51,6 +51,7 @@ export class Meta {
         this.d3node.data = data;
         node.disabled = this.flag == 1 ? false : true;
         node.undefined = this.undefined;
+        if (this.meta_type == "N") node.noReturn = true;
         return this;
     }
     init() {

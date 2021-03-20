@@ -4,11 +4,11 @@
 
 **0.7.1** 
 
-- disabled Meta: circle with gray bgColor
+- show disabled `Meta` in gray bgColor
+- show undefined `Meta` in pink bgColor
+- make color configurable
 
 ## doing
-
-- show undefined `Meta` in relation-mode (circle with pink bgColor)
 
 - disabled Relation(yellow line)
 

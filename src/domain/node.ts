@@ -1,3 +1,4 @@
+import { COLOR_TEXT_NORMAL, COLOR_TEXT_STATE } from "@/config";
 import { HierarchyPointNode } from "d3";
 
 export enum DataType {
@@ -27,10 +28,11 @@ export class D3Node {
     private childSet: Set<Number> = new Set;
     disabled = false;
     undefined = false;
+    noReturn = false;
 
     setState(state: boolean) {
-        if (state) this.textColor = "#d02b06";
-        else this.textColor = "black";
+        if (state) this.textColor = COLOR_TEXT_STATE;
+        else this.textColor = COLOR_TEXT_NORMAL;
     }
     getTextColor() {
         return this.textColor

@@ -1,4 +1,4 @@
-import { NODE_SCALE, NODE_SIZE } from '@/config';
+import { COLOR_STROKE_NORMAL, NODE_SCALE, NODE_SIZE, COLOR_FILL_DISABLED, COLOR_FILL_NORMAL, COLOR_FILL_NO_RETURN, COLOR_FILL_UNDEFINED } from '@/config';
 import { TreePara, D3Node, Position, Shape } from '@/domain/node';
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
@@ -138,14 +138,19 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     // draw node
     const nodeItem = enter.append(getShape());
     shapePropertySet(nodeItem)
-    nodeItem.attr("stroke", "#079702")
+    nodeItem.attr("stroke", COLOR_STROKE_NORMAL)
         .attr("stroke-width", `${0.005 * NODE_SCALE}`)
         .attr("stroke-dasharray", d => {
             if ((d.data as D3Node).isFake)
                 return `${0.005 * NODE_SCALE}, ${0.01 * NODE_SCALE}`
             else return `100,0`
         })
-        .attr("fill", d => (d.data as any as D3Node).disabled ? "#bdbdbd" : "#f9f5d7")
+        .attr("fill", d => {
+            const node = d.data as any as D3Node;
+            if (node.undefined) return COLOR_FILL_UNDEFINED;
+            if (node.noReturn) return COLOR_FILL_NO_RETURN;
+            return node.disabled ? COLOR_FILL_DISABLED : COLOR_FILL_NORMAL
+        })
         .attr("id", d => `c${(d.data as D3Node).id}`)
         // used to select same meta
         .attr("class", d => ((d.data) as any as D3Node).getClassForSame())

@@ -39,20 +39,20 @@ export class Nature {
             // find relation meta and it's index
             let from = findMeta(metaList, metaMap, r, (m, r) => m.name == r.from_meta);
             let to = findMeta(metaList, metaMap, r, (m, r) => m.name == r.to_meta, true);
-            // check
-            if (!from.meta || !to.meta) return; // TODO show undefined `Meta` in relation-mode
-            if (to.index == from.index) to.index = -1;
+            // check to
+            if (from.index != -2 && to.index == from.index) to.index = -1;
             if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idIncrease)
-            if (to.index == -2) {
-                const node = to.meta.d3node as D3Node;
-                node.id = ++idIncrease;
-                node.isFake = true;
-            }
+            if (to.index == -2) setNodeId(to, ++idIncrease);
             // add relation
             to.meta.relation = r;
             (from.meta.d3node as D3Node).addChild(to.meta.d3node as D3Node);
             // remove "to" from metaList
             if (to.index > -1) metaList.splice(to.index, 1)
+            // check from
+            if (from.index == -2) {
+                setNodeId(from, ++idIncrease);
+                metaList.push(from.meta);
+            }
         })
         // make tree
         let root = makeMetaRootNode(metaList);
@@ -199,6 +199,13 @@ export class Nature {
         return await getInstanceList(data);
     }
 }
+
+function setNodeId(metaIndex: { meta: Meta; index: number; }, idIncrease: number) {
+    const node = metaIndex.meta.d3node as D3Node;
+    node.id = idIncrease;
+    node.setClassForSame("id" + node.id);
+}
+
 async function getInstanceList(condition: any) {
     let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", condition);
     let rtn: Instance[] = []
@@ -260,11 +267,16 @@ function findMeta(metaList: Meta[], metaMap: Map<String, Meta>, r: Relation, pre
     if (!meta) {
         meta = Meta.fromName(name);
         metaMap.set(name, meta);
+        var node = meta.d3node as D3Node;
+        node.undefined = true
         index = -2; // not found and create new, so need not copy it to fake;
     }
     // check for meta type: Null
-    if (isTo && meta.meta_type == "N") {
+    if (meta.meta_type == "N") {
         meta.id = -1;
+        var node = meta.d3node as D3Node;
+        node.isFake = true
+        node.undefined = false
         return { meta, index }
     }
     // normal check
