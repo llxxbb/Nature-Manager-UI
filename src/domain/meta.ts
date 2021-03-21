@@ -21,7 +21,7 @@ export class Meta {
     fields = "";
     config = "";
     configObj: MetaConfig = new MetaConfig;
-    relation?: Relation;
+    private relation?: Relation;
     flag = 0;
     undefined = false;
     create_time = new Date;
@@ -32,6 +32,14 @@ export class Meta {
         this.initD3Node();
     }
 
+    setRelation(r: Relation) {
+        this.relation = r;
+        if (this.d3node) this.d3node.relationDisabled = r.flag ? false : true;
+    }
+
+    getRelation() {
+        return this.relation;
+    }
 
     initD3Node() {
         if (this.d3node) return;
@@ -51,7 +59,7 @@ export class Meta {
         this.d3node.data = data;
         node.disabled = this.flag == 1 ? false : true;
         node.undefined = this.undefined;
-        if (this.meta_type == "N") node.noReturn = true;
+        if (this.meta_type == "N") node.isEnd = true;
         return this;
     }
     init() {

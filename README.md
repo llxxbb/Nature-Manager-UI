@@ -34,6 +34,14 @@ In this mode, you can see the data flow
 - can modify settings in `config.ts`
 ## Change Logs
 
+**0.8.0** 2021-03-21
+
+- make color configurable
+- show disabled `Meta` in gray bgColor
+- show undefined `Meta` in pink bgColor
+- show disabled `Relation` in grey
+- show normal `Relation` in SaddleBrown
+
 **0.7.0**  2021-02-18
 
 - tooltip for `Meta`

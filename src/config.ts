@@ -8,6 +8,9 @@ export var DOMAIN_SEPARATOR = "/";
 export var INSTANCE_RELATED_AUTO = true;
 export var INSTANCE_RECENT_SIZE = 20;
 
+export var COLOR_RELATION_NORMAL = "SaddleBrown";
+export var COLOR_RELATION_DISABLED = "#555";
+
 export var COLOR_FILL_NORMAL = "#f9f5d7";
 export var COLOR_FILL_DISABLED = "#bdbdbd";
 export var COLOR_FILL_UNDEFINED = "#fab066";

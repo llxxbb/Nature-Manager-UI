@@ -1,16 +1,10 @@
 # dev plan
 
-**0.8.0** 
+**0.9.0** 
 
-**0.7.1** 
-
-- show disabled `Meta` in gray bgColor
-- show undefined `Meta` in pink bgColor
-- make color configurable
 
 ## doing
 
-- disabled Relation(yellow line)
 
 - instance mode: use `Task` replace `Relation`
 

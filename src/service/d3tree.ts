@@ -1,4 +1,4 @@
-import { COLOR_STROKE_NORMAL, NODE_SCALE, NODE_SIZE, COLOR_FILL_DISABLED, COLOR_FILL_NORMAL, COLOR_FILL_NO_RETURN, COLOR_FILL_UNDEFINED } from '@/config';
+import { COLOR_STROKE_NORMAL, NODE_SCALE, NODE_SIZE, COLOR_FILL_DISABLED, COLOR_FILL_NORMAL, COLOR_FILL_NO_RETURN, COLOR_FILL_UNDEFINED, COLOR_RELATION_NORMAL, COLOR_RELATION_DISABLED } from '@/config';
 import { TreePara, D3Node, Position, Shape } from '@/domain/node';
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
@@ -28,7 +28,6 @@ export class D3Tree {
         // draw line first! otherwise you will see the line goes into the node
         GForLink = g.append("g")
             .attr("fill", "none")
-            .attr("stroke", "#555")
             .attr("stroke-opacity", 0.4)
             .attr("stroke-width", 0.01 * NODE_SCALE)
         drawLinks(GForLink, nodes);
@@ -103,6 +102,7 @@ function drawLinks(g: d3.Selection<SVGGElement, unknown, HTMLElement, any>, node
         .data(nodes.links())
         .join("path")
         .attr("d", linkFn)
+        .attr("stroke", d => (d.target.data as D3Node).relationDisabled ? COLOR_RELATION_DISABLED : COLOR_RELATION_NORMAL)
         .on("mouseover", (e, d) => {
             if (ParaData.event?.showLinkTip) ParaData.event.showLinkTip(e, d.target.data as D3Node)
         })
@@ -148,7 +148,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         .attr("fill", d => {
             const node = d.data as any as D3Node;
             if (node.undefined) return COLOR_FILL_UNDEFINED;
-            if (node.noReturn) return COLOR_FILL_NO_RETURN;
+            if (node.isEnd) return COLOR_FILL_NO_RETURN;
             return node.disabled ? COLOR_FILL_DISABLED : COLOR_FILL_NORMAL
         })
         .attr("id", d => `c${(d.data as D3Node).id}`)

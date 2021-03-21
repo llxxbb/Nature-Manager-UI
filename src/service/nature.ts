@@ -44,7 +44,7 @@ export class Nature {
             if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idIncrease)
             if (to.index == -2) setNodeId(to, ++idIncrease);
             // add relation
-            to.meta.relation = r;
+            to.meta.setRelation(r);
             (from.meta.d3node as D3Node).addChild(to.meta.d3node as D3Node);
             // remove "to" from metaList
             if (to.index > -1) metaList.splice(to.index, 1)

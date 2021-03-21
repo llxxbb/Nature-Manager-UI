@@ -47,7 +47,7 @@ import ToolTip from "./ToolTip.vue";
       if (!node) return;
       if (!node.data) return;
       if (node.data.dataType != DataType.META) return;
-      this.relation = (node.data.data as Meta).relation;
+      this.relation = (node.data.data as Meta).getRelation();
       if (!this.relation) return;
       this.$refs.toolTip.show(x, y);
     },

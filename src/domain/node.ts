@@ -28,7 +28,8 @@ export class D3Node {
     private childSet: Set<Number> = new Set;
     disabled = false;
     undefined = false;
-    noReturn = false;
+    isEnd = false;
+    relationDisabled = false;
 
     setState(state: boolean) {
         if (state) this.textColor = COLOR_TEXT_STATE;
