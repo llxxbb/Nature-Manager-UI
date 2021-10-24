@@ -15,7 +15,7 @@ export class D3Node {
     name: string = "";
     // tooltip
     title = "";
-    isFake = false;
+    isShadow = false;
     private children?: D3Node[];
     private _children?: D3Node[];
     private textColor = "";

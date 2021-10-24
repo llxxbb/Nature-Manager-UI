@@ -1,4 +1,4 @@
-import { COLOR_STROKE_NORMAL, NODE_SCALE, NODE_SIZE, COLOR_FILL_DISABLED, COLOR_FILL_NORMAL, COLOR_FILL_NO_RETURN, COLOR_FILL_UNDEFINED, COLOR_RELATION_NORMAL, COLOR_RELATION_DISABLED } from '@/config';
+import { COLOR_STROKE_NORMAL, NODE_SCALE, NODE_SIZE, COLOR_FILL_DISABLED, COLOR_FILL_NORMAL, COLOR_FILL_NO_RETURN, COLOR_FILL_UNDEFINED, COLOR_RELATION_NORMAL, COLOR_RELATION_DISABLED, COLOR_STROKE_SAME } from '@/config';
 import { TreePara, D3Node, Position, Shape } from '@/domain/node';
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
@@ -141,7 +141,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
     nodeItem.attr("stroke", COLOR_STROKE_NORMAL)
         .attr("stroke-width", `${0.005 * NODE_SCALE}`)
         .attr("stroke-dasharray", d => {
-            if ((d.data as D3Node).isFake)
+            if ((d.data as D3Node).isShadow)
                 return `${0.005 * NODE_SCALE}, ${0.01 * NODE_SCALE}`
             else return `100,0`
         })
@@ -188,6 +188,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
                 .attr("class", d => {
                     return (d as HierarchyPointNode<D3Node>).data.getClassForSame()
                 })
+                .attr("stroke", COLOR_STROKE_NORMAL)
             if (ParaData.event?.hideNodeTip) ParaData.event.hideNodeTip()
         })
     return enter;
@@ -198,6 +199,7 @@ function mouseOver(e: any, d: d3.HierarchyPointNode<unknown>) {
     if (d != CurrentNode && DragStart) TargetToDrop = d;
     // show same
     const same = d3.selectAll("." + d3node.getClassForSame());
+    same.attr("stroke", COLOR_STROKE_SAME);
     same.attr("class", d => {
         return "same " + (d as HierarchyPointNode<D3Node>).data.getClassForSame();
     });
@@ -296,7 +298,7 @@ function appendText<T extends BaseType>(selected: d3.Selection<T, d3.HierarchyPo
         .attr("class", "side")
         // set status meta
         .attr("fill", d => (d.data as any as D3Node).getTextColor())
-        .attr("opacity", (d) => ((d.data as any as D3Node).isFake ? 0.4 : 1))
+        .attr("opacity", (d) => ((d.data as any as D3Node).isShadow ? 0.4 : 1))
         .text(d => (d.data as D3Node).name)
         .clone(true)
         // stroke no text inner

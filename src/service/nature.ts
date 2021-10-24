@@ -41,7 +41,7 @@ export class Nature {
             let to = findMeta(metaList, metaMap, r, (m, r) => m.name == r.to_meta, true);
             // check to
             if (from.index != -2 && to.index == from.index) to.index = -1;
-            if (to.index == -1) to.meta = fakeMeta(to.meta, r.id, ++idIncrease)
+            if (to.index == -1) to.meta = shadowMeta(to.meta, r.id, ++idIncrease)
             if (to.index == -2) setNodeId(to, ++idIncrease);
             // add relation
             to.meta.setRelation(r);
@@ -94,9 +94,9 @@ export class Nature {
                         unique.set(path, child);
                     }
                     else {
-                        // change fake to false, which created early
+                        // change shadow to false, which created early
                         child.id = one.id;
-                        child.isFake = false;
+                        child.isShadow = false;
                         child.data = one;
                     }
                 }
@@ -235,7 +235,7 @@ function makeParentDomainNode(levels: string[], end: number, nodeId: number) {
     let rtn = new D3Node
     rtn.id = nodeId;
     rtn.setClassForSame("id" + nodeId);
-    rtn.isFake = true;
+    rtn.isShadow = true;
     rtn.name = levels[end]
     return rtn
 }
@@ -249,13 +249,13 @@ function makeMetaRootNode(metaList: Meta[]) {
     return root;
 }
 
-function fakeMeta(m: Meta, relationId: number, nodeId: number) {
+function shadowMeta(m: Meta, relationId: number, nodeId: number) {
     var rtn: Meta = Object.assign(new Meta, m);
     rtn.resetD3Node();
     const node = rtn.d3node;
     if (!node) throw new Error("imposable!");
     node.id = nodeId;
-    node.isFake = true;
+    node.isShadow = true;
     node.title = rtn.name + "|" + relationId;
     return rtn;
 }
@@ -269,13 +269,13 @@ function findMeta(metaList: Meta[], metaMap: Map<String, Meta>, r: Relation, pre
         metaMap.set(name, meta);
         var node = meta.d3node as D3Node;
         node.undefined = true
-        index = -2; // not found and create new, so need not copy it to fake;
+        index = -2; // not found and create new, so need not copy it to shadow;
     }
     // check for meta type: Null
     if (meta.meta_type == "N") {
         meta.id = -1;
         var node = meta.d3node as D3Node;
-        node.isFake = true
+        node.isShadow = true
         node.undefined = false
         return { meta, index }
     }

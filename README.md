@@ -6,9 +6,13 @@ Please user version 0.22.4 or above of Nature.
 
 ## Relation Mode
 
-In this mode, you can organize how the business to work.
+In this mode, you can organize the business how to work.
 
 ![main](doc/relation.png?raw=true)
+
+- red label: the `Meta` has states
+
+- black label: normal `Meta` which has no state
 
 ## Domain Mode
 
@@ -32,7 +36,49 @@ In this mode, you can see the data flow
 - for same `Meta`, use virtual circle to show repeated, and use blue color to identify them when move on them.
 - use virtual circle to show `path-domain`.
 - can modify settings in `config.ts`
+## How to Use
+
+```
+npm install
+```
+
+### Run Backend
+
+```shell
+node backend/index.js
+```
+
+this will start web service at port : 3000 by default
+
+### Run Client
+
+```
+npm run serve
+```
+
+this will start client, please visit: http://localhost:8280
+
+### Compiles and minifies for production
+
+```
+npm run build
+```
+
+### Run your unit tests
+
+```
+npm run test:unit
+```
+
+### Customize configuration
+
+See [Configuration Reference](https://cli.vuejs.org/config/).
+
 ## Change Logs
+
+**0.9.0** 
+
+- add backend for database operation
 
 **0.8.0** 2021-03-21
 
@@ -92,26 +138,5 @@ details:
 
 - can show `Meta` and `Relation`, but can't add, edit etcetera.
 
-## Project setup
-```
-npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
 

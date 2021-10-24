@@ -17,6 +17,7 @@ export var COLOR_FILL_UNDEFINED = "#fab066";
 export var COLOR_FILL_NO_RETURN = "#e6a8a8";
 
 export var COLOR_STROKE_NORMAL = "#079702";
+export var COLOR_STROKE_SAME = "#3c2eff";
 
 export var COLOR_TEXT_NORMAL = "black";
 export var COLOR_TEXT_STATE = "#d02b06";

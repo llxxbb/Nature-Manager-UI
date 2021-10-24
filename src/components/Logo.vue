@@ -8,12 +8,12 @@
       src="../assets/logo.png"
     /><span class="h3 align-bottom"> Nature</span>
   </div>
-  <Settings :ok="tipsSwitch" />
+  <Tips :ok="tipsSwitch" @close="showTips()" />
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import Settings from "./Settings.vue";
+import Tips from "./Tips.vue";
 
 @Options({
   data() {
@@ -22,7 +22,7 @@ import Settings from "./Settings.vue";
     };
   },
   components: {
-    Settings,
+    Tips,
   },
   methods: {
     showTips() {

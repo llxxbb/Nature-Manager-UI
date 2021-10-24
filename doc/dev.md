@@ -1,16 +1,21 @@
 # 开发说明
 
-TypeScript
+使用了TypeScript + d3 + vue + stylus, 另外使用了 [bootstrap icons](https://icons.getbootstrap.com) 用于显示图标
 
-d3
-
+## vue
 vue：
 npm install -g @vue/cli
 npm update -g @vue/cli
 npm install -g @vue/cli @vue/cli-service-global
 npm install // 自动修复缺失的包
 
-[bootstrap icons](https://icons.getbootstrap.com) : used to show icons
+Vue 和 stylus-loader 存在兼容性问题，stylus-loader 版本不能高于 3.0.2, vue-cli 使用的 webpack需要升级到5才可以。
+
+
+
+[安装 bootstrap-vue](https://blog.csdn.net/qq_41337100/article/details/106522044)
+
+
 
 ## 视图
 
@@ -43,7 +48,7 @@ http://bl.ocks.org/robschmuecker/7880033
 
 ## d3 新加节点位置加错的问题
 
-d3:可能存在bug， 情况描述：有节点 a-b-c a-d b-c 是折叠的，先d下面建一个 e，然后点击 b 打开折叠，会发现 c 变成了e. 目前在 join.update中可以重构，但性能不好。
+d3:可能存在bug， 情况描述：有节点 a-b-c a-d b-c 是折叠的，先在d下面建一个 e，然后点击 b 打开折叠，会发现 c 变成了e. 目前在 join.update中可以重构，但性能不好。
 
 解决方法：添加新节点时删除之前创建的所有内容，重新构建整个图表。
 
@@ -54,6 +59,6 @@ d3:可能存在bug， 情况描述：有节点 a-b-c a-d b-c 是折叠的，先d
 
 - 点击空白区域，会使整个图表移动而不是放大。此问题是为了解决nodeSize 问题引入的，只要设置了 nodeSize 属性，会使布局上移，有一半跑到屏幕外面了，所以设置了最上层的 g 的transform，使其居中。但这会导致 zoom 出现一开始说的问题。
 
-- 多个父节点包含相同字节点时，用 tree 表达的不是很理想。
+- 多个父节点包含相同子节点时，用 tree 表达的不是很理想。
 
 - 在 Instance 模式下， 导航不能用 click 事件，目前用 mouseover 事件代替。
