@@ -1,14 +1,14 @@
 <template>
   <div id="logo">
     <img
-      @click="showTips"
+      @click="showTips()"
       alt="Nature logo"
       width="32"
       height="32"
       src="../assets/logo.png"
     /><span class="h3 align-bottom"> Nature</span>
   </div>
-  <Tips :ok="tipsSwitch" @close="showTips()" />
+  <Tips ref="tips" />
 </template>
 
 <script lang="ts">
@@ -16,17 +16,12 @@ import { Vue, Options } from "vue-class-component";
 import Tips from "./Tips.vue";
 
 @Options({
-  data() {
-    return {
-      tipsSwitch: false,
-    };
-  },
   components: {
     Tips,
   },
   methods: {
     showTips() {
-      this.tipsSwitch = !this.tipsSwitch;
+      this.$refs.tips.show();
     },
   },
 })

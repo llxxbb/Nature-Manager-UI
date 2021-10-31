@@ -11,11 +11,11 @@ npm install // 自动修复缺失的包
 
 Vue 和 stylus-loader 存在兼容性问题，stylus-loader 版本不能高于 3.0.2, vue-cli 使用的 webpack需要升级到5才可以。
 
-
-
 [安装 bootstrap-vue](https://blog.csdn.net/qq_41337100/article/details/106522044)
 
+## 二次失去焦点问题
 
+https://blog.csdn.net/qq_37361812/article/details/93782340
 
 ## 视图
 

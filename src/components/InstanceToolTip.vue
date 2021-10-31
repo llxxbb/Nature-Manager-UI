@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts">
+// 当鼠标移动到节点时显示`Instance` 的信息
 import { Instance } from "@/domain/instance";
 import { D3Node, DataType } from "@/domain/node";
 import { Options, Vue } from "vue-class-component";

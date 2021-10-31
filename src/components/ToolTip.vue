@@ -13,6 +13,7 @@
   </div>
 </template>
 <script lang="ts">
+// 通用的信息浮窗
 import { Vue, Options } from "vue-class-component";
 
 @Options({

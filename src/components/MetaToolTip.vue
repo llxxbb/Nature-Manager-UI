@@ -33,6 +33,7 @@
   </tool-tip>
 </template>
 <script lang="ts">
+// 当鼠标移动到节点时显示`Meta` 的信息
 import { D3Node, DataType } from "@/domain/node";
 import { Vue, Options } from "vue-class-component";
 import ToolTip from "./ToolTip.vue";

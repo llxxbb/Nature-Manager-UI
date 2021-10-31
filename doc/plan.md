@@ -5,10 +5,7 @@
 
 ## doing
 
-
-
-instance mode: use `Task` replace `Relation`
-
+Data-Flow mode: use `Task` replace `Relation`
 Data-Flow Mode：show task info between `Instance`
 Data-Flow Mode：display node for Null `Instance`
 

@@ -56,6 +56,7 @@
 </template>
 
 <script lang="ts">
+// used to select one from the version list of one `instance`. 
 import { Instance, InstanceQueryCondition } from "@/domain/instance";
 import { Options, Vue } from "vue-class-component";
 

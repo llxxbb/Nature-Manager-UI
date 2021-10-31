@@ -29,6 +29,7 @@
   </tool-tip>
 </template>
 <script lang="ts">
+// 当鼠标移动到线上时显示`Relation` 的信息
 import { Meta } from "@/domain/meta";
 import { D3Node, DataType } from "@/domain/node";
 import { Vue, Options } from "vue-class-component";
