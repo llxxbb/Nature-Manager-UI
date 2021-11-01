@@ -11,10 +11,14 @@ export var INSTANCE_RECENT_SIZE = 20;
 export var COLOR_RELATION_NORMAL = "SaddleBrown";
 export var COLOR_RELATION_DISABLED = "#555";
 
-export var COLOR_FILL_NORMAL = "#f9f5d7";
+export var COLOR_FILL_BUSINESS = "#f9f5d7";
+export var COLOR_FILL_SYSTEM = "#68b2e3";
+export var COLOR_FILL_MULTI = "#cce859";
+export var COLOR_FILL_LOOP = "#ee7f63";
+export var COLOR_FILL_DYNAMIC = "#b26c6c";
+export var COLOR_FILL_NULL = "#e6a8a8";
 export var COLOR_FILL_DISABLED = "#bdbdbd";
 export var COLOR_FILL_UNDEFINED = "#fab066";
-export var COLOR_FILL_NO_RETURN = "#e6a8a8";
 
 export var COLOR_STROKE_NORMAL = "#079702";
 export var COLOR_STROKE_SAME = "#3c2eff";

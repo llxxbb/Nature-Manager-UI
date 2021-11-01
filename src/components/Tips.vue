@@ -98,7 +98,7 @@
                 stroke-width="2"
               />
             </svg>
-            <br />
+            &nbsp;
             <svg width="24" height="16" xmlns="http://www.w3.org/2000/svg">
               <line
                 x1="0"
@@ -119,13 +119,13 @@
               width="16"
               height="16"
               version="1.1"
-              :fill="cfgDef.COLOR_FILL_NORMAL"
+              :fill="cfgDef.COLOR_FILL_BUSINESS"
               xmlns="http://www.w3.org/2000/svg"
             >
               <circle cx="8" cy="8" r="8" />
             </svg>
           </th>
-          <td>normal node</td>
+          <td>for MetaType.Business</td>
         </tr>
         <tr>
           <th scope="row">
@@ -133,13 +133,69 @@
               width="16"
               height="16"
               version="1.1"
-              :fill="cfgDef.COLOR_FILL_NO_RETURN"
+              :fill="cfgDef.COLOR_FILL_SYSTEM"
               xmlns="http://www.w3.org/2000/svg"
             >
               <circle cx="8" cy="8" r="8" />
             </svg>
           </th>
-          <td>no date bind to the node</td>
+          <td>for MetaType.System</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <svg
+              width="16"
+              height="16"
+              version="1.1"
+              :fill="cfgDef.COLOR_FILL_MULTI"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="8" cy="8" r="8" />
+            </svg>
+          </th>
+          <td>for MetaType.Multi</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <svg
+              width="16"
+              height="16"
+              version="1.1"
+              :fill="cfgDef.COLOR_FILL_LOOP"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="8" cy="8" r="8" />
+            </svg>
+          </th>
+          <td>for MetaType.Loop</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <svg
+              width="16"
+              height="16"
+              version="1.1"
+              :fill="cfgDef.COLOR_FILL_DYNAMIC"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="8" cy="8" r="8" />
+            </svg>
+          </th>
+          <td>for MetaType.Dynamic</td>
+        </tr>
+        <tr>
+          <th scope="row">
+            <svg
+              width="16"
+              height="16"
+              version="1.1"
+              :fill="cfgDef.COLOR_FILL_NULL"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="8" cy="8" r="8" />
+            </svg>
+          </th>
+          <td>for MetaType.Null</td>
         </tr>
         <tr>
           <th scope="row">

@@ -78,7 +78,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 **0.9.0** 
 
-- add backend for database operation
+- add Tips
 
 **0.8.0** 2021-03-21
 

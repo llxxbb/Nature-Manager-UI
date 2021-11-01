@@ -25,7 +25,7 @@
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
-              @click="$emit('close')"
+              @click="hide()"
             >
               Close
             </button>
