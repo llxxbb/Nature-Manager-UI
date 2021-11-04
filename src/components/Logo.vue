@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import Tips from "./Tips.vue";
+import Tips from "./ModalTips.vue";
 
 @Options({
   components: {

@@ -255,7 +255,7 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import * as cfg from "@/config";
-import BaseModal from "./baseModal.vue";
+import BaseModal from "./ModalBase.vue";
 
 @Options({
   components: {

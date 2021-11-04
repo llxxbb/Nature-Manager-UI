@@ -6,6 +6,9 @@ correct the fill color
 
 ## doing
 
+bug: buy statistics demo, in domain mode, can't see `tag_second` and `to_item`
+bug: buy statistics demo, can't show dataflow from instance selector
+
 Data-Flow Mode：display node for Null `Instance`
 Data-Flow mode: append `Task` to `Relation`
 

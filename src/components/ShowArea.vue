@@ -34,12 +34,12 @@ import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
 import { D3Tree } from "../service/d3tree";
-import InstanceSelector from "./InstanceSelector.vue";
-import LayerContextMenu, { LayoutMode } from "./LayerContextMenu.vue";
-import MetaToolTip from "./MetaToolTip.vue";
-import InstanceToolTip from "./InstanceToolTip.vue";
-import NodeContextMenu from "./NodeContextMenu.vue";
-import RelationToolTip from "./RelationToolTip.vue";
+import InstanceSelector from "./ModalInstanceSelector.vue";
+import LayerContextMenu, { LayoutMode } from "./ContextMenuLayer.vue";
+import MetaToolTip from "./ToolTipMeta.vue";
+import InstanceToolTip from "./ToolTipInstance.vue";
+import NodeContextMenu from "./ContextMenuNode.vue";
+import RelationToolTip from "./ToolTipRelation.vue";
 
 @Options({
   components: {
