@@ -2,12 +2,12 @@
 
 **0.9.0** 
 
+correct the fill color 
 
 ## doing
 
-Data-Flow mode: use `Task` replace `Relation`
-Data-Flow Mode：show task info between `Instance`
 Data-Flow Mode：display node for Null `Instance`
+Data-Flow mode: append `Task` to `Relation`
 
 add new meta
 edit meta

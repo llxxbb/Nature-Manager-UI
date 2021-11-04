@@ -147,9 +147,7 @@ function newNodes(enterData: d3.Selection<d3.EnterElement, d3.HierarchyPointNode
         })
         .attr("fill", d => {
             const node = d.data as any as D3Node;
-            if (node.undefined) return COLOR_FILL_UNDEFINED;
-            if (node.isEnd) return COLOR_FILL_NULL;
-            return node.disabled ? COLOR_FILL_DISABLED : COLOR_FILL_BUSINESS
+            return node.nodeBG;
         })
         .attr("id", d => `c${(d.data as D3Node).id}`)
         // used to select same meta

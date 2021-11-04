@@ -208,7 +208,12 @@ function setNodeId(metaIndex: { meta: Meta; index: number; }, idIncrease: number
 
 async function getInstanceList(condition: any) {
     let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", condition);
-    let rtn: Instance[] = []
+    let rtn: Instance[] = [];
+    if (!res) return rtn;
+    if (res.data.Err) {
+        console.warn(res.data.Err);
+        return rtn;
+    }
     res.data.Ok.forEach((d: any) => rtn.push(rawToInstance(d)));
     return rtn;
 }

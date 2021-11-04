@@ -19,7 +19,7 @@ export class D3Node {
     private children?: D3Node[];
     private _children?: D3Node[];
     private textColor = "";
-    nodeType = "";
+    nodeType = "";      // the first Letter of MetaType
     private classForSame = "";
     data?: any;
     leftNavDone = false;
@@ -30,6 +30,7 @@ export class D3Node {
     undefined = false;
     isEnd = false;
     relationDisabled = false;
+    nodeBG: string = 'white';
 
     setState(state: boolean) {
         if (state) this.textColor = COLOR_TEXT_STATE;

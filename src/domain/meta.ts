@@ -1,4 +1,4 @@
-import { DOMAIN_SEPARATOR } from "@/config";
+import * as cfg from "@/config";
 import { D3Node, DataType, NatureData } from "./node";
 import { Relation } from "./relation";
 
@@ -60,11 +60,23 @@ export class Meta {
         node.disabled = this.flag == 1 ? false : true;
         node.undefined = this.undefined;
         if (this.meta_type == "N") node.isEnd = true;
+        this.initBG();
         return this;
+    }
+    private initBG() {
+        var node = this.d3node!
+        if (this.undefined) node.nodeBG = cfg.COLOR_FILL_UNDEFINED;
+        if (node.disabled) node.nodeBG = cfg.COLOR_FILL_DISABLED;
+        if (this.meta_type == "N") node.nodeBG = cfg.COLOR_FILL_NULL;
+        if (this.meta_type == "M") node.nodeBG = cfg.COLOR_FILL_MULTI;
+        if (this.meta_type == "L") node.nodeBG = cfg.COLOR_FILL_LOOP;
+        if (this.meta_type == "D") node.nodeBG = cfg.COLOR_FILL_DYNAMIC;
+        if (this.meta_type == "S") node.nodeBG = cfg.COLOR_FILL_SYSTEM;
+        if (this.meta_type == "B") node.nodeBG = cfg.COLOR_FILL_BUSINESS;
     }
     init() {
         this.name = this.meta_type + ":" + this.meta_key + ":" + this.version
-        this.levels = this.meta_key.split(DOMAIN_SEPARATOR);
+        this.levels = this.meta_key.split(cfg.DOMAIN_SEPARATOR);
         if (this.config.trim().length > 0) this.configObj = JSON.parse(this.config);
         if (this.states.trim().length > 0) this.configObj.is_state = true;
     }
@@ -75,7 +87,7 @@ export class Meta {
         rtn.meta_type = parts[0];
         rtn.meta_key = parts[1];
         rtn.version = Number.parseInt(parts[2]);
-        rtn.levels = rtn.meta_key.split(DOMAIN_SEPARATOR);
+        rtn.levels = rtn.meta_key.split(cfg.DOMAIN_SEPARATOR);
         rtn.name = name;
         rtn.id = - 1;
         rtn.initD3Node();
