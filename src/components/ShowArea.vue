@@ -29,7 +29,7 @@
 <script lang="ts">
 import { Instance, InstanceQueryCondition } from "@/domain/instance";
 import { Meta } from "@/domain/meta";
-import { D3Node, DataType, NatureData, Shape, TreePara } from "@/domain/node";
+import { D3Node, DataType, Shape, TreePara } from "@/domain/node";
 import { Nature } from "@/service/nature";
 import { HierarchyPointNode } from "d3";
 import { Options, Vue } from "vue-class-component";
@@ -73,7 +73,7 @@ import RelationToolTip from "./ToolTipRelation.vue";
       if (d.data && d.data.dataType == DataType.INSTANCE) {
         let ins = d.data.data as Instance;
         id = ins.id.toString();
-        para = ins.data.para ? ins.data.para : "";
+        para = ins.path.para ? ins.path.para : "";
       }
       let data = {
         top: e.clientY,

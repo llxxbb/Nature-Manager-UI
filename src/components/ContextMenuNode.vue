@@ -82,7 +82,7 @@
                 <button
                   class="btn btn-outline-success"
                   title="show data flow of this `Instance`"
-                  @click="query()"
+                  @click="query"
                 >
                   Data Flow
                 </button>
@@ -135,7 +135,7 @@
 
 <script lang="ts">
 import { Meta } from "@/domain/meta";
-import { Instance } from "@/domain/instance";
+import { Instance, OtherInsCond } from "@/domain/instance";
 import { D3Node, NatureData, DataType } from "@/domain/node";
 import { Options, Vue } from "vue-class-component";
 import { InstanceQueryCondition } from "@/domain/instance";
@@ -269,9 +269,10 @@ export class CMPara {
       // query
       let cond = new InstanceQueryCondition();
       cond.id = this.instanceId;
-      cond.meta = meta;
-      cond.para = this.instancePara;
-      cond.staVer = staVer;
+      cond.other = new OtherInsCond();
+      cond.other.meta = meta;
+      cond.other.para = this.instancePara;
+      cond.other.staVer = staVer;
       this.instanceId = "";
       this.instancePara = "";
       this.instanceStaVer = "";

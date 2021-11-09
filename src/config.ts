@@ -1,4 +1,10 @@
 export var NATURE_MANAGER_URL = "http://localhost:8180"
+export var URL_DOWNSTREAM = NATURE_MANAGER_URL + "/instance/downstreamJS"
+export var URL_BY_KEY = NATURE_MANAGER_URL + "/instance/byKeyJS"
+export var URL_BY_ID = NATURE_MANAGER_URL + "/instance/byIdJS"
+export var URL_META_GT = NATURE_MANAGER_URL + "/metaIdGreatThan"
+export var URL_RELATION_GT = NATURE_MANAGER_URL + "/relationIdGreatThan"
+
 export var NODE_SCALE = 600;
 export var NODE_SIZE = 1000;
 

@@ -4,42 +4,53 @@ import { Meta } from "./meta";
 
 export class InstanceQueryCondition {
     id: string = "0";
-    meta: Meta = new Meta;
-    para: string = "";
-    staVer: number = 0;
+    other: OtherInsCond = new OtherInsCond();
 
     toFromInstance() {
         let rtn = new FromInstance;
         rtn.id = this.id;
-        rtn.meta = this.meta.name;
-        rtn.para = this.para;
-        rtn.state_version = this.staVer;
+        rtn.other.meta = this.other.meta.name;
+        rtn.other.para = this.other.para;
+        rtn.other.state_version = this.other.staVer;
         return rtn;
     }
     static fromInstance(ins: Instance) {
         let rtn = new InstanceQueryCondition;
         rtn.id = ins.id;
-        rtn.meta = ins.meta;
-        rtn.para = ins.data.para;
-        rtn.staVer = ins.data.state_version;
+        rtn.other = new OtherInsCond();
+        rtn.other.meta = ins.meta;
+        rtn.other.para = ins.path.para;
+        rtn.other.staVer = ins.path.state_version;
         return rtn;
     }
 }
 
+export class OtherInsCond{
+    meta: Meta = new Meta;
+    para: String = "";
+    staVer: number = 0;
+}
+
+export class Modifier{
+    meta: String="";
+    para:String="";
+    state_version:number=0;
+}
 export class Instance {
     id: string = "0";
+    path: Modifier = new Modifier
     data: BizObject = new BizObject;
     create_time: Date = new Date;
     meta: Meta = undefined as any as Meta;
 
     getKey() {
-        let para = this.data.para ? this.data.para : "";
-        let ver = this.data.state_version ? this.data.state_version : 0
-        return this.data.meta + "|" + this.id + "|" + para + "|" + ver
+        let para = this.path.para ? this.path.para : "";
+        let ver = this.path.state_version ? this.path.state_version : 0
+        return this.path.meta + "|" + this.id + "|" + para + "|" + ver
     }
     keyNoMeta() {
-        let para = this.data.para ? this.data.para : "";
-        let ver = this.data.state_version ? this.data.state_version : 0
+        let para = this.path.para ? this.path.para : "";
+        let ver = this.path.state_version ? this.path.state_version : 0
         return this.id + "|" + para + "|" + ver
     }
 
@@ -50,7 +61,7 @@ export class Instance {
         let node = new D3Node;
         node.setState(cIns.meta.isState())
         node.name = cIns.meta.levels[cIns.meta.levels.length - 1];
-        node.setClassForSame(cIns.id == "0" ? "id" + cIns.data.para : "id" + cIns.id);
+        node.setClassForSame(cIns.id == "0" ? "id" + cIns.path.para : "id" + cIns.id);
         node.title = cIns.getKey();
         node.data = nd;
         node.id = hash(cIns.getKey())
@@ -59,20 +70,14 @@ export class Instance {
 }
 
 export class BizObject {
-    meta: string = "";
     content: string = "";
     context: Map<String, String> = new Map;
     sys_context: Map<String, String> = new Map;
     states: Set<String> = new Set;
-    state_version: number = 0;
     from?: FromInstance;
-    para: string = "";
 }
 
 export class FromInstance {
     id: string = "";
-    meta: string = "";
-    para: string = "";
-    state_version = 0;
-
+    other: Modifier = new Modifier();
 }

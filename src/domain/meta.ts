@@ -98,7 +98,7 @@ export class Meta {
         return this.configObj.is_state;
     }
 
-    instanceKey(id: string, para: string, staVer: number) {
+    instanceKey(id: String, para: String, staVer: number) {
         return this.name + "|" + id + "|" + para + "|" + staVer
     }
 }

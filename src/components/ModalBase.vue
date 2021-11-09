@@ -12,7 +12,7 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              @click="hide()"
+              @click="hide"
               autofocus
               v-focus
             ></button>
@@ -25,7 +25,7 @@
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
-              @click="hide()"
+              @click="hide"
             >
               Close
             </button>

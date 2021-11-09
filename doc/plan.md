@@ -6,6 +6,8 @@ correct the fill color
 
 ## doing
 
+instance color not filled
+
 bug: buy statistics demo, in domain mode, can't see `tag_second` and `to_item`
 bug: buy statistics demo, can't show dataflow from instance selector
 

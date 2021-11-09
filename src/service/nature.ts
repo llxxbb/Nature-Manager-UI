@@ -1,4 +1,4 @@
-import { DOMAIN_SEPARATOR, INSTANCE_RECENT_SIZE, INSTANCE_RELATED_AUTO, NATURE_MANAGER_URL } from "@/config";
+import { DOMAIN_SEPARATOR, INSTANCE_RECENT_SIZE, INSTANCE_RELATED_AUTO, URL_BY_ID, URL_BY_KEY, URL_DOWNSTREAM, URL_META_GT, URL_RELATION_GT } from "@/config";
 import { InstanceQueryCondition, Instance, FromInstance } from "@/domain/instance";
 import { Meta } from "@/domain/meta";
 import { D3Node } from "@/domain/node";
@@ -115,15 +115,17 @@ export class Nature {
 
     async getOneInstance(condition: InstanceQueryCondition) {
         let useVersion = true
-        const meta = condition.meta;
-        if (meta.isState() && condition.staVer == -1) useVersion = false;
+        const meta = condition.other.meta;
+        if (meta.isState() && condition.other.staVer == -1) useVersion = false;
         let instance;
         if (useVersion) {
             instance = await getInstanceById(condition.toFromInstance());
         } else {
             // get last version of `State-Meta`
             const data = {
-                key_le: meta.instanceKey(condition.id, condition.para, Number.MAX_SAFE_INTEGER),
+                other:{
+                    key_le: meta.instanceKey(condition.id, condition.other.para, Number.MAX_SAFE_INTEGER),
+                }
             };
             let insResult = await getInstanceList(data)
             if (insResult.length > 0) instance = insResult[0]
@@ -170,7 +172,7 @@ export class Nature {
     // fill downstream
     async getDownstream(currentNode: D3Node) {
         // fetch data
-        let res = await axios.post(NATURE_MANAGER_URL + "/instance/downstream", (currentNode.data.data as Instance).getKey());
+        let res = await axios.post(URL_DOWNSTREAM, (currentNode.data.data as Instance).getKey());
         let rtnRaw: Instance[] = res.data.Ok
         rtnRaw.forEach(d => {
             let ins = rawToInstance(d)
@@ -185,16 +187,20 @@ export class Nature {
 
     async getInstanceList(meta: string) {
         const data = {
-            meta,
-            limit: INSTANCE_RECENT_SIZE
+            other:{
+                meta,
+                limit: INSTANCE_RECENT_SIZE
+            }
         };
         return await getInstanceList(data);
     }
 
     async getStateList(condition: string) {
         const data = {
-            key_le: condition,
-            limit: INSTANCE_RECENT_SIZE
+            other:{
+                key_le: condition,
+                limit: INSTANCE_RECENT_SIZE
+            }
         };
         return await getInstanceList(data);
     }
@@ -207,7 +213,7 @@ function setNodeId(metaIndex: { meta: Meta; index: number; }, idIncrease: number
 }
 
 async function getInstanceList(condition: any) {
-    let res = await axios.post(NATURE_MANAGER_URL + "/instance/byKey", condition);
+    let res = await axios.post(URL_BY_KEY, condition);
     let rtn: Instance[] = [];
     if (!res) return rtn;
     if (res.data.Err) {
@@ -219,12 +225,12 @@ async function getInstanceList(condition: any) {
 }
 function rawToInstance(raw: any) {
     let ins: Instance = Object.assign(new Instance, raw);
-    ins.meta = metaMap.get(ins.data.meta) as Meta;
+    ins.meta = metaMap.get(ins.path.meta) as Meta;
     return ins;
 }
 
 async function getInstanceById(condition: FromInstance) {
-    let res = await axios.post(NATURE_MANAGER_URL + "/instance/byId", condition);
+    let res = await axios.post(URL_BY_ID, condition);
     if (res.data.Err) {
         alert("remote err: " + JSON.stringify(res.data.Err));
         return null;
@@ -305,7 +311,7 @@ async function getAllRelationMock() {
 }
 
 async function getAllRelation() {
-    return await getItems<Relation>("relationIdGreatThan",
+    return await getItems<Relation>(URL_RELATION_GT,
         item => {
             let rtn = Object.assign(new Relation, item);
             rtn.init();
@@ -325,7 +331,7 @@ async function getAllMetaMock() {
     return meta;
 }
 async function getAllMeta() {
-    return await getItems<Meta>("metaIdGreatThan",
+    return await getItems<Meta>(URL_META_GT,
         item => {
             let rtn = Object.assign(new Meta, item);
             rtn.init();
@@ -335,8 +341,7 @@ async function getAllMeta() {
         });
 }
 
-async function getItems<T>(baseUrl: string, toT: (item: T) => T, idFun: (items: T[]) => number) {
-    let url = NATURE_MANAGER_URL + "/" + baseUrl;
+async function getItems<T>(url: string, toT: (item: T) => T, idFun: (items: T[]) => number) {
     let id = 0;
     let size = 1000;
     let go = true;
