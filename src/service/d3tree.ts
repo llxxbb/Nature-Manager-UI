@@ -1,8 +1,7 @@
-import { COLOR_STROKE_NORMAL, NODE_SCALE, NODE_SIZE, COLOR_FILL_DISABLED, COLOR_FILL_BUSINESS, COLOR_FILL_NULL, COLOR_FILL_UNDEFINED, COLOR_RELATION_NORMAL, COLOR_RELATION_DISABLED, COLOR_STROKE_SAME } from '@/config';
+import { COLOR_STROKE_NORMAL, NODE_SCALE, NODE_SIZE, COLOR_RELATION_NORMAL, COLOR_RELATION_DISABLED, COLOR_STROKE_SAME } from '@/config';
 import { TreePara, D3Node, Position, Shape } from '@/domain/node';
 import * as d3 from "d3";
 import { BaseType, HierarchyPointNode } from "d3";
-
 
 var ParaData: TreePara
 var GForNode: d3.Selection<SVGGElement, unknown, HTMLElement, any>;

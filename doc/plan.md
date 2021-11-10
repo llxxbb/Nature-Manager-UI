@@ -3,13 +3,13 @@
 **0.9.0** 
 
 correct the fill color 
+bug fix: instance color not filled
+bug fix: instance Meta-Letter does not shown
 
 ## doing
 
-instance color not filled
-
-bug: buy statistics demo, in domain mode, can't see `tag_second` and `to_item`
-bug: buy statistics demo, can't show dataflow from instance selector
+bug fix: data-flow some node missed.
+    buy statistics demo, in domain mode, can't see `tag_second` and `to_item`
 
 Data-Flow Mode：display node for Null `Instance`
 Data-Flow mode: append `Task` to `Relation`

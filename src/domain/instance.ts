@@ -64,7 +64,9 @@ export class Instance {
         node.setClassForSame(cIns.id == "0" ? "id" + cIns.path.para : "id" + cIns.id);
         node.title = cIns.getKey();
         node.data = nd;
-        node.id = hash(cIns.getKey())
+        node.id = hash(cIns.getKey());
+        node.nodeBG = cIns.meta.d3node?.nodeBG as string;
+        node.nodeType = cIns.meta.meta_type;
         return node;
     }
 }

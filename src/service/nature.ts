@@ -236,7 +236,6 @@ async function getInstanceById(condition: FromInstance) {
         return null;
     }
     if (!res.data.Ok) {
-        alert("not found")
         return null;
     }
     return rawToInstance(res.data.Ok);
