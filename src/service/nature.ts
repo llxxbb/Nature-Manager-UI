@@ -60,10 +60,10 @@ export class Nature {
     }
 
     // data for domain mode
-    getDomain() {
+    async getDomain() {
         let unique = new Map<String, D3Node>();
         let root = makeMetaRootNode([]);
-        let idSeq = -1;
+        let idSeq = 1;
         allMeta.forEach(one => {
             // init parent
             let path = DOMAIN_SEPARATOR;
@@ -81,7 +81,7 @@ export class Nature {
                 let child = unique.get(path);
                 if (index < one.levels.length - 1) {
                     if (!child) {
-                        child = makeParentDomainNode(one.levels, index, --idSeq)
+                        child = makeParentDomainNode(one.levels, index, ++idSeq)
                         parent.addChild(child);
                         unique.set(path, child);
                     }
@@ -90,14 +90,10 @@ export class Nature {
                     if (!child) {
                         child = Object.assign(new D3Node, one.d3node);
                         child.setChildren(undefined);
+                        child.setClassForSame("id" + ++idSeq);
+                        child.id = ++idSeq;
                         parent.addChild(child);
                         unique.set(path, child);
-                    }
-                    else {
-                        // change shadow to false, which created early
-                        child.id = one.id;
-                        child.isShadow = false;
-                        child.data = one;
                     }
                 }
             }
@@ -123,7 +119,7 @@ export class Nature {
         } else {
             // get last version of `State-Meta`
             const data = {
-                other:{
+                other: {
                     key_le: meta.instanceKey(condition.id, condition.other.para, Number.MAX_SAFE_INTEGER),
                 }
             };
@@ -187,7 +183,7 @@ export class Nature {
 
     async getInstanceList(meta: string) {
         const data = {
-            other:{
+            other: {
                 meta,
                 limit: INSTANCE_RECENT_SIZE
             }
@@ -197,7 +193,7 @@ export class Nature {
 
     async getStateList(condition: string) {
         const data = {
-            other:{
+            other: {
                 key_le: condition,
                 limit: INSTANCE_RECENT_SIZE
             }

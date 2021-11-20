@@ -186,7 +186,7 @@ import RelationToolTip from "./ToolTipRelation.vue";
   async mounted() {
     this.nature = new Nature();
     this.relationData = await this.nature.getRelation();
-    this.domainData = this.nature.getDomain();
+    this.domainData = await this.nature.getDomain();
 
     this.treePara = {
       target: "#showArea",
