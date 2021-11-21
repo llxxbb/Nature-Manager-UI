@@ -39,8 +39,9 @@ export class Nature {
             // find relation meta and it's index
             let from = findMeta(metaList, metaMap, r, (m, r) => m.name == r.from_meta);
             let to = findMeta(metaList, metaMap, r, (m, r) => m.name == r.to_meta, true);
-            // check to
+            // if from == to set to unfound
             if (from.index != -2 && to.index == from.index) to.index = -1;
+            // check to
             if (to.index == -1) to.meta = shadowMeta(to.meta, r.id, ++idIncrease)
             if (to.index == -2) setNodeId(to, ++idIncrease);
             // add relation
@@ -221,7 +222,9 @@ async function getInstanceList(condition: any) {
 }
 function rawToInstance(raw: any) {
     let ins: Instance = Object.assign(new Instance, raw);
-    ins.meta = metaMap.get(ins.path.meta) as Meta;
+    let meta = metaMap.get(ins.path.meta);
+    if (!meta) meta = Meta.fromName(ins.path.meta);
+    ins.meta = meta;
     return ins;
 }
 
@@ -271,20 +274,15 @@ function findMeta(metaList: Meta[], metaMap: Map<String, Meta>, r: Relation, pre
     let name: string = isTo ? r.to_meta : r.from_meta;
     let meta = metaMap.get(name);
     if (!meta) {
+        // meta not found in meta table but used in relation
         meta = Meta.fromName(name);
         metaMap.set(name, meta);
         var node = meta.d3node as D3Node;
         node.undefined = true
         index = -2; // not found and create new, so need not copy it to shadow;
     }
-    // check for meta type: Null
-    if (meta.meta_type == "N") {
-        meta.id = -1;
-        var node = meta.d3node as D3Node;
-        node.isShadow = true
-        node.undefined = false
+    if (meta?.meta_type == "N") 
         return { meta, index }
-    }
     // normal check
     let found = metaList.find((m, idx) => {
         if (predicate(m, r)) {
@@ -325,6 +323,11 @@ async function getAllMetaMock() {
     })
     return meta;
 }
+
+/**
+ * @returns All Meta defined in database table
+ * 
+ */
 async function getAllMeta() {
     return await getItems<Meta>(URL_META_GT,
         item => {
@@ -342,7 +345,7 @@ async function getItems<T>(url: string, toT: (item: T) => T, idFun: (items: T[])
     let go = true;
     let all: T[] = [];
     while (go) {
-        let rtnR = await axios.get(url + "/" + id + "/" + size);
+        let rtnR = await axios.get(url + "/" + id + "/" + size);    // get one page
         let rtn = rtnR as { data: { Ok: T[] } }
         let dataReturned = rtn.data.Ok;
         dataReturned.forEach(i => {
@@ -350,7 +353,7 @@ async function getItems<T>(url: string, toT: (item: T) => T, idFun: (items: T[])
             all.push(myMeta)
         })
         if (dataReturned.length < size) break;
-        id = idFun(dataReturned);
+        id = idFun(dataReturned);   // remeber id for next page 
     }
     return all;
 };

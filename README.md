@@ -1,6 +1,6 @@
 # nature-manager-ui
 
-You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature) 
+You can use this project to manage Meta and Relation of [Nature](https://github.com/llxxbb/Nature)
 
 Please user version 0.22.4 or above of Nature.
 
@@ -11,7 +11,6 @@ In this mode, you can organize the business how to work.
 ![main](doc/relation.png?raw=true)
 
 - red label: the `Meta` has states
-
 - black label: normal `Meta` which has no state
 
 ## Domain Mode
@@ -36,6 +35,7 @@ In this mode, you can see the data flow
 - for same `Meta`, use virtual circle to show repeated, and use blue color to identify them when move on them.
 - use virtual circle to show `path-domain`.
 - can modify settings in `config.ts`
+
 ## How to Use
 
 ```
@@ -76,7 +76,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Change Logs
 
-**0.9.0** 
+**0.9.0**
 
 - add Tips
 
@@ -114,7 +114,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 - Don't show instance query when node is not a real meta.
 - bug fix: meta-context-menu and layout-context-menu conflict
-- show State-Meta text in red 
+- show State-Meta text in red
 - can modify setting in `config.ts`
 - don't show status-version input box when it's unnecessary
 - optimize: put it back for a failed drag
@@ -132,11 +132,8 @@ details:
 
 **v0.1.1** 2021-01-23
 
-- bug fix: change mock data to real data, now you see every thing which defined in tables, 
+- bug fix: change mock data to real data, now you see every thing which defined in tables,
 
 **v0.1.0** 2021-01-19
 
 - can show `Meta` and `Relation`, but can't add, edit etcetera.
-
-
-

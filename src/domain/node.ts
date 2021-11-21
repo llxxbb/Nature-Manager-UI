@@ -14,7 +14,7 @@ export class D3Node {
     id = 0;
     name: string = "";
     // tooltip
-    title = "";
+    title: String = "";
     isShadow = false;
     private children?: D3Node[];
     private _children?: D3Node[];

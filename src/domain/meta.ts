@@ -11,7 +11,7 @@ export class MetaConfig {
 }
 export class Meta {
     id = 0;
-    name: string = "";
+    name: String = "";
     levels: string[] = []
     meta_type = "";
     meta_key = "";
@@ -81,7 +81,7 @@ export class Meta {
         if (this.states.trim().length > 0) this.configObj.is_state = true;
     }
 
-    static fromName(name: string) {
+    static fromName(name: String) {
         const parts = name.split(":");
         let rtn = new Meta;
         rtn.meta_type = parts[0];
